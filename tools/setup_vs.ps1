@@ -24,9 +24,17 @@ Function InstallBuildTools() {
         , 'Microsoft.VisualStudio.Component.VC.ASAN'
         , 'Microsoft.VisualStudio.Component.TestTools.BuildTools'
     )
-    $vs_components | % {
-        Start-Process vs_installer.exe -ArgumentList @("modify", "--quiet", "--productId=${buildtools_product_id}", "--channelId=${channel_id}", "--add=${_}") -Wait
-    }
+#    $vs_args = @("modify", "--quiet", "--productId=${buildtools_product_id}", "--channelId=${channel_id}")
+    $vs_args = @("install", "--quiet", "--productId=${buildtools_product_id}", "--channelId=${channel_id}")
+    $vs_args += ($vs_components | % { "--add=${_}" })
+    winget uninstall --id Microsoft.VisualStudio.2022.BuildTools --silent --override "--quiet"
+    winget install --id Microsoft.VisualStudio.2022.BuildTools --override "--quiet --config vsconfig.json" --silent
+#    Start-Process vs_installer.exe -ArgumentList $vs_args -Wait
+#    Start-Process vs_buildtools.exe -ArgumentList $vs_args -Wait
+#    $vs_components | % {
+#        Start-Process vs_installer.exe -ArgumentList @("modify", "--quiet", "--productId=${buildtools_product_id}", "--channelId=${channel_id}", "--add=${_}") -Wait
+#    }
+    $r = (vswhere.exe -products $buildtools_product_id -property installationPath -requires ("{0}" -F ($vs_components -join " ")))
 }
 
 Function Main() {
