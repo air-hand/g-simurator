@@ -27,9 +27,9 @@ Function InstallBuildTools() {
 #    $vs_args = @("modify", "--quiet", "--productId=${buildtools_product_id}", "--channelId=${channel_id}")
     $vs_args = @("modify", "--quiet", "--config", "vsconfig.json")
     #$vs_args += ($vs_components | % { "--add=${_}" })
-    winget install --id Microsoft.VisualStudio.2022.BuildTools --override "--quiet" --silent --disable-interactivity --accept-source-agreements
+    winget install --id Microsoft.VisualStudio.2022.BuildTools --override "--quiet --config vsconfig.json" --silent --disable-interactivity --accept-source-agreements
 #    Start-Process vs_installer.exe -ArgumentList $vs_args -Wait
-    Start-Process vs_buildtools.exe -ArgumentList $vs_args -Wait
+    #Start-Process vs_buildtools.exe -ArgumentList $vs_args -Wait
 #    $vs_components | % {
 #        Start-Process vs_installer.exe -ArgumentList @("modify", "--quiet", "--productId=${buildtools_product_id}", "--channelId=${channel_id}", "--add=${_}") -Wait
 #    }
