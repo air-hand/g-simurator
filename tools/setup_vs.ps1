@@ -44,4 +44,5 @@ Function Main() {
     InstallBuildTools
 }
 
+$ErrorActionPreference = "Stop"
 Main

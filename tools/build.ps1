@@ -1,4 +1,6 @@
-﻿cd $PSScriptRoot
+﻿$ErrorActionPreference = "Stop"
+
+cd $PSScriptRoot
 
 $Env:VCPKG_ROOT = Resolve-Path (".\vendor\vcpkg")
 $Env:PATH = "${Env:VCPKG_ROOT};${Env:PATH}"
