@@ -25,12 +25,11 @@ Function InstallBuildTools() {
         , 'Microsoft.VisualStudio.Component.TestTools.BuildTools'
     )
 #    $vs_args = @("modify", "--quiet", "--productId=${buildtools_product_id}", "--channelId=${channel_id}")
-    $vs_args = @("install", "--quiet", "--productId=${buildtools_product_id}", "--channelId=${channel_id}")
-    $vs_args += ($vs_components | % { "--add=${_}" })
-    winget uninstall --id Microsoft.VisualStudio.2022.BuildTools --silent --disable-interactivity
-    winget install --id Microsoft.VisualStudio.2022.BuildTools --override "--quiet --config vsconfig.json" --silent --disable-interactivity
+    $vs_args = @("modify", "--quiet", "--config", "vsconfig.json")
+    #$vs_args += ($vs_components | % { "--add=${_}" })
+    winget install --id Microsoft.VisualStudio.2022.BuildTools --override "--quiet" --silent --disable-interactivity
 #    Start-Process vs_installer.exe -ArgumentList $vs_args -Wait
-#    Start-Process vs_buildtools.exe -ArgumentList $vs_args -Wait
+    Start-Process vs_buildtools.exe -ArgumentList $vs_args -Wait
 #    $vs_components | % {
 #        Start-Process vs_installer.exe -ArgumentList @("modify", "--quiet", "--productId=${buildtools_product_id}", "--channelId=${channel_id}", "--add=${_}") -Wait
 #    }
