@@ -28,8 +28,8 @@ jobs:
       uses: Cyberboss/install-winget@v1
 
     - name: setup visual studio
-      run: |
-        .\tools\setup_vs.cmd
+      run: .\tools\setup_vs.cmd
+      shell: cmd /c {0}
 
     - name: build
       run: |
