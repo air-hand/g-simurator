@@ -16,6 +16,9 @@ permissions:
 
 jobs:
   build:
+    defaults:
+      run:
+        shell: cmd
     runs-on: windows-2022
 
     steps:
@@ -28,4 +31,4 @@ jobs:
     - name: build
       run: |
         .\tools\build.cmd
-      shell: cmd.exe /k %ProgramFiles(x86)%\Microsoft Visual Studio\2022\BuildTools\Common7\Tools\VsDevCmd.bat {0}
+      shell: cmd.exe /k "%ProgramFiles(x86)%\Microsoft Visual Studio\2022\BuildTools\Common7\Tools\VsDevCmd.bat" {0}
