@@ -33,6 +33,6 @@ jobs:
 
     - name: build
       run: |
-        %ProgramFiles(x86)%\Microsoft Visual Studio\2022\BuildTools\Common7\Tools\VsDevCmd.bat
+        "%ProgramFiles(x86)%\Microsoft Visual Studio\2022\BuildTools\Common7\Tools\VsDevCmd.bat"
         .\tools\build.cmd
       shell: cmd /c {0}
