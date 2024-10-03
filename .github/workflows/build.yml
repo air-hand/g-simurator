@@ -28,4 +28,4 @@ jobs:
     - name: build
       run: |
         .\tools\build.cmd
-      shell: cmd.exe /k %ProgramFiles(x86)\Microsoft Visual Studio\2022\BuildTools\Common7\Tools\VsDevCmd.bat
+      shell: cmd.exe /k %ProgramFiles(x86)\Microsoft Visual Studio\2022\BuildTools\Common7\Tools\VsDevCmd.bat {0}
