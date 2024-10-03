@@ -24,6 +24,9 @@ jobs:
     steps:
     - uses: actions/checkout@v4
 
+    - name: Install winget
+      uses: Cyberboss/install-winget@v1
+
     - name: setup visual studio
       run: |
         .\tools\setup_vs.cmd
