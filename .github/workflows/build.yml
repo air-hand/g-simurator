@@ -32,5 +32,5 @@ jobs:
       shell: cmd /c {0}
 
     - name: build
-      run: |
-        "%ProgramFiles(x86)%\Microsoft Visual Studio\2022\BuildTools\Common7\Tools\VsDevCmd.bat" .\tools\build.cmd
+      run: .\tools\build.cmd
+      shell: cmd /c {0}
