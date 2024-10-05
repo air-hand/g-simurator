@@ -52,6 +52,8 @@ Function InstallBuildTools() {
             break
         }
     }
+    # FIXME for GHA
+    Get-ChildItem -Path "C:\Program Files (x86)\Microsoft Visual Studio\2022\BuildTools" -Include *.exe -Recurse
 }
 
 Function Main() {
