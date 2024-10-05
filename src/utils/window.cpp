@@ -1,11 +1,36 @@
-﻿/*
-Get process https://cocomelonc.github.io/pentest/2021/09/29/findmyprocess.html
+﻿#include "window.hpp"
 
-EnumWindows for get target window handle.
-https://stackoverflow.com/a/51731567
+namespace sim::utils::window
+{
 
-and SetForegroundWindow
-https://learn.microsoft.com/ja-jp/windows/win32/api/winuser/nf-winuser-setforegroundwindow
-*/
+class Window::Impl final
+{
+public:
+    Impl(HWND handle) : handle_(handle) {}
+    ~Impl() {}
 
+    void Activate() const {
+        // https://learn.microsoft.com/ja-jp/windows/win32/api/winuser/nf-winuser-setforegroundwindow
+        SetForegroundWindow(handle_);
+    }
 
+private:
+    HWND handle_;
+};
+
+Window::Window(HWND handle) noexcept
+    : impl_(std::make_unique<Impl>(handle))
+{
+}
+
+Window::~Window() = default;
+
+Window::Window(Window&&) noexcept = default;
+Window& Window::operator=(Window&&) noexcept = default;
+
+void Window::Activate() const
+{
+    impl_->Activate();
+}
+
+}

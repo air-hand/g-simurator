@@ -3,35 +3,33 @@
 #include <memory>
 #include <vector>
 
+#include "../utils/macro.hpp"
 #include "../utils/windows.hpp"
 
-namespace sim
-{
-namespace controller
+namespace sim::controller
 {
 
 class Keyboard final
 {
 public:
-    Keyboard() noexcept(false);
-    Keyboard(Keyboard&&) noexcept;
-    Keyboard& operator=(Keyboard&&) noexcept;
-
-    Keyboard(Keyboard const&) = delete;
-    Keyboard& operator=(Keyboard const&) = delete;
-
-    ~Keyboard();
-
     static const Keyboard& Get();
+
+    ~Keyboard() = default;
 
     void KeyDown(const std::vector<WORD>& keys) const;
     void KeyDown(WORD key) const;
     void KeyUp(const std::vector<WORD>& keys) const;
     void KeyUp(WORD key) const;
+
 private:
+    Keyboard() noexcept;
+    Keyboard(Keyboard&&) noexcept;
+    Keyboard& operator=(Keyboard&&) noexcept;
+
+    DELETE_COPY_AND_ASSIGN(Keyboard);
+
     class Impl;
     std::unique_ptr<Impl> impl_;
 };
 
-}
 }

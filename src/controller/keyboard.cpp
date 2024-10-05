@@ -1,10 +1,5 @@
 ﻿#include "keyboard.hpp"
 
-namespace
-{
-const auto keyboard = sim::controller::Keyboard();
-}
-
 namespace sim::controller
 {
 
@@ -36,7 +31,7 @@ public:
     }
 };
 
-Keyboard::Keyboard() noexcept(false)
+Keyboard::Keyboard() noexcept
     : impl_(std::make_unique<Impl>())
 {
 }
@@ -46,11 +41,8 @@ Keyboard::Keyboard(Keyboard&& other) noexcept
 {
 }
 
-Keyboard::~Keyboard()
-{
-}
-
 const Keyboard& Keyboard::Get() {
+    static const auto keyboard = Keyboard();
     return keyboard;
 }
 
