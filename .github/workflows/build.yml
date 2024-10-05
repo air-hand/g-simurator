@@ -27,15 +27,15 @@ jobs:
     - name: Install winget
       uses: Cyberboss/install-winget@v1
 
-    - name: setup visual studio
+    - name: Setup visual studio
       run: .\tools\setup_vs.cmd
       shell: cmd /c {0}
 
-    - name: build
+    - name: Build
       run: .\tools\build.cmd
       shell: cmd /c {0}
     
-    - name: check
+    - name: Check
       run: |
         if (-not(Test-Path .\build\simurator.exe)) {
           throw "simurator.exe not found"

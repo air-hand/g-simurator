@@ -3,7 +3,6 @@
 cd $PSScriptRoot
 cd ..
 
-#$Env:VCPKG_ROOT = Resolve-Path (".\vendor\vcpkg")
 $Env:VCPKG_ROOT = ".\tools\vendor\vcpkg"
 $Env:PATH = "${Env:VCPKG_ROOT};${Env:PATH}"
 
@@ -21,3 +20,7 @@ Get-ChildItem ./ -Include "CMake*.ps1" -Exclude @("./build", "./tools") -Recurse
 
 cmake --preset=vcpkg
 cmake --build build
+
+if ($? -ne $true) {
+    throw "Build failed."
+}
