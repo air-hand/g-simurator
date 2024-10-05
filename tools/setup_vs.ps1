@@ -43,7 +43,7 @@ Function InstallBuildTools() {
     $vswhere_cmd = (
         "vswhere.exe -products ${buildtools_product_id} -property installationPath ${requires}"
     )
-    1..50 | % {
+    1..300 | % {
         Write-Host "Waiting for VS Installer... ${_}";
         Start-Sleep 3;
         $exists = ($vswhere_cmd | Invoke-Expression)
