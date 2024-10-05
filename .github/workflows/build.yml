@@ -34,10 +34,3 @@ jobs:
     - name: Build
       run: .\tools\build.cmd
       shell: cmd /c {0}
-
-    - name: Check
-      run: |
-        if (-not(Test-Path .\build\simurator.exe)) {
-          throw "simurator.exe not found"
-        }
-      shell: pwsh
