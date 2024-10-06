@@ -2,7 +2,6 @@
   "dependencies": [
     "directxtk",
     "gtest",
-    "plog",
-    "gmock"
+    "plog"
   ]
 }
