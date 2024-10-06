@@ -33,8 +33,8 @@ jobs:
 
     - name: Build
       run: .\tools\build.cmd
-      shell: cmd /X /k .\tools\env.cmd /c {0}
+      shell: cmd /X /k .\tools\envs.cmd /c {0}
 
     - name: Run tests
       run: ctest --build .\build --preset=test -C Debug
-      shell: cmd /X /k .\tools\env.cmd /c {0}
+      shell: cmd /X /k .\tools\envs.cmd /c {0}
