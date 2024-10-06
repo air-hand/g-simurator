@@ -28,4 +28,9 @@ void log(const std::string& message)
     log(message.c_str());
 }
 
-} // namespace sim::utils
+void log(const std::wstring& message)
+{
+    PLOG_DEBUG << message;
+}
+
+}

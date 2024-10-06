@@ -19,8 +19,9 @@ public:
         // https://docs.microsoft.com/en-us/windows/win32/api/winuser/nf-winuser-enumwindows
         // https://stackoverflow.com/a/51731567
         ::EnumWindows([](HWND hwnd, LPARAM lParam) -> BOOL {
-            char windowTitle[256];
-            GetWindowTextA(hwnd, windowTitle, sizeof(windowTitle));
+            wchar_t windowTitle[256] = {0};
+            GetWindowTextW(hwnd, windowTitle, sizeof(windowTitle));
+            
             logging::log(windowTitle);
             return TRUE;
         }, NULL);

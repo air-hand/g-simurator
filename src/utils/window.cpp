@@ -9,7 +9,8 @@ public:
     Impl(HWND handle) : handle_(handle) {}
     ~Impl() {}
 
-    void Activate() const {
+    void Activate() const
+    {
         // https://learn.microsoft.com/ja-jp/windows/win32/api/winuser/nf-winuser-setforegroundwindow
         SetForegroundWindow(handle_);
     }
@@ -18,7 +19,7 @@ private:
     HWND handle_;
 };
 
-explicit Window::Window(HWND handle) noexcept
+Window::Window(HWND handle) noexcept
     : impl_(std::make_unique<Impl>(handle))
 {
 }
