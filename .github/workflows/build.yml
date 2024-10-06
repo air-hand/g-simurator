@@ -40,5 +40,5 @@ jobs:
     - name: Run tests
       run: |
         call .\tools\envs.cmd
-        ctest --build .\build --preset=test -C Debug
+        .\tools\test.cmd
       shell: cmd /X /C {0}
