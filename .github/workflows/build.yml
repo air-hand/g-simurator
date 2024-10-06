@@ -33,12 +33,12 @@ jobs:
 
     - name: Build
       run: |
-        .\tools\envs.cmd 
+        call .\tools\envs.cmd
         .\tools\build.cmd
-      shell: cmd /X /c {0}
+      shell: cmd /X /C {0}
 
     - name: Run tests
       run: |
-        .\tools\envs.cmd 
+        call .\tools\envs.cmd
         ctest --build .\build --preset=test -C Debug
-      shell: cmd /X /c {0}
+      shell: cmd /X /C {0}
