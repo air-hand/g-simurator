@@ -2,6 +2,7 @@
   "dependencies": [
     "directxtk",
     "gtest",
-    "plog"
+    "plog",
+    "nlohmann-json"
   ]
 }

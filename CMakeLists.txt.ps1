@@ -15,6 +15,7 @@ project(simurator)
 
 find_package(directxtk CONFIG REQUIRED)
 find_package(plog CONFIG REQUIRED)
+find_package(nlohmann_json CONFIG REQUIRED)
 
 add_executable(${{PROJECT_NAME}})
 {0}
@@ -30,6 +31,7 @@ target_compile_options(${{PROJECT_NAME}} PRIVATE "/utf-8") # utf-8 source and ex
 
 target_link_libraries(${{PROJECT_NAME}} PRIVATE Microsoft::DirectXTK)
 target_link_libraries(${{PROJECT_NAME}} PRIVATE plog::plog)
+target_link_libraries(${{PROJECT_NAME}} PRIVATE nlohmann_json nlohmann_json::nlohmann_json)
 
 # tests
 enable_testing()
