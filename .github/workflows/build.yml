@@ -36,5 +36,5 @@ jobs:
       shell: cmd /X /k .\tools\env.cmd /c {0}
 
     - name: Run tests
-      run: ctest -C Debug
+      run: ctest --build .\build --preset=test -C Debug
       shell: cmd /X /k .\tools\env.cmd /c {0}
