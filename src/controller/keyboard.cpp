@@ -1,4 +1,4 @@
-﻿#include "keyboard.hpp"
+#include "keyboard.hpp"
 
 namespace sim::controller
 {
@@ -36,9 +36,18 @@ Keyboard::Keyboard() noexcept
 {
 }
 
-Keyboard::Keyboard(Keyboard&& other) noexcept
-    : impl_(std::move(other.impl_))
+Keyboard::Keyboard(Keyboard&& rhs) noexcept
+    : impl_(std::move(rhs.impl_))
 {
+}
+
+Keyboard& Keyboard::operator=(Keyboard&& rhs) noexcept
+{
+    if (this != &rhs)
+    {
+        impl_ = std::move(rhs.impl_);
+    }
+    return *this;
 }
 
 const Keyboard& Keyboard::Get() {

@@ -1,4 +1,4 @@
-﻿#pragma once
+#pragma once
 
 #include <memory>
 
@@ -14,7 +14,7 @@ public:
     WindowInspector() noexcept;
     ~WindowInspector();
     WindowInspector(WindowInspector&&) noexcept;
-    WindowInspector& operator=(const WindowInspector&&) noexcept;
+    WindowInspector& operator=(WindowInspector&&) noexcept;
 
     DELETE_COPY_AND_ASSIGN(WindowInspector);
 

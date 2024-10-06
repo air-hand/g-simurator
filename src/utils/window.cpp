@@ -1,4 +1,4 @@
-﻿#include "window.hpp"
+#include "window.hpp"
 
 namespace sim::utils::window
 {
@@ -25,8 +25,17 @@ Window::Window(HWND handle) noexcept
 
 Window::~Window() = default;
 
-Window::Window(Window&&) noexcept = default;
-Window& Window::operator=(Window&&) noexcept = default;
+Window::Window(Window&& rhs) noexcept : impl_(std::move(rhs.impl_))
+{
+}
+Window& Window::operator=(Window&& rhs) noexcept
+{
+    if (this != &rhs)
+    {
+        impl_ = std::move(rhs.impl_);
+    }
+    return *this;
+}
 
 void Window::Activate() const
 {

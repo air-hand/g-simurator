@@ -1,4 +1,4 @@
-﻿#include <format>
+#include <format>
 
 #include "controller/keyboard.hpp"
 #include "utils/logger.hpp"

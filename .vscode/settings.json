@@ -11,8 +11,5 @@
     "terminal.integrated.defaultProfile.windows": "vs2022dev",
     "cmake.generator": "Ninja",
     "C_Cpp.default.cppStandard": "c++20",
-    "files.associations": {
-        "Vagrantfile": "ruby",
-        "memory": "cpp"
-    },
+    "cmake.options.statusBarVisibility": "icon",
 }

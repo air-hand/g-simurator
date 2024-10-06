@@ -1,4 +1,4 @@
-﻿#include <plog/Log.h>
+#include <plog/Log.h>
 #include <plog/Init.h>
 #include <plog/Appenders/ConsoleAppender.h>
 #include <plog/Formatters/TxtFormatter.h>

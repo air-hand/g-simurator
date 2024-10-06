@@ -1,4 +1,4 @@
-﻿#include <memory>
+#include <memory>
 
 // https://github.com/microsoft/DirectXTK/wiki/Game-controller-input
 

@@ -1,4 +1,4 @@
-cd $PSScriptRoot
+﻿cd $PSScriptRoot
 
 $source_files = (Get-ChildItem .\* -Include "*.cpp" | Sort-Object | % {
     return ("`"{0}`"" -F $_.Name)

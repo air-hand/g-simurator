@@ -1,4 +1,4 @@
-﻿#include "window_inspector.hpp"
+#include "window_inspector.hpp"
 #include "window.hpp"
 
 #include "logger.hpp"
@@ -47,10 +47,16 @@ WindowInspector::WindowInspector() noexcept
 
 WindowInspector::~WindowInspector() = default;
 
-WindowInspector::WindowInspector(WindowInspector&&) noexcept = default;
-WindowInspector& WindowInspector::operator=(const WindowInspector&& rhs) noexcept
+WindowInspector::WindowInspector(WindowInspector&& rhs) noexcept : impl_(std::move(rhs.impl_))
 {
-    return std::move(rhs);
+}
+WindowInspector& WindowInspector::operator=(WindowInspector&& rhs) noexcept
+{
+    if (this != &rhs)
+    {
+        impl_ = std::move(rhs.impl_);
+    }
+    return *this;
 }
 
 std::unique_ptr<Window> WindowInspector::Find(const char* windowName) const
