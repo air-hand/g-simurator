@@ -3,13 +3,14 @@
         "vs2022dev": {
             "path": "cmd.exe",
             "args": [
+                "/X",
                 "/k",
-                "C:\\Program Files (x86)\\Microsoft Visual Studio\\2022\\BuildTools\\Common7\\Tools\\VsDevCmd.bat"
+                "${workspaceFolder}/tools/envs.cmd"
             ]
         }
     },
     "terminal.integrated.defaultProfile.windows": "vs2022dev",
     "cmake.generator": "Ninja",
     "C_Cpp.default.cppStandard": "c++20",
-    "cmake.options.statusBarVisibility": "icon",
+    "cmake.options.statusBarVisibility": "icon"
 }

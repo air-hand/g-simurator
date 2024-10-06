@@ -12,28 +12,29 @@ public:
     Impl() {}
     ~Impl() {};
 
-// EnumWindows for get target window handle.
-// https://stackoverflow.com/a/51731567
+#if DEBUG
     void EnumWindows() const
     {
         // https://docs.microsoft.com/en-us/windows/win32/api/winuser/nf-winuser-enumwindows
-        // https://stackoverflow.com/a/51731567
-        ::EnumWindows([](HWND hwnd, LPARAM lParam) -> BOOL {
-            wchar_t windowTitle[256] = {0};
-            GetWindowTextW(hwnd, windowTitle, sizeof(windowTitle));
+        ::EnumWindows([](HWND hWnd, LPARAM lParam) -> BOOL {
+            if (!IsWindowVisible(hWnd)) {
+                return TRUE;
+            }
+            if (IsIconic(hWnd)) {
+                return TRUE;
+            }
+            wchar_t windowTitle[256] = {NULL};
+            GetWindowTextW(hWnd, windowTitle, sizeof(windowTitle));
             
             logging::log(windowTitle);
             return TRUE;
         }, NULL);
     }
+#endif
 
-    std::unique_ptr<Window> Find(const char* windowName) const
+    std::unique_ptr<Window> Find(const wchar_t* windowName) const
     {
-        // FIXME
-        EnumWindows();
-        // https://docs.microsoft.com/en-us/windows/win32/api/winuser/nf-winuser-enumwindows
-        // https://stackoverflow.com/a/51731567
-        HWND handle = FindWindowA(NULL, windowName);
+        const auto handle = FindWindowW(NULL, windowName);
         if (handle == NULL) {
             return nullptr;
         }
@@ -60,7 +61,7 @@ WindowInspector& WindowInspector::operator=(WindowInspector&& rhs) noexcept
     return *this;
 }
 
-std::unique_ptr<Window> WindowInspector::Find(const char* windowName) const
+std::unique_ptr<Window> WindowInspector::Find(const wchar_t* windowName) const
 {
     return std::move(impl_->Find(windowName));
 }

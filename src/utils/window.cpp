@@ -7,7 +7,7 @@ class Window::Impl final
 {
 public:
     Impl(HWND handle) : handle_(handle) {}
-    ~Impl() {}
+    ~Impl() = default;
 
     void Activate() const
     {

@@ -12,16 +12,23 @@ using Keys = DirectX::Keyboard::Keys;
 int main() {
     logging::init();
 
-    logging::log("Hello, World!");
+    logging::log(L"Hello, World!");
     logging::log("C++ Version: {} WinVer: {}", __cplusplus, _WIN32_WINNT);
 
+    constexpr const auto WINDOW_TITLE = L"TEKKEN™8  ";
     const window::WindowInspector inspector {};
-    const auto window = inspector.Find("Untitled - Notepad");
+    const auto window = inspector.Find(WINDOW_TITLE);
+    if (window == nullptr) {
+        logging::log(L"Window not found: {}", WINDOW_TITLE);
+        return 1;
+    }
+    window->Activate();
 //    const std::unique_ptr<window::Window> window(std::move(inspector.Find("Untitled - Notepad")));
 //    const auto window = window_inspector.Find("Untitled - Notepad");
 
     const auto& keyboard = sim::controller::Keyboard::Get();
     keyboard.KeyDown({'A', 'B', 'C', Keys::Enter});
 
+    logging::log(L"Good bye, {}", L"World...");
     return 0;
 }

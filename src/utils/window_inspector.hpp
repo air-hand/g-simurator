@@ -3,7 +3,7 @@
 #include <memory>
 
 #include "macro.hpp"
-#include "window.hpp"
+#include "window.hpp" // use unique_ptr<Window> for complete type
 
 namespace sim::utils::window
 {
@@ -18,7 +18,7 @@ public:
 
     DELETE_COPY_AND_ASSIGN(WindowInspector);
 
-    std::unique_ptr<Window> Find(const char* windowName) const;
+    std::unique_ptr<Window> Find(const wchar_t* windowName) const;
 private:
     class Impl;
     std::unique_ptr<Impl> impl_;

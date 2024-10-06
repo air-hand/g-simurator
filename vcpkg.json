@@ -1,7 +1,8 @@
 {
   "dependencies": [
     "directxtk",
-    "fmt",
-    "plog"
+    "gtest",
+    "plog",
+    "gmock"
   ]
 }
