@@ -11,4 +11,9 @@ TEST(test_example, foobar)
     EXPECT_NE(std::string("foo"), std::string("bar"));
 }
 
+TEST(test_example, failed)
+{
+    EXPECT_EQ(1, 2);
+}
+
 }

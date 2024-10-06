@@ -21,3 +21,5 @@ cmake --build .\build
 if ($? -ne $true) {
     throw "Build failed."
 }
+# https://discourse.cmake.org/t/ctest-scripting-cmake-presets/9610/2
+ctest --build .\build --preset=test -C Debug

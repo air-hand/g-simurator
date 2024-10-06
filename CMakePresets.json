@@ -1,5 +1,5 @@
 {
-    "version": 2,
+    "version": 6,
     "configurePresets": [
         {
             "name": "vcpkg",
@@ -8,6 +8,22 @@
             "cacheVariables": {
                 "CMAKE_TOOLCHAIN_FILE": "$env{VCPKG_ROOT}/scripts/buildsystems/vcpkg.cmake",
                 "CMAKE_BUILD_TYPE": "Release"
+            }
+        }
+    ],
+    "buildPresets": [
+        {
+            "name": "test",
+            "configurePreset": "vcpkg"
+        }
+    ],
+    "testPresets": [
+        {
+            "name": "test",
+            "configurePreset": "vcpkg",
+            "execution": {
+                "noTestsAction": "error",
+                "stopOnFailure": false
             }
         }
     ]
