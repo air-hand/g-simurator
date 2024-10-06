@@ -2,7 +2,13 @@
   "dependencies": [
     "directxtk",
     "gtest",
-    "plog",
-    "nlohmann-json"
+    "nlohmann-json",
+    {
+      "name": "opencv4",
+      "features": [
+        "jpeg"
+      ]
+    },
+    "plog"
   ]
 }

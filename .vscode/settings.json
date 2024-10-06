@@ -12,5 +12,4 @@
     "terminal.integrated.defaultProfile.windows": "vs2022dev",
     "cmake.generator": "Ninja",
     "C_Cpp.default.cppStandard": "c++20",
-    "cmake.options.statusBarVisibility": "icon"
 }

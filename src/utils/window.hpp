@@ -19,6 +19,7 @@ public:
     DELETE_COPY_AND_ASSIGN(Window);
 
     void Activate() const;
+    void Capture() const;
 private:
     class Impl;
     std::unique_ptr<Impl> impl_;
