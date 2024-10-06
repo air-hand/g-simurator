@@ -11,7 +11,7 @@ namespace sim::utils::window
 class Window final
 {
 public:
-    Window(HWND handle) noexcept;
+    explicit Window(HWND handle) noexcept;
     ~Window();
     Window(Window&&) noexcept;
     Window& operator=(Window&&) noexcept;

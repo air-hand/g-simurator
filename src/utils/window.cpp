@@ -18,7 +18,7 @@ private:
     HWND handle_;
 };
 
-Window::Window(HWND handle) noexcept
+explicit Window::Window(HWND handle) noexcept
     : impl_(std::make_unique<Impl>(handle))
 {
 }
