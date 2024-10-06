@@ -23,8 +23,6 @@ int main() {
         return 1;
     }
     window->Activate();
-//    const std::unique_ptr<window::Window> window(std::move(inspector.Find("Untitled - Notepad")));
-//    const auto window = window_inspector.Find("Untitled - Notepad");
 
     const auto& keyboard = sim::controller::Keyboard::Get();
     keyboard.KeyDown({'A', 'B', 'C', Keys::Enter});

@@ -1,4 +1,4 @@
-﻿cd $PSScriptRoot
+cd $PSScriptRoot
 
 $source_files = (Get-ChildItem .\* -Include "*.cpp" | Sort-Object | % {
     return ("`"{0}`"" -F $_.Name)
@@ -6,7 +6,7 @@ $source_files = (Get-ChildItem .\* -Include "*.cpp" | Sort-Object | % {
 
 $content = (@'
 cmake_policy(SET CMP0076 NEW)
-target_sources(${{PROJECT_NAME}}
+target_sources(${{PROJECT_NAME}}-test
     PRIVATE
 {0}
 )
