@@ -41,16 +41,14 @@ jobs:
 
     - name: Setup visual studio
       run: .\tools\setup_vs.ps1
-      shell: pwsh.exe -NoExit -Command & .\tools\envs.ps1
+      shell: pwsh.exe -Command "& .\tools\envs.ps1; {0}"
 
     - name: Build
       run: |
-        call .\tools\envs.cmd
-        .\tools\build.cmd
-      shell: cmd /X /C {0}
+        .\tools\build.ps1
+      shell: pwsh.exe -Command "& .\tools\envs.ps1; {0}"
 
     - name: Run tests
       run: |
-        call .\tools\envs.cmd
-        .\tools\test.cmd
-      shell: cmd /X /C {0}
+        .\tools\test.ps1
+      shell: pwsh.exe -Command "& .\tools\envs.ps1; {0}"
