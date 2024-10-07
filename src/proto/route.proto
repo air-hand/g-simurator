@@ -1,0 +1,15 @@
+syntax = "proto3";
+
+package proto;
+
+message Route {
+    string name = 1;
+    string window_name = 2;
+
+    message Point {
+        double latitude = 1;
+        double longitude = 2;
+    }
+
+    repeated Point points = 3;
+}
