@@ -48,9 +48,9 @@ jobs:
     - name: Build
       run: |
         .\tools\build.ps1
-      shell: pwsh.exe -WorkingDirectory .\ -Command "& .\tools\envs.ps1; {0}"
+#      shell: pwsh.exe -WorkingDirectory .\ -Command "& .\tools\envs.ps1; {0}"
 
     - name: Run tests
       run: |
         .\tools\test.ps1
-      shell: pwsh.exe -WorkingDirectory .\ -Command "& .\tools\envs.ps1; {0}"
+#      shell: pwsh.exe -WorkingDirectory .\ -Command "& .\tools\envs.ps1; {0}"
