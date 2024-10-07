@@ -17,6 +17,7 @@ find_package(directxtk CONFIG REQUIRED)
 find_package(plog CONFIG REQUIRED)
 find_package(nlohmann_json CONFIG REQUIRED)
 find_package(OpenCV CONFIG REQUIRED)
+find_package(protobuf CONFIG REQUIRED)
 
 add_executable(${{PROJECT_NAME}})
 {0}
@@ -36,6 +37,7 @@ target_link_libraries(${{PROJECT_NAME}} PRIVATE Microsoft::DirectXTK)
 target_link_libraries(${{PROJECT_NAME}} PRIVATE plog::plog)
 target_link_libraries(${{PROJECT_NAME}} PRIVATE nlohmann_json::nlohmann_json)
 target_link_libraries(${{PROJECT_NAME}} PRIVATE ${{OpenCV_LIBS}})
+target_link_libraries(${{PROJECT_NAME}} PRIVATE protobuf::libprotobuf)
 
 # tests
 enable_testing()
