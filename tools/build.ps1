@@ -16,6 +16,7 @@ Get-ChildItem ./ -Include "CMake*.ps1" -Exclude @("./build", "./tools") -Recurse
 }
 
 cmake --preset=vcpkg -DCMAKE_BUILD_TYPE=Debug --fresh
+
 cmake --build .\build
 
 if ($? -ne $true) {

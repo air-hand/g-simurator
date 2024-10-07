@@ -18,7 +18,7 @@ jobs:
   build:
     defaults:
       run:
-        shell: cmd
+        shell: pwsh
     env:
       VCPKG_BINARY_SOURCES: "clear;x-gha,readwrite"
     runs-on: windows-2022
@@ -40,8 +40,8 @@ jobs:
           core.exportVariable('ACTIONS_RUNTIME_TOKEN', process.env.ACTIONS_RUNTIME_TOKEN || '');
 
     - name: Setup visual studio
-      run: .\tools\setup_vs.cmd
-      shell: cmd /c {0}
+      run: .\tools\setup_vs.ps1
+      shell: pwsh.exe -NoExit -Command & .\tools\envs.ps1
 
     - name: Build
       run: |

@@ -7,9 +7,19 @@
                 "/k",
                 "${workspaceFolder}/tools/envs.cmd"
             ]
+        },
+        "vs2022dev_pwsh": {
+            "path": "pwsh.exe",
+            "args": [
+                "-NoExit",
+                "-Command",
+                "&",
+                "${workspaceFolder}/tools/envs.ps1"
+            ]
         }
     },
-    "terminal.integrated.defaultProfile.windows": "vs2022dev",
+//    "terminal.integrated.defaultProfile.windows": "vs2022dev",
+    "terminal.integrated.defaultProfile.windows": "vs2022dev_pwsh",
     "cmake.generator": "Ninja",
     "C_Cpp.default.cppStandard": "c++20",
 }
