@@ -3,12 +3,7 @@
 cd $PSScriptRoot
 cd ..
 
-#if (-not(Test-Path "${Env:VCPKG_ROOT}\.git")) {
-#    git clone https://github.com/microsoft/vcpkg.git $Env:VCPKG_ROOT
-#    cd $Env:VCPKG_ROOT
-#    .\bootstrap-vcpkg.bat
-#    cd -
-#}
+protoc -I./src/proto --cpp_out=./src/proto/gen ./src/proto/*.proto
 
 Get-ChildItem ./ -Include "CMake*.ps1" -Exclude @("./build", "./tools") -Recurse | Sort-Object | % {
     Write-Host "Running $_"
@@ -16,7 +11,6 @@ Get-ChildItem ./ -Include "CMake*.ps1" -Exclude @("./build", "./tools") -Recurse
 }
 
 cmake --preset=vcpkg -DCMAKE_BUILD_TYPE=Debug --fresh
-
 cmake --build .\build
 
 if ($? -ne $true) {
