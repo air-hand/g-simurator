@@ -41,7 +41,7 @@ jobs:
 
     - name: Setup visual studio
       run: .\tools\setup_vs.ps1
-      shell: pwsh.exe -WorkingDirectory .\ -Command '$pwd; ls; & .\tools\envs.ps1; {0}'
+      shell: pwsh.exe -WorkingDirectory .\ -Command "$pwd; ls; & .\tools\envs.ps1; {0}"
 
     - name: Build
       run: |
