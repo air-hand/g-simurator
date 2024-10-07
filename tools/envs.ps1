@@ -3,7 +3,10 @@ $ErrorActionPreference = 'Stop'
 chcp 65001
 
 if ($Env:VCINSTALLDIR -eq $null) {
-    . (Join-Path "${Env:ProgramFiles(x86)}" 'Microsoft Visual Studio\2022\BuildTools\Common7\Tools\Launch-VsDevShell.ps1')
+    $vsdevcmd_script = (Join-Path "${Env:ProgramFiles(x86)}" 'Microsoft Visual Studio\2022\BuildTools\Common7\Tools\Launch-VsDevShell.ps1')
+    if (Test-Path $vsdevcmd_script) {
+        . $vsdevcmd_script
+    }
 }
 
 $Env:VCPKG_ROOT = $PSScriptRoot + '\vendor\vcpkg'

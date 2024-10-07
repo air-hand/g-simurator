@@ -39,12 +39,11 @@ jobs:
           core.exportVariable('ACTIONS_CACHE_URL', process.env.ACTIONS_CACHE_URL || '');
           core.exportVariable('ACTIONS_RUNTIME_TOKEN', process.env.ACTIONS_RUNTIME_TOKEN || '');
 
-    - name: Setup envs
-      run: .\tools\envs.ps1
-
     - name: Setup visual studio
       run: .\tools\setup_vs.ps1
-#      shell: pwsh.exe -WorkingDirectory .\ -Command "$pwd; ls .\tools; & .\tools\envs.ps1; {0}"
+
+    - name: Setup envs
+      run: .\tools\envs.ps1
 
     - name: Build
       run: |
