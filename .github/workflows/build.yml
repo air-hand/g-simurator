@@ -42,15 +42,12 @@ jobs:
     - name: Setup visual studio
       run: .\tools\setup_vs.ps1
 
-    - name: Setup envs
-      run: .\tools\envs.ps1
-
     - name: Build
       run: |
         .\tools\build.ps1
-#      shell: pwsh.exe -WorkingDirectory .\ -Command "& .\tools\envs.ps1; {0}"
+      shell: pwsh.exe -Command "& .\tools\envs.ps1; {0}"
 
     - name: Run tests
       run: |
         .\tools\test.ps1
-#      shell: pwsh.exe -WorkingDirectory .\ -Command "& .\tools\envs.ps1; {0}"
+      shell: pwsh.exe -Command "& .\tools\envs.ps1; {0}"
