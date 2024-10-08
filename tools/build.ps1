@@ -10,6 +10,7 @@ Get-ChildItem ./ -Include "CMake*.ps1" -Exclude @("./build", "./tools") -Recurse
     pwsh $_
 }
 
+Write-Host $Env:PATH
 cmake --preset=vcpkg -DCMAKE_BUILD_TYPE=Debug --fresh
 cmake --build .\build
 
