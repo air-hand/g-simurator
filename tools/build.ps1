@@ -3,7 +3,7 @@
 cd $PSScriptRoot
 cd ..
 
-protoc -I./src/proto --cpp_out=./src/proto/gen ./src/proto/*.proto
+#protoc -I./src/proto --cpp_out=./src/proto/gen ./src/proto/*.proto
 
 Get-ChildItem ./ -Include "CMake*.ps1" -Exclude @("./build", "./tools") -Recurse | Sort-Object | % {
     Write-Host "Running $_"
@@ -11,7 +11,7 @@ Get-ChildItem ./ -Include "CMake*.ps1" -Exclude @("./build", "./tools") -Recurse
 }
 
 cmake --preset=vcpkg -DCMAKE_BUILD_TYPE=Debug --fresh
-#cmake --build .\build
+cmake --build .\build
 
 if ($? -ne $true) {
     throw "Build failed."
