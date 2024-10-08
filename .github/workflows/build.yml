@@ -39,8 +39,20 @@ jobs:
           core.exportVariable('ACTIONS_CACHE_URL', process.env.ACTIONS_CACHE_URL || '');
           core.exportVariable('ACTIONS_RUNTIME_TOKEN', process.env.ACTIONS_RUNTIME_TOKEN || '');
 
+    - uses: actions/cache/restore@v4
+      with:
+        path: |
+          C:/Program Files (x86)/Microsoft Visual Studio/2022
+        key: ${{ runner.os }}-${{ hashFiles('tools/.vsconfig') }}
+
     - name: Setup visual studio
       run: .\tools\setup_vs.ps1
+
+    - uses: actions/cache/save@v4
+      with:
+        path: |
+          C:/Program Files (x86)/Microsoft Visual Studio/2022
+        key: ${{ runner.os }}-${{ hashFiles('tools/.vsconfig') }}
 
     - name: Build
       run: |
