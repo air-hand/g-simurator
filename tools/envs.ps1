@@ -19,7 +19,7 @@ if (-not(Test-Path "${Env:VCPKG_ROOT}\.git")) {
 }
 
 #$Env:VCPKG_TARGET_TRIPLET = "x64-windows"
-#$Env:VCPKG_TARGET_TRIPLET = "x86-windows"
+$Env:VCPKG_TARGET_TRIPLET = "x86-windows"
 
 vcpkg install
 
