@@ -19,9 +19,9 @@ if (-not(Test-Path "${Env:VCPKG_ROOT}\.git")) {
 }
 
 #$Env:VCPKG_TARGET_TRIPLET = "x64-windows"
-$Env:VCPKG_TARGET_TRIPLET = "x86-windows"
+#$Env:VCPKG_TARGET_TRIPLET = "x86-windows"
 
-vcpkg install --triplet $Env:VCPKG_TARGET_TRIPLET
+#vcpkg install --triplet $Env:VCPKG_TARGET_TRIPLET
 
 $vcpkg_tools_path = (vcpkg env --tools "echo %PATH%")
 $Env:PATH = "${vcpkg_tools_path};${Env:PATH}"
