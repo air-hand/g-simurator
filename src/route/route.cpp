@@ -23,7 +23,9 @@ public:
         const auto json = std::string(std::istreambuf_iterator<char>(json_file), std::istreambuf_iterator<char>());
         logging::log("Read JSON file: {}", json);
         Route route;
-        google::protobuf::util::JsonStringToMessage(json, &route);
+        if (const auto result = google::protobuf::util::JsonStringToMessage(json, &route); !result.ok()) {
+            logging::log("Failed to parse JSON file: {}", result.ToString());
+        }
         return route;
     }
 };
