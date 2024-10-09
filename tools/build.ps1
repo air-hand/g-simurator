@@ -8,7 +8,7 @@ cd $PSScriptRoot
 cd ..
 
 Remove-Item ${PWD}/src/proto/gen/*.pb.*
-vcpkg env --tools "protoc -I${PWD}/src/proto --cpp_out=${PWD}/src/proto/gen ${PWD}/src/proto/*.proto"
+protoc -I./src/proto --cpp_out=./src/proto/gen ./src/proto/*.proto
 
 Get-ChildItem ./ -Include "CMake*.ps1" -Exclude @("./build", "./tools") -Recurse | Sort-Object | % {
     Write-Host "Running $_"

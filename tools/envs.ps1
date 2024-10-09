@@ -25,6 +25,5 @@ if (-not(Test-Path "${Env:VCPKG_ROOT}\.git")) {
 vcpkg install
 
 $vcpkg_tools_path = (vcpkg env --tools "echo %PATH%")
-#$Env:PATH = "${vcpkg_tools_path};${Env:PATH}"
-
-Write-Host "envs.ps1 done."
+# 先頭に追加するとarchがズレるので末尾に追加
+$Env:PATH = "${Env:PATH};${vcpkg_tools_path}"
