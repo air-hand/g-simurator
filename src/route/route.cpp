@@ -1,21 +1,53 @@
-#include <directxtk/Keyboard.h>
+#include <filesystem>
+#include <fstream>
 
-#include "utils/windows.hpp"
+#include <google/protobuf/util/json_util.h>
+
 #include "route.hpp"
+#include "../utils/logger.hpp"
 
 namespace sim::route
 {
 
-using Keys = DirectX::Keyboard::Keys;
+namespace logging = utils::logging;
 
-void movePractice(const controller::Keyboard& keyboard)
+class RouteReader::Impl
 {
-    const auto keys = std::array<DirectX::Keyboard::Keys, 4> {
-        DirectX::Keyboard::Keys::A,
-        DirectX::Keyboard::Keys::B,
-        DirectX::Keyboard::Keys::C,
-        DirectX::Keyboard::Keys::Enter
-    };
+public:
+    Impl() = default;
+    ~Impl() = default;
+
+    Route ReadJSONFile(const std::filesystem::path& path) const
+    {
+        std::ifstream json_file(path, std::ios::in);
+        const auto json = std::string(std::istreambuf_iterator<char>(json_file), std::istreambuf_iterator<char>());
+        logging::log("Read JSON file: {}", json);
+        Route route;
+        google::protobuf::util::JsonStringToMessage(json, &route);
+        return route;
+    }
+};
+
+RouteReader::RouteReader() noexcept
+    : impl_(std::make_unique<Impl>())
+{}
+
+RouteReader::~RouteReader() = default;
+
+RouteReader::RouteReader(RouteReader&&) noexcept = default;
+
+RouteReader& RouteReader::operator=(RouteReader&& rhs)
+{
+    if (this != &rhs)
+    {
+        impl_ = std::move(rhs.impl_);
+    }
+    return *this;
+}
+
+Route RouteReader::ReadJSONFile(const std::filesystem::path& path) const
+{
+    return impl_->ReadJSONFile(path);
 }
 
 }

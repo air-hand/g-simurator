@@ -15,9 +15,9 @@ project(simurator)
 
 find_package(directxtk CONFIG REQUIRED)
 find_package(plog CONFIG REQUIRED)
-find_package(nlohmann_json CONFIG REQUIRED)
 find_package(OpenCV CONFIG REQUIRED)
 find_package(protobuf CONFIG REQUIRED)
+find_package(boost_program_options CONFIG REQUIRED)
 
 add_executable(${{PROJECT_NAME}})
 {0}
@@ -35,9 +35,9 @@ target_include_directories(${{PROJECT_NAME}} PRIVATE ${{OpenCV_INCLUDE_DIRS}})
 
 target_link_libraries(${{PROJECT_NAME}} PRIVATE Microsoft::DirectXTK)
 target_link_libraries(${{PROJECT_NAME}} PRIVATE plog::plog)
-target_link_libraries(${{PROJECT_NAME}} PRIVATE nlohmann_json::nlohmann_json)
 target_link_libraries(${{PROJECT_NAME}} PRIVATE ${{OpenCV_LIBS}})
 target_link_libraries(${{PROJECT_NAME}} PRIVATE protobuf::libprotobuf)
+target_link_libraries(${{PROJECT_NAME}} PRIVATE Boost::program_options)
 
 # tests
 enable_testing()

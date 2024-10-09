@@ -18,7 +18,7 @@ public:
 
     DELETE_COPY_AND_ASSIGN(WindowInspector);
 
-    std::unique_ptr<Window> Find(const wchar_t* windowName) const;
+    std::unique_ptr<Window> Find(const std::string& windowName) const;
 private:
     class Impl;
     std::unique_ptr<Impl> impl_;

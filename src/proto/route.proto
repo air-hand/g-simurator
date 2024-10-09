@@ -1,15 +1,14 @@
 syntax = "proto3";
 
-package sim.proto.route;
+package sim.route;
 
 message Route {
     string name = 1;
     string window_name = 2;
 
-    message Point {
-        double latitude = 1;
-        double longitude = 2;
-    }
+    repeated string keys = 3;
+}
 
-    repeated Point points = 3;
+message RouteList {
+    repeated Route routes = 1;
 }

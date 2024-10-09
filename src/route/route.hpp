@@ -1,40 +1,25 @@
 #pragma once
 
-#include <string>
+#include <filesystem>
 
-#include "controller/keyboard.hpp"
+#include "../controller/keyboard.hpp"
+
+#include "../proto/gen/route.pb.h"
 
 namespace sim::route
 {
 
-class Route final
+class RouteReader final
 {
 public:
-    Route() noexcept;
-    ~Route();
-    Route(Route&&) noexcept;
-    Route& operator=(Route&&) noexcept;
+    RouteReader() noexcept;
+    ~RouteReader();
+    RouteReader(RouteReader&&) noexcept;
+    RouteReader& operator=(RouteReader&&);
 
-    DELETE_COPY_AND_ASSIGN(Route);
+    DELETE_COPY_AND_ASSIGN(RouteReader);
 
-    const std::string& Name() const noexcept;
-
-private:
-    class Impl;
-    std::unique_ptr<Impl> impl_;
-};
-
-class RouteDetector final
-{
-public:
-    RouteDetector() noexcept;
-    ~RouteDetector();
-    RouteDetector(RouteDetector&&) noexcept;
-    RouteDetector& operator=(RouteDetector&&) noexcept;
-
-    DELETE_COPY_AND_ASSIGN(RouteDetector);
-
-    std::unique_ptr<Route> SelectRoute(const std::string& name);
+    Route ReadJSONFile(const std::filesystem::path& path) const;
 
 private:
     class Impl;

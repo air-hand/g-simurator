@@ -1,5 +1,9 @@
+#include <string>
+#include "windows.hpp"
+
 #include "window_inspector.hpp"
 #include "window.hpp"
+#include "unicode.hpp"
 
 #include "logger.hpp"
 
@@ -32,9 +36,10 @@ public:
     }
 #endif
 
-    std::unique_ptr<Window> Find(const wchar_t* windowName) const
+    std::unique_ptr<Window> Find(const std::string& windowName) const
     {
-        const auto handle = FindWindowW(NULL, windowName);
+        const auto windowNameWide = unicode::to_utf16(windowName);
+        const auto handle = FindWindowW(NULL, windowNameWide.c_str());
         if (handle == NULL) {
             return nullptr;
         }
@@ -52,6 +57,7 @@ WindowInspector::~WindowInspector() = default;
 WindowInspector::WindowInspector(WindowInspector&& rhs) noexcept : impl_(std::move(rhs.impl_))
 {
 }
+
 WindowInspector& WindowInspector::operator=(WindowInspector&& rhs) noexcept
 {
     if (this != &rhs)
@@ -61,7 +67,7 @@ WindowInspector& WindowInspector::operator=(WindowInspector&& rhs) noexcept
     return *this;
 }
 
-std::unique_ptr<Window> WindowInspector::Find(const wchar_t* windowName) const
+std::unique_ptr<Window> WindowInspector::Find(const std::string& windowName) const
 {
     return std::move(impl_->Find(windowName));
 }

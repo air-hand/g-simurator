@@ -30,9 +30,6 @@ void log(const CharT* format, Args&&... args)
     constexpr std::size_t size = sizeof...(Args);
     static_assert(size > 0, "At least one argument is required");
 
-//    constexpr const auto f = std::is_same_v<CharT, wchar_t> ? std::make_wformat_args : std::make_format_args;
-//    log(std::vformat(std::basic_string_view<CharT>(format), f(args...)));
-
     const auto fmt = std::basic_string_view<CharT>(format);
     if constexpr (std::is_same_v<CharT, wchar_t>)
     {
