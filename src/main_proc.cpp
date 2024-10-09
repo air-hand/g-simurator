@@ -51,7 +51,7 @@ public:
         const window::WindowInspector inspector {};
         const auto window = inspector.Find(windowName);
         if (window == nullptr) {
-            logging::log("Window not found: {}", windowName);
+            logging::log("Window not found: [{}]", windowName);
             return 1;
         }
         window->Activate();

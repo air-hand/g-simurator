@@ -1,7 +1,7 @@
 {
     "name": "Tekken8",
     "windowName": "TEKKEN™8  ",
-    "route": [
+    "keys": [
         "A", "B", "C"
     ]
 }
