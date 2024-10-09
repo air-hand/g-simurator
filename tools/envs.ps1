@@ -22,8 +22,9 @@ if (-not(Test-Path "${Env:VCPKG_ROOT}\.git")) {
 #$Env:VCPKG_TARGET_TRIPLET = "x86-windows"
 
 #vcpkg install --triplet $Env:VCPKG_TARGET_TRIPLET
+vcpkg install
 
 $vcpkg_tools_path = (vcpkg env --tools "echo %PATH%")
-$Env:PATH = "${vcpkg_tools_path};${Env:PATH}"
+#$Env:PATH = "${vcpkg_tools_path};${Env:PATH}"
 
 Write-Host "envs.ps1 done."

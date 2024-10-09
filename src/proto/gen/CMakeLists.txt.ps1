@@ -13,5 +13,3 @@ target_sources(${{PROJECT_NAME}}
 '@ -F $source_files)
 
 Set-Content -Path CMakeLists.txt -Value $content
-# Debug
-Remove-Item -Path CMakeLists.txt

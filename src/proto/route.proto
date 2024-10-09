@@ -1,6 +1,6 @@
 syntax = "proto3";
 
-package proto;
+package sim.proto.route;
 
 message Route {
     string name = 1;

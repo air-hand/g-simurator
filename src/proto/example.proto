@@ -1,6 +1,6 @@
 syntax = "proto3";
 
-package v3;
+package sim.proto.example;
 
 // message name can start with _
 message _Msg {}
@@ -11,10 +11,10 @@ message FieldRules {
   double map = 3;
 }
 
-message MapFields {
-  map<string, int32> map_field1 = 1;
-  map< string,float > map_field2 = 2 [deprecated=true];
-}
+//message MapFields {
+//  map<string, int32> map_field1 = 1;
+//  map< string,float > map_field2 = 2 [deprecated=true];
+//}
 
 message OneofField {
   //int32 name = 1;
