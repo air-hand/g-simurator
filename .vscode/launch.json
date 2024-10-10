@@ -1,0 +1,24 @@
+{
+    "configurations": [
+        // https://code.visualstudio.com/docs/cpp/launch-json-reference
+        {
+            "name": "(vsdbg) build and debug active file on Windows",
+            "type": "cppvsdbg",
+            "request": "launch",
+            "program": "${workspaceFolder}/build/simurator.exe",
+            "args": [
+                "--route",
+                "data/tkn/route.json",
+            ],
+            "stopAtEntry": false,
+            "cwd": "${workspaceFolder}",
+            "environment": [],
+            "externalConsole": false,
+            "preLaunchTask": "C/C++: build project on Windows (debug)",
+            "logging": {
+                "moduleLoad": true,
+                "trace": true,
+            }
+        }
+    ]
+}
