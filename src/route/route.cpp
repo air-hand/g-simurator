@@ -5,6 +5,7 @@
 
 #include "route.hpp"
 #include "../utils/logger.hpp"
+#include "../utils/file.hpp"
 
 namespace sim::route
 {
@@ -19,8 +20,8 @@ public:
 
     Route ReadJSONFile(const std::filesystem::path& path) const
     {
-        std::ifstream json_file(path, std::ios::in);
-        const auto json = std::string(std::istreambuf_iterator<char>(json_file), std::istreambuf_iterator<char>());
+        const auto json_file = utils::open_file(new std::fstream(path, std::ios::in));
+        const auto json = std::string(std::istreambuf_iterator<char>(*json_file), std::istreambuf_iterator<char>());
         logging::log("Read JSON file: {}", json);
         Route route;
         if (const auto result = google::protobuf::util::JsonStringToMessage(json, &route); !result.ok()) {
