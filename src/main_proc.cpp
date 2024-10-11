@@ -63,6 +63,11 @@ public:
         return 0;
     }
 
+    void AddFinalizer(std::function<void()> finalizer)
+    {
+        finalizers_.emplace_back(std::move(finalizer));
+    }
+
 private:
     std::vector<std::function<void()>> finalizers_;
     std::filesystem::path route_path_;
@@ -70,16 +75,14 @@ private:
     void Init(int argc, char** argv)
     {
         logging::init();
-        finalizers_.emplace_back([] {
-            logging::log(L"Good bye, {}", L"World...");
+        AddFinalizer([] {
+            logging::log("Good bye, World...");
         });
-        finalizers_.emplace_back(google::protobuf::ShutdownProtobufLibrary);
-
+        AddFinalizer(google::protobuf::ShutdownProtobufLibrary);
 #if DEBUG
         logging::log(L"Hello, World!");
         logging::log("C++ Version: {} WinVer: {}", __cplusplus, _WIN32_WINNT);
 #endif
-
         options::options_description desc("Options");
         desc.add_options()
             ("route", options::value<std::filesystem::path>(&route_path_), "Route file")
@@ -117,6 +120,11 @@ MainProc& MainProc::operator=(MainProc&& rhs)
 int MainProc::Run()
 {
     return impl_->Run();
+}
+
+void MainProc::AddFinalizer(std::function<void()> finalizer)
+{
+    impl_->AddFinalizer(std::move(finalizer));
 }
 
 }

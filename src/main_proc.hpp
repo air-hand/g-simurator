@@ -1,5 +1,6 @@
 #pragma once
 
+#include <functional>
 #include <memory>
 
 #include "utils/macro.hpp"
@@ -18,6 +19,7 @@ public:
     DELETE_COPY_AND_ASSIGN(MainProc);
 
     int Run();
+    void AddFinalizer(std::function<void()> finalizer);
 private:
     class Impl;
     std::unique_ptr<Impl> impl_;

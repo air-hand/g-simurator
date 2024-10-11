@@ -16,8 +16,9 @@ void FStreamDeleter::operator()(std::fstream* stream) const
     delete stream;
 }
 
-FStreamPtr open_file(std::fstream* stream)
+FStreamPtr open_file(const std::filesystem::path& path, std::ios_base::openmode mode)
 {
-    return FStreamPtr(stream);
+    return FStreamPtr(new std::fstream(path, mode));
 }
+
 }

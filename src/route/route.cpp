@@ -1,5 +1,4 @@
 #include <filesystem>
-#include <fstream>
 
 #include <google/protobuf/util/json_util.h>
 
@@ -20,8 +19,15 @@ public:
 
     Route ReadJSONFile(const std::filesystem::path& path) const
     {
-        const auto json_file = utils::open_file(new std::fstream(path, std::ios::in));
-        const auto json = std::string(std::istreambuf_iterator<char>(*json_file), std::istreambuf_iterator<char>());
+        std::string json;
+        {
+            auto json_file = utils::open_file(path, std::ios::in);
+            json_file->seekg(0, std::ios::end);
+            const auto size = json_file->tellg();
+            json.reserve(size);
+            json_file->seekg(0, std::ios::beg);
+            json_file->read(json.data(), size);
+        }
         logging::log("Read JSON file: {}", json);
         Route route;
         if (const auto result = google::protobuf::util::JsonStringToMessage(json, &route); !result.ok()) {

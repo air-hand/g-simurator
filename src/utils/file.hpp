@@ -1,6 +1,8 @@
 #pragma once
 
+#include <filesystem>
 #include <memory>
+#include <fstream>
 
 namespace sim::utils
 {
@@ -21,6 +23,6 @@ public:
 using FilePtr = std::unique_ptr<FILE, FileDeleter>;
 using FStreamPtr = std::unique_ptr<std::fstream, FStreamDeleter>;
 
-FStreamPtr open_file(std::fstream* stream);
+FStreamPtr open_file(const std::filesystem::path& path, std::ios_base::openmode mode);
 
 }
