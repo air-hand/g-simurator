@@ -34,5 +34,13 @@
 //            "--grpc_out=${workspaceFolder}/src",
 //            "--plugin=protoc-gen-grpc=${workspaceFolder}/vcpkg_installed/x64-windows/tools/grpc/grpc_cpp_plugin.exe"
         ]
+    },
+    "files.associations": {
+        "Vagrantfile": "ruby",
+        "memory": "cpp",
+        "iosfwd": "cpp",
+        "streambuf": "cpp",
+        "istream": "cpp",
+        "fstream": "cpp"
     }
 }

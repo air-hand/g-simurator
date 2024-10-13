@@ -7,6 +7,8 @@ $ErrorActionPreference = "Stop"
 cd $PSScriptRoot
 cd ..
 
+. .\tools\envs.ps1
+
 Remove-Item ${PWD}/src/proto/gen/*.pb.*
 protoc -I./src/proto --cpp_out=./src/proto/gen ./src/proto/*.proto
 
