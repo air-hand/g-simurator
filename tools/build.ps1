@@ -17,6 +17,8 @@ Get-ChildItem ./ -Include "CMake*.ps1" -Exclude @("./build", "./tools") -Recurse
     pwsh $_
 }
 
+$Env:CMAKE_BUILD_PARALLEL_LEVEL = ([int]$Env:NUMBER_OF_PROCESSORS * 2)
+
 $CMAKE_PRESET_COMMAND = @(
     "cmake"
     , "--preset=vcpkg"
