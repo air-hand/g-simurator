@@ -4,12 +4,14 @@
 #include <string>
 #include <type_traits>
 
+#include "macro.hpp"
+
 namespace sim::utils::logging
 {
 
-void init();
-void log(const std::string& message);
-void log(const std::wstring& message);
+UTILS_EXPORT void init();
+UTILS_EXPORT void log(const std::string& message);
+UTILS_EXPORT void log(const std::wstring& message);
 
 template <typename ...Args> concept not_empty_args = requires {
     sizeof...(Args) > 0;

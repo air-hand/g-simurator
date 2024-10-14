@@ -1,5 +1,9 @@
 $ErrorActionPreference = 'Stop'
 
+if ($Env:ENVS_PS1_LOADED -eq "1") {
+    return
+}
+
 chcp 65001
 #chcp 932
 
@@ -29,3 +33,5 @@ vcpkg install
 $vcpkg_tools_path = (vcpkg env --tools "echo %PATH%")
 # 先頭に追加するとarchがズレるので末尾に追加
 $Env:PATH = "${Env:PATH};${vcpkg_tools_path}"
+
+$Env:ENVS_PS1_LOADED = "1"

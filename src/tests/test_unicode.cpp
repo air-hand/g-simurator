@@ -1,9 +1,7 @@
-#if false
 #include <stdexcept>
 #include <gtest/gtest.h>
 
-// FIXME: split src/utils as library first.
-#include "../src/utils/unicode.hpp"
+#include "../utils/unicode.hpp"
 
 namespace
 {
@@ -16,4 +14,3 @@ TEST(test_unicode, utf8_to_utf16)
 }
 
 }
-#endif

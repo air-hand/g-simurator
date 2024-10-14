@@ -2,9 +2,10 @@
 
 #include <google/protobuf/util/json_util.h>
 
+#include "../../utils/logger.hpp"
+#include "../../utils/file.hpp"
+
 #include "route.hpp"
-#include "../utils/logger.hpp"
-#include "../utils/file.hpp"
 
 namespace sim::route
 {
@@ -19,6 +20,8 @@ public:
 
     Route ReadJSONFile(const std::filesystem::path& path) const
     {
+//        auto json_file = utils::open_file(path, std::ios::in);
+//        const auto json = utils::read_all(json_file);
         std::string json;
         {
             auto json_file = utils::open_file(path, std::ios::in);

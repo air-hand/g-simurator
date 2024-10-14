@@ -8,7 +8,7 @@
 namespace sim::utils::window
 {
 
-class WindowInspector final
+class UTILS_EXPORT WindowInspector final
 {
 public:
     WindowInspector() noexcept;

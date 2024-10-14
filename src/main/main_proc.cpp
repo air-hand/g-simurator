@@ -6,11 +6,12 @@
 #include <google/protobuf/message_lite.h>
 #include <google/protobuf/util/json_util.h>
 
+#include "../utils/logger.hpp"
+#include "../utils/window_inspector.hpp"
+
 #include "main_proc.hpp"
 
 #include "controller/keyboard.hpp"
-#include "utils/logger.hpp"
-#include "utils/window_inspector.hpp"
 #include "route/route.hpp"
 
 namespace options = boost::program_options;

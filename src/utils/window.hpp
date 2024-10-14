@@ -8,7 +8,7 @@
 namespace sim::utils::window
 {
 
-class Window final
+class UTILS_EXPORT Window final
 {
 public:
     explicit Window(HWND handle) noexcept;

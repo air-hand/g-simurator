@@ -6,7 +6,7 @@ $source_files = (Get-ChildItem .\* -Include "*.cpp" | Sort-Object | % {
 
 $content = (@'
 cmake_policy(SET CMP0076 NEW)
-target_sources(${{PROJECT_NAME}}
+target_sources(${{PROJECT_NAME}}-utils
     PRIVATE
 {0}
 )
