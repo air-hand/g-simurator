@@ -1,4 +1,3 @@
-#if false
 #include <stdexcept>
 #include <gtest/gtest.h>
 
@@ -16,4 +15,3 @@ TEST(test_unicode, utf8_to_utf16)
 }
 
 }
-#endif

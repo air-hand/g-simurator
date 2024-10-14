@@ -1,6 +1,6 @@
 $ErrorActionPreference = 'Stop'
 
-chcp 65001
+#chcp 65001
 
 if ($Env:VCINSTALLDIR -eq $null) {
     $vsdevcmd_script = (Join-Path "${Env:ProgramFiles(x86)}" 'Microsoft Visual Studio\2022\BuildTools\Common7\Tools\Launch-VsDevShell.ps1')
@@ -21,6 +21,7 @@ if (-not(Test-Path "${Env:VCPKG_ROOT}\.git")) {
 #$Env:VCPKG_TARGET_TRIPLET = "x64-windows"
 #$Env:VCPKG_TARGET_TRIPLET = "x86-windows"
 
+#$Env:VCPKG_OVERLAY_TRIPLETS = ($PSScriptRoot + '..\triplets')
 #vcpkg install --triplet $Env:VCPKG_TARGET_TRIPLET
 vcpkg install
 

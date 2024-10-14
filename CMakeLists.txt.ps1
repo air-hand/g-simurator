@@ -46,6 +46,9 @@ find_package(GTest CONFIG REQUIRED)
 add_executable(${{PROJECT_NAME}}-test)
 # FIXME: main.cppをテスト対象から外しつつcppを含めるか、libにしてlinkできるようにするか
 add_subdirectory(./tests)
+target_compile_features(${{PROJECT_NAME}}-test PRIVATE cxx_std_20)
+target_compile_options(${{PROJECT_NAME}}-test PRIVATE "/Zc:__cplusplus")
+target_compile_options(${{PROJECT_NAME}}-test PRIVATE "/utf-8") # utf-8 source and execution character set
 
 target_link_libraries(${{PROJECT_NAME}}-test GTest::gtest GTest::gtest_main GTest::gmock GTest::gmock_main)
 target_include_directories(${{PROJECT_NAME}}-test PRIVATE ${{CMAKE_CURRENT_SOURCE_DIR}})
