@@ -24,7 +24,7 @@ public:
             auto json_file = utils::open_file(path, std::ios::in);
             json_file->seekg(0, std::ios::end);
             const auto size = json_file->tellg();
-            json.reserve(size);
+            json.resize(size, '\0');
             json_file->seekg(0, std::ios::beg);
             json_file->read(json.data(), size);
         }
