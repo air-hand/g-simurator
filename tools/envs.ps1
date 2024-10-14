@@ -1,6 +1,7 @@
 $ErrorActionPreference = 'Stop'
 
-#chcp 65001
+chcp 65001
+#chcp 932
 
 if ($Env:VCINSTALLDIR -eq $null) {
     $vsdevcmd_script = (Join-Path "${Env:ProgramFiles(x86)}" 'Microsoft Visual Studio\2022\BuildTools\Common7\Tools\Launch-VsDevShell.ps1')

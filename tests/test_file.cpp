@@ -2,7 +2,6 @@
 #include <gtest/gtest.h>
 #include <sstream>
 
-// FIXME: split src/utils as library first.
 #include "../src/utils/file.hpp"
 
 namespace
