@@ -44,10 +44,8 @@ jobs:
 
     - name: Build
       run: |
-        .\tools\envs.ps1;
         .\tools\build.ps1
 
     - name: Run tests
       run: |
-        .\tools\envs.ps1;
         .\tools\test.ps1

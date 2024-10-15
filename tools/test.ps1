@@ -1,10 +1,10 @@
 ﻿cd $PSScriptRoot
 cd ..
 
+. .\tools\envs.ps1
+
 .\build\simurator-test.exe
 
-#. .\tools\envs.ps1
-#
 ## https://discourse.cmake.org/t/ctest-scripting-cmake-presets/9610/2
 #$CMAKE_TEST_COMMAND = @(
 #    "ctest"
