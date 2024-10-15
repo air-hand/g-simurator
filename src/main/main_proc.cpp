@@ -79,7 +79,10 @@ private:
         AddFinalizer([] {
             logging::log("Good bye, World...");
         });
-        AddFinalizer(google::protobuf::ShutdownProtobufLibrary);
+        AddFinalizer([] {
+            logging::log("Shutting down protobuf library...");
+            google::protobuf::ShutdownProtobufLibrary();
+        });
 #if DEBUG
         logging::log(L"Hello, World!");
         logging::log("C++ Version: {} WinVer: {}", __cplusplus, _WIN32_WINNT);
