@@ -20,7 +20,7 @@ public:
 
     Route ReadJSONFile(const std::filesystem::path& path) const
     {
-        const auto json = utils::read_all(utils::open_file(path, std::ios::in));
+        const auto json = utils::read_all(utils::open_file(path, std::ios::in | std::ios::binary));
         logging::log("Read JSON file: [{}]", json);
         Route route;
         if (const auto result = google::protobuf::util::JsonStringToMessage(json, &route); !result.ok()) {

@@ -28,4 +28,11 @@ TEST(test_file, read_all_unique_ptr)
     EXPECT_EQ(content, "Hello, world!™");
 }
 
+TEST(test_file, read_all_include_crlf)
+{
+    std::istringstream ss("Hello, world!\r\n™");
+    const auto content = sim::utils::read_all(&ss);
+    EXPECT_EQ(content, "Hello, world!\r\n™");
+}
+
 }
