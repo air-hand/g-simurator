@@ -49,14 +49,14 @@ auto read_all(StreamPointerT stream)
     std::basic_string<CharT> content;
     if (stream == nullptr)
     {
-        return std::move(content);
+        return content;
     }
     stream->seekg(0, std::ios::end);
     const auto size = stream->tellg();
     stream->seekg(0, std::ios::beg);
     content.resize(size, CharT('\0'));
     stream->read(content.data(), size);
-    return std::move(content);
+    return content;
 }
 
 }
