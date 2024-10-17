@@ -24,7 +24,7 @@ std::wstring to_utf16(const std::string& utf8)
     {
         return utf16;
     }
-    std::wstring utf16(result, L'\0');
+    utf16.resize(result);
     ::MultiByteToWideChar(
         CP_UTF8,
         MB_ERR_INVALID_CHARS,
