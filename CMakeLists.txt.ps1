@@ -99,6 +99,28 @@ add_test(NAME test COMMAND ${{PROJECT_NAME}}-test)
 
 #gtest_discover_tests(${{PROJECT_NAME}}-test)
 
+# Lint
+find_program(CPPCHECK_EXECUTABLE NAMES cppcheck)
+if(CPPCHECK_EXECUTABLE)
+    add_custom_target(
+        cppcheck
+        COMMAND ${{CPPCHECK_EXECUTABLE}}
+        --enable=all
+        --quiet
+        --language=c++
+        --std=c++20
+        --suppress=missingInclude
+        --force
+        --error-exitcode=1
+        ${{CMAKE_CURRENT_SOURCE_DIR}}/src
+    )
+    add_dependencies(${{PROJECT_NAME}} cppcheck)
+    add_dependencies(${{PROJECT_NAME}}-utils cppcheck)
+    add_dependencies(${{PROJECT_NAME}}-test cppcheck)
+else()
+    message(WARNING "cppcheck not found")
+endif()
+
 '@ -F (SourceSubDirectories 'utils'), (SourceSubDirectories 'main'), (SourceSubDirectories 'tests'))
 
 Set-Content -Path CMakeLists.txt -Value $content
