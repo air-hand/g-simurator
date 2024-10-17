@@ -118,7 +118,7 @@ if(CPPCHECK_EXECUTABLE)
     add_dependencies(${{PROJECT_NAME}}-utils cppcheck)
     add_dependencies(${{PROJECT_NAME}}-test cppcheck)
 else()
-    message(WARNING "cppcheck not found")
+    message(FATAL_ERROR "cppcheck not found")
 endif()
 
 '@ -F (SourceSubDirectories 'utils'), (SourceSubDirectories 'main'), (SourceSubDirectories 'tests'))
