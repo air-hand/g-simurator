@@ -54,7 +54,7 @@ Function InstallOthers() {
         }
         if ($Env:GITHUB_ACTIONS) {
             $Env:PATH += ";${cppcheck_path}"
-            Set-Content 
+            Set-Content -Path $Env:GITHUB_PATH $Env:PATH
         }
     }
 }
