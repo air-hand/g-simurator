@@ -40,14 +40,29 @@ Function InstallBuildTools([switch]$clean) {
     throw "VS BuildTools not found."
 }
 
+Function InstallOthers() {
+    winget install -e --id Cppcheck.Cppcheck --silent --disable-interactivity --location "${Env:ProgramFiles}\Cppcheck"
+    if (-not(Get-Command cppcheck.exe -ErrorAction SilentlyContinue)) {
+        Write-Host "Setup path to Cppcheck..."
+        $user_path = [System.Environment]::GetEnvironmentVariable("PATH", "User")
+        $cppcheck_path_exists = @($user_path -split ';') -contains "${Env:ProgramFiles}\Cppcheck"
+        if (-not($cppcheck_path_exists)) {
+            $user_path += ";${Env:ProgramFiles}\Cppcheck"
+            [System.Environment]::SetEnvironmentVariable("PATH", $user_path, "User")
+            Write-Host "Restart vscode or powershell process to reflect the changes."
+        }
+    }
+}
+
 Function Main() {
-    cd $PSScriptRoot
+    pushd $PSScriptRoot > $null
 
     SetupPathToVSInstaller
-    if (CheckBuildToolsExists) {
-        return
+    if (-not(CheckBuildToolsExists)) {
+        InstallBuildTools
     }
-    InstallBuildTools
+    InstallOthers
+    popd > $null
 }
 
 $ErrorActionPreference = "Stop"
