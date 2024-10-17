@@ -10,7 +10,7 @@ namespace sim::utils::window
 class Window::Impl final
 {
 public:
-    Impl(HWND handle) : handle_(handle) {}
+    explicit Impl(HWND handle) : handle_(handle) {}
     ~Impl() = default;
 
     void Activate() const
@@ -37,7 +37,7 @@ public:
       
         LPDWORD lpPixel;
         HDC hDC = GetDC(handle_);
-        HBITMAP hBitmap = CreateDIBSection(hDC, &bmpInfo, DIB_RGB_COLORS, (void**)&lpPixel, NULL, 0);
+        HBITMAP hBitmap = CreateDIBSection(hDC, &bmpInfo, DIB_RGB_COLORS, reinterpret_cast<void**>(&lpPixel), NULL, 0);
         HDC hMemDC = CreateCompatibleDC(hDC);
         SelectObject(hMemDC, hBitmap);
       
