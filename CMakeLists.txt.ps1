@@ -109,7 +109,7 @@ if(CPPCHECK_EXECUTABLE)
         --quiet
         --language=c++
         --std=c++20
-        --suppress=missingInclude
+        --suppress=missingInclude,missingIncludeSystem
         --force
         --error-exitcode=1
         ${{CMAKE_CURRENT_SOURCE_DIR}}/src
