@@ -28,13 +28,13 @@ Function InstallBuildTools([switch]$clean) {
         winget uninstall --id $winget_build_tools_id --silent --disable-interactivity
     }
     winget install --id $winget_build_tools_id --override "--quiet --config ${vsconfig}" --silent --disable-interactivity --accept-source-agreements
-    1..300 | % {
+    foreach ($_ in 1..300) {
         Write-Host "Waiting for VS Installer... ${_}";
         Start-Sleep 3;
         $exists = CheckBuildToolsExists
         if ($exists) {
             Write-Host "Installed VS BuildTools at ${exists}"
-            break
+            return
         }
     }
     throw "VS BuildTools not found."
