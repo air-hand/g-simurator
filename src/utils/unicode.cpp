@@ -7,9 +7,10 @@ namespace sim::utils::unicode
 
 std::wstring to_utf16(const std::string& utf8)
 {
+    std::wstring utf16;
     if (utf8.empty())
     {
-        return std::wstring();
+        return utf16;
     }
     int result = ::MultiByteToWideChar(
         CP_UTF8,
@@ -21,7 +22,7 @@ std::wstring to_utf16(const std::string& utf8)
     );
     if (result == 0)
     {
-        return std::wstring();
+        return utf16;
     }
     std::wstring utf16(result, L'\0');
     ::MultiByteToWideChar(
