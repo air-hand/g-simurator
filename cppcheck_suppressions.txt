@@ -2,3 +2,4 @@
 *:*/*.pb.*
 
 missingIncludeSystem
+syntaxError
