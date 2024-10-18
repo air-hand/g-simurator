@@ -53,6 +53,7 @@ Function InstallOthers() {
             Write-Host "Restart vscode or powershell process to reflect the changes."
         }
         if ($Env:GITHUB_ACTIONS) {
+            Write-Host "Run on GitHub Actions"
             $Env:PATH += ";${cppcheck_path}"
             Set-Content -Path $Env:GITHUB_PATH $Env:PATH
         }
