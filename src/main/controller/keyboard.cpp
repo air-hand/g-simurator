@@ -6,10 +6,12 @@ namespace sim::controller
 class Keyboard::Impl
 {
 private:
-    void SendKeys(const std::vector<WORD>& keys, DWORD flags) {
+    void SendKeys(const std::vector<WORD>& keys, DWORD flags)
+    {
         std::vector<INPUT> inputs;
         inputs.reserve(keys.size());
-        for (const auto key : keys) {
+        for (const auto key : keys)
+        {
             INPUT input = {};
             input.type = INPUT_KEYBOARD;
             input.ki.wVk = key;
@@ -22,11 +24,13 @@ public:
     Impl() {}
     ~Impl() {}
 
-    void KeyDown(const std::vector<WORD>& keys) {
+    void KeyDown(const std::vector<WORD>& keys)
+    {
         SendKeys(keys, 0);
     }
 
-    void KeyUp(const std::vector<WORD>& keys) {
+    void KeyUp(const std::vector<WORD>& keys)
+    {
         SendKeys(keys, KEYEVENTF_KEYUP);
     }
 };
@@ -50,24 +54,29 @@ Keyboard& Keyboard::operator=(Keyboard&& rhs) noexcept
     return *this;
 }
 
-const Keyboard& Keyboard::Get() {
+const Keyboard& Keyboard::Get()
+{
     static const auto keyboard = Keyboard();
     return keyboard;
 }
 
-void Keyboard::KeyDown(const std::vector<WORD>& keys) const {
+void Keyboard::KeyDown(const std::vector<WORD>& keys) const
+{
     impl_->KeyDown(keys);
 }
 
-void Keyboard::KeyDown(WORD key) const {
+void Keyboard::KeyDown(WORD key) const
+{
     impl_->KeyDown({key});
 }
 
-void Keyboard::KeyUp(const std::vector<WORD>& keys) const {
+void Keyboard::KeyUp(const std::vector<WORD>& keys) const
+{
     impl_->KeyUp(keys);
 }
 
-void Keyboard::KeyUp(WORD key) const {
+void Keyboard::KeyUp(WORD key) const
+{
     impl_->KeyUp({key});
 }
 
