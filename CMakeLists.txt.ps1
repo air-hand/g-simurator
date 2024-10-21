@@ -92,6 +92,7 @@ target_compile_options(${{PROJECT_NAME}}
     PRIVATE
     ${{CXX_FLAGS_SHARED}}
     /Wall
+    /Qspectre
 )
 
 target_include_directories(${{PROJECT_NAME}}
