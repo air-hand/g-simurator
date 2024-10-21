@@ -105,8 +105,9 @@ if(CPPCHECK_EXECUTABLE)
     add_custom_target(
         cppcheck
         COMMAND ${{CPPCHECK_EXECUTABLE}}
-        --project=${{CMAKE_CURRENT_BINARY_DIR}}/compile_commands.json
+#        --project=${{CMAKE_CURRENT_BINARY_DIR}}/compile_commands.json
         --enable=all
+        -I ${{CMAKE_CURRENT_BINARY_DIR}}/vcpkg_installed/x64-windows/include
         --quiet
         --language=c++
         --std=c++20
@@ -114,7 +115,7 @@ if(CPPCHECK_EXECUTABLE)
         --verbose
         --force
         --error-exitcode=1
-#        ${{CMAKE_CURRENT_SOURCE_DIR}}/src
+        ${{CMAKE_CURRENT_SOURCE_DIR}}/src
     )
     add_dependencies(${{PROJECT_NAME}} cppcheck)
     add_dependencies(${{PROJECT_NAME}}-utils cppcheck)
