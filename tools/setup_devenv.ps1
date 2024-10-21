@@ -16,7 +16,7 @@ Function CheckBuildToolsExists()
     $requires = ($components | % { "-requires {0}" -F $_ })
     $vswhere_cmd = (
 #        "vswhere.exe -products ${buildtools_product_id} -property installationPath ${requires}"
-        "vswhere.exe -products * 17.0 -property installationPath ${requires}"
+        "vswhere.exe -products * -version 17.0,17.9 -property installationPath ${requires}"
     )
     $exists = ($vswhere_cmd | Invoke-Expression)
     return $exists
