@@ -18,7 +18,7 @@ private:
             input.ki.dwFlags = flags;
             inputs.emplace_back(input);
         }
-        SendInput(inputs.size(), inputs.data(), sizeof(INPUT));
+        SendInput(static_cast<uint64_t>(inputs.size()), inputs.data(), sizeof(INPUT));
     }
 public:
     Impl() {}

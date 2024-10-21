@@ -2,9 +2,11 @@
 
 #include <filesystem>
 
-#include "../controller/keyboard.hpp"
+#include "controller/keyboard.hpp"
 
-#include "../proto/gen/route.pb.h"
+#pragma warning(push, 3)
+#include "proto/gen/route.pb.h"
+#pragma warning(pop)
 
 namespace sim::route
 {

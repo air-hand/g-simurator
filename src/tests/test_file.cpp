@@ -2,7 +2,7 @@
 #include <gtest/gtest.h>
 #include <sstream>
 
-#include "../utils/file.hpp"
+#include "utils/file.hpp"
 
 namespace
 {

@@ -3,7 +3,7 @@
 #include <functional>
 #include <memory>
 
-#include "../utils/macro.hpp"
+#include "utils/macro.hpp"
 
 namespace sim
 {

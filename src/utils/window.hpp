@@ -8,18 +8,18 @@
 namespace sim::utils::window
 {
 
-class UTILS_EXPORT Window final
+class Window final
 {
 public:
-    explicit Window(HWND handle) noexcept;
-    ~Window();
-    Window(Window&&) noexcept;
-    Window& operator=(Window&&) noexcept;
+    UTILS_EXPORT explicit Window(HWND handle) noexcept;
+    UTILS_EXPORT ~Window();
+    UTILS_EXPORT Window(Window&&) noexcept;
+    UTILS_EXPORT Window& operator=(Window&&) noexcept;
 
     DELETE_COPY_AND_ASSIGN(Window);
 
-    void Activate() const;
-    void Capture() const;
+    UTILS_EXPORT void Activate() const;
+    UTILS_EXPORT void Capture() const;
 private:
     class Impl;
     std::unique_ptr<Impl> impl_;

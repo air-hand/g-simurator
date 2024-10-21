@@ -2,8 +2,8 @@
 
 #include <google/protobuf/util/json_util.h>
 
-#include "../../utils/logger.hpp"
-#include "../../utils/file.hpp"
+#include "utils/logger.hpp"
+#include "utils/file.hpp"
 
 #include "route.hpp"
 

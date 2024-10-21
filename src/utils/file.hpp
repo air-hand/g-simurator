@@ -54,6 +54,11 @@ auto read_all(StreamPointerT stream)
     stream->seekg(0, std::ios::end);
     const auto size = stream->tellg();
     stream->seekg(0, std::ios::beg);
+    if (size <= 0)
+    {
+        return content;
+    }
+//    content.resize(static_cast<uint64_t>(size));
     content.resize(size);
     stream->read(content.data(), size);
     return content;

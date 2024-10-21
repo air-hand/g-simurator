@@ -24,10 +24,40 @@ set(CMAKE_CXX_STANDARD_REQUIRED ON)
 #set(CMAKE_CXX_FLAGS "-Wall")
 set(CMAKE_CXX_FLAGS_DEBUG "-DDEBUG")
 set(CMAKE_CXX_FLAGS_RELEASE "-DNDEBUG")
+set(CXX_FLAGS_SHARED
+    "/Zc:__cplusplus"
+    "/utf-8"
+    "/EHsc"
+    # disable warnings
+    "/wd4267"
+    "/wd4365"
+)
 
-#add_library(${{PROJECT_NAME}}-utils STATIC)
-add_library(${{PROJECT_NAME}}-utils SHARED)
+add_library(${{PROJECT_NAME}}-proto STATIC)
 {0}
+
+set_target_properties(${{PROJECT_NAME}}-proto
+    PROPERTIES
+    CXX_VISIBILITY_PRESET hidden
+)
+
+target_compile_options(${{PROJECT_NAME}}-proto
+    PRIVATE
+    ${{CXX_FLAGS_SHARED}}
+    /W0
+)
+
+target_include_directories(${{PROJECT_NAME}}-proto
+    PRIVATE
+)
+
+target_link_libraries(${{PROJECT_NAME}}-proto
+    PRIVATE
+    protobuf::libprotobuf
+)
+
+add_library(${{PROJECT_NAME}}-utils SHARED)
+{1}
 
 set_target_properties(${{PROJECT_NAME}}-utils
     PROPERTIES
@@ -36,15 +66,18 @@ set_target_properties(${{PROJECT_NAME}}-utils
 
 target_compile_options(${{PROJECT_NAME}}-utils
     PRIVATE
-    "/Zc:__cplusplus"
-    "/utf-8"
+    ${{CXX_FLAGS_SHARED}}
+    /Wall
 )
 target_compile_definitions(${{PROJECT_NAME}}-utils
     PRIVATE
     UTILS_LIB_BUILD
 )
 
-target_include_directories(${{PROJECT_NAME}}-utils PRIVATE ${{OpenCV_INCLUDE_DIRS}})
+target_include_directories(${{PROJECT_NAME}}-utils
+    PRIVATE
+    ${{OpenCV_INCLUDE_DIRS}}
+)
 
 target_link_libraries(${{PROJECT_NAME}}-utils
     PRIVATE
@@ -53,24 +86,27 @@ target_link_libraries(${{PROJECT_NAME}}-utils
 )
 
 add_executable(${{PROJECT_NAME}})
-{1}
+{2}
 
 target_compile_options(${{PROJECT_NAME}}
     PRIVATE
-    "/Zc:__cplusplus"
-    "/utf-8"
+    ${{CXX_FLAGS_SHARED}}
+    /Wall
 )
 
 target_include_directories(${{PROJECT_NAME}}
     PRIVATE
     ${{OpenCV_INCLUDE_DIRS}}
+    ${{CMAKE_CURRENT_SOURCE_DIR}}/src
+    ${{CMAKE_CURRENT_SOURCE_DIR}}/src/main
 )
 
 target_link_libraries(${{PROJECT_NAME}}
     PRIVATE
     Microsoft::DirectXTK
-    protobuf::libprotobuf
+#    protobuf::libprotobuf
     Boost::program_options
+    ${{PROJECT_NAME}}-proto
     ${{PROJECT_NAME}}-utils
 )
 
@@ -79,15 +115,19 @@ enable_testing()
 
 find_package(GTest CONFIG REQUIRED)
 add_executable(${{PROJECT_NAME}}-test)
-{2}
+{3}
 
 target_compile_options(${{PROJECT_NAME}}-test
     PRIVATE
-    "/Zc:__cplusplus"
-    "/utf-8"
+    ${{CXX_FLAGS_SHARED}}
+    /Wall
 )
 
-target_include_directories(${{PROJECT_NAME}}-test PRIVATE ${{CMAKE_CURRENT_SOURCE_DIR}})
+target_include_directories(${{PROJECT_NAME}}-test
+    PRIVATE
+    ${{CMAKE_CURRENT_SOURCE_DIR}}/src
+    ${{CMAKE_CURRENT_SOURCE_DIR}}/src/tests
+)
 
 target_link_libraries(${{PROJECT_NAME}}-test
     PRIVATE
@@ -105,7 +145,7 @@ if(CPPCHECK_EXECUTABLE)
     add_custom_target(
         cppcheck
         COMMAND ${{CPPCHECK_EXECUTABLE}}
-#        --project=${{CMAKE_CURRENT_BINARY_DIR}}/compile_commands.json
+        --project=${{CMAKE_CURRENT_BINARY_DIR}}/compile_commands.json
         --enable=all
         -I ${{CMAKE_CURRENT_BINARY_DIR}}/vcpkg_installed/x64-windows/include
         --quiet
@@ -115,15 +155,16 @@ if(CPPCHECK_EXECUTABLE)
         --verbose
         --force
         --error-exitcode=1
-        ${{CMAKE_CURRENT_SOURCE_DIR}}/src
+#        ${{CMAKE_CURRENT_SOURCE_DIR}}/src
     )
-    add_dependencies(${{PROJECT_NAME}} cppcheck)
-    add_dependencies(${{PROJECT_NAME}}-utils cppcheck)
-    add_dependencies(${{PROJECT_NAME}}-test cppcheck)
+#    add_dependencies(${{PROJECT_NAME}} cppcheck)
+#    add_dependencies(${{PROJECT_NAME}}-proto cppcheck)
+#    add_dependencies(${{PROJECT_NAME}}-utils cppcheck)
+#    add_dependencies(${{PROJECT_NAME}}-test cppcheck)
 else()
     message(FATAL_ERROR "cppcheck not found")
 endif()
 
-'@ -F (SourceSubDirectories 'utils'), (SourceSubDirectories 'main'), (SourceSubDirectories 'tests'))
+'@ -F (SourceSubDirectories 'proto'), (SourceSubDirectories 'utils'), (SourceSubDirectories 'main'), (SourceSubDirectories 'tests'))
 
 Set-Content -Path CMakeLists.txt -Value $content

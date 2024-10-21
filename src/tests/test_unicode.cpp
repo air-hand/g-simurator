@@ -1,7 +1,7 @@
 #include <stdexcept>
 #include <gtest/gtest.h>
 
-#include "../utils/unicode.hpp"
+#include "utils/unicode.hpp"
 
 namespace
 {
