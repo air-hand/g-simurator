@@ -40,8 +40,8 @@ jobs:
           core.exportVariable('ACTIONS_RUNTIME_TOKEN', process.env.ACTIONS_RUNTIME_TOKEN || '');
 
     - uses: ilammy/msvc-dev-cmd@v1
-    #- name: Setup development environment
-    #  run: .\tools\setup_devenv.ps1
+    - name: Setup development environment
+      run: .\tools\setup_devenv.ps1
 
     - name: Build
       run: |
