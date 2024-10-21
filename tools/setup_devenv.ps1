@@ -27,8 +27,7 @@ Function InstallBuildTools([switch]$clean) {
     if ($clean) {
         winget uninstall --id $winget_build_tools_id --silent --disable-interactivity
     }
-    # slow
-#    winget install --id $winget_build_tools_id --override "--quiet --config ${vsconfig}" --silent --disable-interactivity --accept-source-agreements
+    winget install --id $winget_build_tools_id --override "--quiet --config ${vsconfig}" --silent --disable-interactivity --accept-source-agreements
     foreach ($_ in 1..300) {
         Write-Host "Waiting for VS Installer... ${_}";
         Start-Sleep 3;
