@@ -68,6 +68,7 @@ target_compile_options(${{PROJECT_NAME}}-utils
     PRIVATE
     ${{CXX_FLAGS_SHARED}}
     /Wall
+    /WX
 )
 target_compile_definitions(${{PROJECT_NAME}}-utils
     PRIVATE
@@ -84,6 +85,10 @@ target_link_libraries(${{PROJECT_NAME}}-utils
     ${{OpenCV_LIBS}}
     plog::plog
 )
+target_link_options(${{PROJECT_NAME}}-utils
+    PRIVATE
+    /WX
+)
 
 add_executable(${{PROJECT_NAME}})
 {2}
@@ -92,7 +97,9 @@ target_compile_options(${{PROJECT_NAME}}
     PRIVATE
     ${{CXX_FLAGS_SHARED}}
     /Wall
+    /WX
     /Qspectre
+    /wd5045
 )
 
 target_include_directories(${{PROJECT_NAME}}
@@ -110,6 +117,10 @@ target_link_libraries(${{PROJECT_NAME}}
     ${{PROJECT_NAME}}-proto
     ${{PROJECT_NAME}}-utils
 )
+target_link_options(${{PROJECT_NAME}}
+    PRIVATE
+    /WX
+)
 
 # tests
 enable_testing()
@@ -122,6 +133,7 @@ target_compile_options(${{PROJECT_NAME}}-test
     PRIVATE
     ${{CXX_FLAGS_SHARED}}
     /Wall
+    /WX
 )
 
 target_include_directories(${{PROJECT_NAME}}-test
@@ -134,6 +146,10 @@ target_link_libraries(${{PROJECT_NAME}}-test
     PRIVATE
     GTest::gtest GTest::gtest_main GTest::gmock GTest::gmock_main
     ${{PROJECT_NAME}}-utils
+)
+target_link_options(${{PROJECT_NAME}}-test
+    PRIVATE
+    /WX
 )
 
 add_test(NAME test COMMAND ${{PROJECT_NAME}}-test)

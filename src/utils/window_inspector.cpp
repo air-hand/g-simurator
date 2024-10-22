@@ -20,7 +20,8 @@ public:
     void EnumWindows() const
     {
         // https://docs.microsoft.com/en-us/windows/win32/api/winuser/nf-winuser-enumwindows
-        ::EnumWindows([](HWND hWnd, LPARAM lParam) -> BOOL {
+        ::EnumWindows([](HWND hWnd, [[maybe_unused]] LPARAM lParam) noexcept -> BOOL
+        {
             if (!IsWindowVisible(hWnd)) {
                 return TRUE;
             }
@@ -40,7 +41,8 @@ public:
     {
         const auto windowNameWide = unicode::to_utf16(windowName);
         const auto handle = FindWindowW(NULL, windowNameWide.c_str());
-        if (handle == NULL) {
+        if (handle == NULL)
+        {
             return nullptr;
         }
         return std::make_unique<Window>(handle);
@@ -69,7 +71,8 @@ WindowInspector& WindowInspector::operator=(WindowInspector&& rhs) noexcept
 
 std::unique_ptr<Window> WindowInspector::Find(const std::string& windowName) const
 {
-    return std::move(impl_->Find(windowName));
+//    return std::move(impl_->Find(windowName));
+    return impl_->Find(windowName);
 }
 
 }
