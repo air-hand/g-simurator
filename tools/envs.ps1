@@ -7,7 +7,10 @@ if ($Env:ENVS_PS1_LOADED -eq "1") {
 chcp 65001
 
 if ($Env:VCINSTALLDIR -eq $null) {
-    $vsdevcmd_script = (Join-Path "${Env:ProgramFiles(x86)}" 'Microsoft Visual Studio\2022\BuildTools\Common7\Tools\Launch-VsDevShell.ps1')
+    . $PSScriptRoot\vs_utils.ps1
+    SetupPathToVSInstaller
+    $visual_studio = PathToVisualStudio
+    $vsdevcmd_script = (Join-Path "${visual_studio}" 'Common7\Tools\Launch-VsDevShell.ps1')
     if (Test-Path $vsdevcmd_script) {
         . $vsdevcmd_script -Arch amd64
     }
