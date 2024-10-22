@@ -1,5 +1,4 @@
-﻿cd $PSScriptRoot
-cd ..
+﻿cd $PSScriptRoot\..
 
 . .\tools\envs.ps1
 

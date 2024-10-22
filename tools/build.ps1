@@ -4,10 +4,7 @@
 
 $ErrorActionPreference = "Stop"
 
-cd $PSScriptRoot
-cd ..
-
-throw "test ${PSScriptRoot}"
+cd $PSScriptRoot\..
 
 . .\tools\envs.ps1
 
