@@ -2,6 +2,7 @@
 . $PSScriptRoot\vs_utils.ps1
 
 Function InstallVisualStudio([switch]$clean) {
+    # The Community edition is compatible with The Enterprise edition. https://github.com/actions/runner-images/blob/main/images/windows/Windows2022-Readme.md#visual-studio-enterprise-2022
     $winget_visualstudio_id = "Microsoft.VisualStudio.2022.Community"
     $vsconfig = ".vsconfig"
     if ($clean) {
