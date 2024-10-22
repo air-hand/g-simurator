@@ -51,16 +51,15 @@ Function InstallOthers() {
         $cppcheck_path = "${Env:ProgramFiles}\Cppcheck"
         $user_path = [System.Environment]::GetEnvironmentVariable("PATH", "User")
         $cppcheck_path_exists = @($user_path -split ';') -contains $cppcheck_path
-        if (-not($cppcheck_path_exists)) {
-            $user_path += ";${cppcheck_path}"
-            [System.Environment]::SetEnvironmentVariable("PATH", $user_path, "User")
-            Write-Host "Restart vscode or powershell process to reflect the changes."
-        }
         if ($Env:GITHUB_ACTIONS) {
             Write-Host "Run on GitHub Actions"
             $Env:PATH += ";${cppcheck_path}"
             Set-Content -Path $Env:GITHUB_PATH $Env:PATH
             Write-Host "Set PATH to GITHUB_PATH"
+        } else if (-not($cppcheck_path_exists)) {
+            $user_path += ";${cppcheck_path}"
+            [System.Environment]::SetEnvironmentVariable("PATH", $user_path, "User")
+            Write-Host "Restart vscode or powershell process to reflect the changes."
         }
     }
 }
