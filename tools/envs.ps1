@@ -26,16 +26,15 @@ if (-not(Test-Path "${Env:VCPKG_ROOT}\.git")) {
     cd -
 }
 
-$Env:VCPKG_TARGET_TRIPLET = "x64-windows"
-#$Env:VCPKG_TARGET_TRIPLET = "x86-windows"
+cd $PSScriptRoot\..
 
-#$Env:VCPKG_OVERLAY_TRIPLETS = ($PSScriptRoot + '..\triplets')
-Write-Host "pwd: ${PWD}"
+$Env:VCPKG_TARGET_TRIPLET = "x64-windows"
 vcpkg install --triplet $Env:VCPKG_TARGET_TRIPLET
-#vcpkg install
 
 $vcpkg_tools_path = (vcpkg env --tools "echo %PATH%")
-# 先頭に追加するとarchがズレるので末尾に追加
+# avoid arch mismatch by adding to the end
 $Env:PATH = "${Env:PATH};${vcpkg_tools_path}"
 
 $Env:ENVS_PS1_LOADED = "1"
+
+cd -
