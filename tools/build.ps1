@@ -4,9 +4,9 @@
 
 $ErrorActionPreference = "Stop"
 
-cd $PSScriptRoot\..
+. $PSScriptRoot\envs.ps1
 
-. .\tools\envs.ps1
+cd $PSScriptRoot\..
 
 Remove-Item ./src/**/proto/gen/*.pb.*
 Get-ChildItem ./src -Include "*.proto" -Recurse | % { Split-Path $_ -Parent } | Sort-Object -Unique | % {
