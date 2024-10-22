@@ -7,6 +7,8 @@ $ErrorActionPreference = "Stop"
 cd $PSScriptRoot
 cd ..
 
+throw "test ${PSScriptRoot}"
+
 . .\tools\envs.ps1
 
 Remove-Item ./src/**/proto/gen/*.pb.*
