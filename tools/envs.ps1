@@ -7,7 +7,7 @@ if ($Env:ENVS_PS1_LOADED -eq "1") {
 chcp 65001
 
 if ($Env:VCINSTALLDIR -eq $null) {
-    . $PSScriptRoot\vs_utils.ps1
+    Import-Module $PSScriptRoot\vs_utils.psm1
     SetupPathToVSInstaller
     $visual_studio = PathToVisualStudio
     $vsdevcmd_script = (Join-Path "${visual_studio}" 'Common7\Tools\Launch-VsDevShell.ps1')

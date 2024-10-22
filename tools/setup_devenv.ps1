@@ -1,5 +1,5 @@
 ﻿
-. $PSScriptRoot\vs_utils.ps1
+Import-Module $PSScriptRoot\vs_utils.psm1
 
 Function InstallVisualStudio([switch]$clean) {
     # The Community edition is compatible with The Enterprise edition. https://github.com/actions/runner-images/blob/main/images/windows/Windows2022-Readme.md#visual-studio-enterprise-2022

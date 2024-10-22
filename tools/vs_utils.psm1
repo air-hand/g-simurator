@@ -20,3 +20,5 @@ Function PathToVisualStudio()
     )
     return ($vswhere_cmd | Invoke-Expression)
 }
+
+Export-ModuleMember -Function *
