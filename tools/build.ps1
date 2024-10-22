@@ -9,15 +9,15 @@ cd ..
 
 . .\tools\envs.ps1
 
-Remove-Item ${PWD}/src/**/proto/gen/*.pb.*
-Get-ChildItem ${PWD}/src -Include "*.proto" -Recurse | % { Split-Path $_ -Parent } | Sort-Object -Unique | % {
+Remove-Item ./src/**/proto/gen/*.pb.*
+Get-ChildItem ./src -Include "*.proto" -Recurse | % { Split-Path $_ -Parent } | Sort-Object -Unique | % {
     (Resolve-Path $_ -Relative) -replace '\\', '/'
 } | % {
     Write-Host "Running protoc $_"
-    if (-not(Test-Path "${PWD}/${_}/gen")) {
-        mkdir "${PWD}/${_}/gen"
+    if (-not(Test-Path "./${_}/gen")) {
+        mkdir "./${_}/gen"
     }
-    protoc -I"${PWD}/${_}" --cpp_out="${PWD}/${_}/gen" "${PWD}/${_}/*.proto"
+    protoc -I"./${_}" --cpp_out="./${_}/gen" "./${_}/*.proto"
 }
 
 Get-ChildItem ./ -Include "CMake*.ps1" -Exclude @("./build", "./tools") -Recurse | Sort-Object | % {
