@@ -21,9 +21,9 @@ $Env:VCPKG_ROOT = $PSScriptRoot + '\vendor\vcpkg'
 $Env:PATH = "${Env:VCPKG_ROOT};${Env:PATH}"
 if (-not(Test-Path "${Env:VCPKG_ROOT}\.git")) {
     git clone https://github.com/microsoft/vcpkg.git $Env:VCPKG_ROOT
-    cd $Env:VCPKG_ROOT
+    pushd $Env:VCPKG_ROOT > $null
     .\bootstrap-vcpkg.bat
-    cd -
+    popd > $null
 }
 
 pushd $PSScriptRoot\.. > $null
