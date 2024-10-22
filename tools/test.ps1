@@ -1,6 +1,8 @@
-﻿cd $PSScriptRoot\..
+﻿$ErrorActionPreference = 'Stop'
 
-. .\tools\envs.ps1
+. $PSScriptRoot\envs.ps1
+
+cd $PSScriptRoot\..
 
 .\build\simurator-test.exe
 
