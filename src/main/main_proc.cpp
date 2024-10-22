@@ -8,6 +8,7 @@
 
 #include "utils/logger.hpp"
 #include "utils/window_inspector.hpp"
+#include "utils/capture.hpp"
 
 #include "main_proc.hpp"
 
@@ -41,9 +42,11 @@ public:
             return 1;
         }
 
+#if false // test code
         const auto desktop = window::Window(GetDesktopWindow());
         desktop.Activate();
         desktop.Capture();
+#endif
 
         const auto reader = route::RouteReader();
         const auto route = reader.ReadJSONFile(route_path_);
@@ -82,6 +85,10 @@ private:
         AddFinalizer([] {
             logging::log("Shutting down protobuf library...");
             google::protobuf::ShutdownProtobufLibrary();
+        });
+        utils::Capture::Get().Init();
+        AddFinalizer([] {
+            utils::Capture::Get().Finalize();
         });
 #if DEBUG
         logging::log(L"Hello, World!");
