@@ -44,8 +44,8 @@ public:
         cv::Mat monitor_img;
         monitor_img.create(height, width, CV_8UC3);
 
-        BitBlt(hMemDC, 0, 0, width, height, hDC, 0, 0, SRCCOPY);
-        GetDIBits(hMemDC, hBitmap, 0, height, lpPixel, (BITMAPINFO*)&bmpInfo, DIB_RGB_COLORS);
+        BitBlt(hMemDC, rect.left, rect.top, width, height, hDC, 0, 0, SRCCOPY);
+        GetDIBits(hMemDC, hBitmap, 0, height, monitor_img.data, reinterpret_cast<BITMAPINFO*>(&bmpInfo), DIB_RGB_COLORS);
 
         cv::imwrite("sample.jpeg", monitor_img);
 
