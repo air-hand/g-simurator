@@ -60,6 +60,7 @@ Function InstallOthers() {
             Write-Host "Run on GitHub Actions"
             $Env:PATH += ";${cppcheck_path}"
             Set-Content -Path $Env:GITHUB_PATH $Env:PATH
+            Write-Host "Set PATH to GITHUB_PATH"
         }
     }
 }
