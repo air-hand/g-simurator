@@ -11,9 +11,10 @@ if ($Env:VCINSTALLDIR -eq $null) {
     SetupPathToVSInstaller
     $visual_studio = PathToVisualStudio
     $vsdevcmd_script = (Join-Path "${visual_studio}" 'Common7\Tools\Launch-VsDevShell.ps1')
-    if (Test-Path $vsdevcmd_script) {
-        . $vsdevcmd_script -Arch amd64
+    if (-not(Test-Path $vsdevcmd_script)) {
+        throw "Launch-VsDevShell.ps1 not found."
     }
+    . $vsdevcmd_script -Arch amd64
 }
 
 $Env:VCPKG_ROOT = $PSScriptRoot + '\vendor\vcpkg'
@@ -29,6 +30,7 @@ $Env:VCPKG_TARGET_TRIPLET = "x64-windows"
 #$Env:VCPKG_TARGET_TRIPLET = "x86-windows"
 
 #$Env:VCPKG_OVERLAY_TRIPLETS = ($PSScriptRoot + '..\triplets')
+Write-Host "pwd: ${PWD}"
 vcpkg install --triplet $Env:VCPKG_TARGET_TRIPLET
 #vcpkg install
 
