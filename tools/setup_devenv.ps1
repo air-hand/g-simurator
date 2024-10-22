@@ -43,8 +43,8 @@ Function InstallBuildTools([switch]$clean) {
 }
 
 Function InstallOthers() {
+    winget install -e --id Cppcheck.Cppcheck --silent --disable-interactivity --location "${Env:ProgramFiles}\Cppcheck" --accept-source-agreements
     if (-not(Get-Command cppcheck.exe -ErrorAction SilentlyContinue)) {
-        winget install -e --id Cppcheck.Cppcheck --silent --disable-interactivity --location "${Env:ProgramFiles}\Cppcheck"
         Write-Host "Setup path to Cppcheck..."
         $cppcheck_path = "${Env:ProgramFiles}\Cppcheck"
         $user_path = [System.Environment]::GetEnvironmentVariable("PATH", "User")
