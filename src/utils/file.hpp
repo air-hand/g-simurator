@@ -58,7 +58,6 @@ auto read_all(StreamPointerT stream)
     {
         return content;
     }
-//    content.resize(static_cast<uint64_t>(size));
     content.resize(size);
     stream->read(content.data(), size);
     return content;
