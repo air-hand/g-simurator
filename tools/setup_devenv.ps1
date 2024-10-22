@@ -1,6 +1,4 @@
-﻿#Set-PSDebug -Trace 1
-
-Function SetupPathToVSInstaller() {
+﻿Function SetupPathToVSInstaller() {
     $vswhere = @('Microsoft Visual Studio', 'Installer', 'vswhere.exe') | % { $p = ${Env:ProgramFiles(x86)}; } { $p = Join-Path $p $_ } { $p }
 
     If (-not(Test-Path $vswhere)) {
