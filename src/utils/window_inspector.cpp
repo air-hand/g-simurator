@@ -71,7 +71,6 @@ WindowInspector& WindowInspector::operator=(WindowInspector&& rhs) noexcept
 
 std::unique_ptr<Window> WindowInspector::Find(const std::string& windowName) const
 {
-//    return std::move(impl_->Find(windowName));
     return impl_->Find(windowName);
 }
 
