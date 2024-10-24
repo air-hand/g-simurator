@@ -21,7 +21,7 @@ find_package(protobuf CONFIG REQUIRED)
 find_package(boost_program_options CONFIG REQUIRED)
 
 #set(CMAKE_CXX_STANDARD 20)
-#set(CMAKE_CXX_STANDARD latest)
+set(CMAKE_CXX_STANDARD 23)
 set(CMAKE_CXX_STANDARD_REQUIRED ON)
 #set(CMAKE_CXX_FLAGS "-Wall")
 set(CMAKE_CXX_FLAGS_DEBUG "-DDEBUG")
