@@ -33,7 +33,8 @@ set(CXX_FLAGS_SHARED
     "/wd4267"
     "/wd4365"
     "/experimental:module"
-    "/std:c++20"
+    #"/std:c++20"
+    "/std:c++latest"
 )
 
 #add_library(${{PROJECT_NAME}}-header-units STATIC)
