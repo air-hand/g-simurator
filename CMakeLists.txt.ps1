@@ -10,6 +10,7 @@ cd $PSScriptRoot
 
 $content = (@'
 cmake_minimum_required(VERSION 3.29)
+cmake_policy(SET CMP0155 NEW)
 
 project(simurator)
 
@@ -31,10 +32,38 @@ set(CXX_FLAGS_SHARED
     # disable warnings
     "/wd4267"
     "/wd4365"
+    "/experimental:module"
+    "/std:c++20"
 )
 
+#add_library(${{PROJECT_NAME}}-header-units STATIC)
+#{0}
+#
+#set_target_properties(${{PROJECT_NAME}}-header-units
+#    PROPERTIES
+#    CXX_VISIBILITY_PRESET hidden
+##    CXX_SCAN_FOR_MODULES on
+#)
+#
+#target_compile_options(${{PROJECT_NAME}}-header-units
+#    PRIVATE
+#    ${{CXX_FLAGS_SHARED}}
+#    /scanDependencies-
+##    /sourceDependencies
+##    /sourceDependencies:directives
+#    /translateInclude
+#)
+#
+#target_include_directories(${{PROJECT_NAME}}-header-units
+#    PRIVATE
+#)
+#
+#target_link_libraries(${{PROJECT_NAME}}-header-units
+#    PRIVATE
+#)
+
 add_library(${{PROJECT_NAME}}-proto STATIC)
-{0}
+{1}
 
 set_target_properties(${{PROJECT_NAME}}-proto
     PROPERTIES
@@ -57,7 +86,7 @@ target_link_libraries(${{PROJECT_NAME}}-proto
 )
 
 add_library(${{PROJECT_NAME}}-utils SHARED)
-{1}
+{2}
 
 set_target_properties(${{PROJECT_NAME}}-utils
     PROPERTIES
@@ -74,6 +103,10 @@ target_compile_definitions(${{PROJECT_NAME}}-utils
     PRIVATE
     UTILS_LIB_BUILD
 )
+#target_compile_features(${{PROJECT_NAME}}-utils
+#    PRIVATE
+#    cxx_modules
+#)
 
 target_include_directories(${{PROJECT_NAME}}-utils
     PRIVATE
@@ -91,7 +124,7 @@ target_link_options(${{PROJECT_NAME}}-utils
 )
 
 add_executable(${{PROJECT_NAME}})
-{2}
+{3}
 
 target_compile_options(${{PROJECT_NAME}}
     PRIVATE
@@ -127,7 +160,7 @@ enable_testing()
 
 find_package(GTest CONFIG REQUIRED)
 add_executable(${{PROJECT_NAME}}-test)
-{3}
+{4}
 
 target_compile_options(${{PROJECT_NAME}}-test
     PRIVATE
@@ -182,6 +215,6 @@ if(CPPCHECK_EXECUTABLE)
 #    message(FATAL_ERROR "cppcheck not found")
 endif()
 
-'@ -F (SourceSubDirectories 'proto'), (SourceSubDirectories 'utils'), (SourceSubDirectories 'main'), (SourceSubDirectories 'tests'))
+'@ -F (SourceSubDirectories 'header-units'), (SourceSubDirectories 'proto'), (SourceSubDirectories 'utils'), (SourceSubDirectories 'main'), (SourceSubDirectories 'tests'))
 
 Set-Content -Path CMakeLists.txt -Value $content

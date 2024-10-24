@@ -36,13 +36,13 @@ void Capture::Finalize() const noexcept
     winrt::uninit_apartment();
 }
 
-void capture()
-{
-    // https://github.com/microsoft/Windows.UI.Composition-Win32-Samples/tree/master/cpp/ScreenCaptureforHWND
-    winrt::Windows::Graphics::DirectX::Direct3D11::IDirect3DDevice device;
-    auto _device = winrt::Windows::Graphics::DirectX::Direct3D11::Get
-    winrt::Windows::Graphics::Capture::GraphicsCaptureItem item;
-    DirectX::SaveWICTextureToFile(device);
-}
+//void capture()
+//{
+//    // https://github.com/microsoft/Windows.UI.Composition-Win32-Samples/tree/master/cpp/ScreenCaptureforHWND
+//    winrt::Windows::Graphics::DirectX::Direct3D11::IDirect3DDevice device;
+//    auto _device = winrt::Windows::Graphics::DirectX::Direct3D11::Get
+//    winrt::Windows::Graphics::Capture::GraphicsCaptureItem item;
+//    DirectX::SaveWICTextureToFile(device);
+//}
 
 }

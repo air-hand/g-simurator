@@ -1,4 +1,8 @@
-#include <fstream>
+import file;
+
+import std.core;
+
+//#include <fstream>
 
 #include "file.hpp"
 
