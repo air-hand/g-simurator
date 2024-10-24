@@ -33,9 +33,10 @@ set(CXX_FLAGS_SHARED
     # disable warnings
     "/wd4267"
     "/wd4365"
+    "/wd5050"
     "/experimental:module"
     #"/std:c++20"
-    "/std:c++latest"
+    #"/std:c++latest"
 )
 
 #add_library(${{PROJECT_NAME}}-header-units STATIC)
