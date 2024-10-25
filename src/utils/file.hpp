@@ -1,8 +1,8 @@
 #pragma once
 
-#include <filesystem>
-#include <memory>
-#include <fstream>
+import std.filesystem;
+import std.memory;
+import std.core;
 
 #include "macro.hpp"
 
