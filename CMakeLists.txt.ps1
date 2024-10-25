@@ -20,8 +20,7 @@ find_package(OpenCV CONFIG REQUIRED)
 find_package(protobuf CONFIG REQUIRED)
 find_package(boost_program_options CONFIG REQUIRED)
 
-#set(CMAKE_CXX_STANDARD 20)
-set(CMAKE_CXX_STANDARD 23)
+set(CMAKE_CXX_STANDARD 23) # c++latest
 set(CMAKE_CXX_STANDARD_REQUIRED ON)
 #set(CMAKE_CXX_FLAGS "-Wall")
 set(CMAKE_CXX_FLAGS_DEBUG "-DDEBUG")
@@ -34,36 +33,18 @@ set(CXX_FLAGS_SHARED
     "/wd4267"
     "/wd4365"
     "/wd5050"
-    "/experimental:module"
-    #"/std:c++20"
-    #"/std:c++latest"
 )
 
-#add_library(${{PROJECT_NAME}}-header-units STATIC)
-#{0}
-#
-#set_target_properties(${{PROJECT_NAME}}-header-units
-#    PROPERTIES
-#    CXX_VISIBILITY_PRESET hidden
-##    CXX_SCAN_FOR_MODULES on
-#)
-#
-#target_compile_options(${{PROJECT_NAME}}-header-units
-#    PRIVATE
-#    ${{CXX_FLAGS_SHARED}}
-#    /scanDependencies-
-##    /sourceDependencies
-##    /sourceDependencies:directives
-#    /translateInclude
-#)
-#
-#target_include_directories(${{PROJECT_NAME}}-header-units
-#    PRIVATE
-#)
-#
-#target_link_libraries(${{PROJECT_NAME}}-header-units
-#    PRIVATE
-#)
+#add_library(${{PROJECT_NAME}}-std STATIC "$ENV{{VCToolsInstallDir}}/modules/std.ixx")
+#add_library(${{PROJECT_NAME}}-std STATIC "C:/Program Files/Microsoft Visual Studio/2022/Community/VC/Tools/MSVC/14.41.34120/modules/std.ixx")
+add_library(${{PROJECT_NAME}}-std STATIC)
+{0}
+target_compile_options(${{PROJECT_NAME}}-std
+    PRIVATE
+    ${{CXX_FLAGS_SHARED}}
+    /Wall
+    /WX
+)
 
 add_library(${{PROJECT_NAME}}-proto STATIC)
 {1}
@@ -88,7 +69,8 @@ target_link_libraries(${{PROJECT_NAME}}-proto
     protobuf::libprotobuf
 )
 
-add_library(${{PROJECT_NAME}}-utils SHARED)
+#add_library(${{PROJECT_NAME}}-utils SHARED)
+add_library(${{PROJECT_NAME}}-utils STATIC)
 {2}
 
 set_target_properties(${{PROJECT_NAME}}-utils
@@ -106,20 +88,21 @@ target_compile_definitions(${{PROJECT_NAME}}-utils
     PRIVATE
     UTILS_LIB_BUILD
 )
-#target_compile_features(${{PROJECT_NAME}}-utils
-#    PRIVATE
-#    cxx_modules
-#)
 
 target_include_directories(${{PROJECT_NAME}}-utils
     PRIVATE
     ${{OpenCV_INCLUDE_DIRS}}
+)
+target_include_directories(${{PROJECT_NAME}}-utils
+    PUBLIC
+    ${{CMAKE_CURRENT_BINARY_DIR}}
 )
 
 target_link_libraries(${{PROJECT_NAME}}-utils
     PRIVATE
     ${{OpenCV_LIBS}}
     plog::plog
+    ${{PROJECT_NAME}}-std
 )
 target_link_options(${{PROJECT_NAME}}-utils
     PRIVATE
@@ -150,6 +133,7 @@ target_link_libraries(${{PROJECT_NAME}}
     Microsoft::DirectXTK
 #    protobuf::libprotobuf
     Boost::program_options
+    ${{PROJECT_NAME}}-std
     ${{PROJECT_NAME}}-proto
     ${{PROJECT_NAME}}-utils
 )
@@ -181,6 +165,7 @@ target_include_directories(${{PROJECT_NAME}}-test
 target_link_libraries(${{PROJECT_NAME}}-test
     PRIVATE
     GTest::gtest GTest::gtest_main GTest::gmock GTest::gmock_main
+    ${{PROJECT_NAME}}-std
     ${{PROJECT_NAME}}-utils
 )
 target_link_options(${{PROJECT_NAME}}-test
@@ -218,6 +203,6 @@ if(CPPCHECK_EXECUTABLE)
 #    message(FATAL_ERROR "cppcheck not found")
 endif()
 
-'@ -F (SourceSubDirectories 'header-units'), (SourceSubDirectories 'proto'), (SourceSubDirectories 'utils'), (SourceSubDirectories 'main'), (SourceSubDirectories 'tests'))
+'@ -F (SourceSubDirectories 'std'), (SourceSubDirectories 'proto'), (SourceSubDirectories 'utils'), (SourceSubDirectories 'main'), (SourceSubDirectories 'tests'))
 
 Set-Content -Path CMakeLists.txt -Value $content

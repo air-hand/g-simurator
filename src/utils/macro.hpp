@@ -5,8 +5,9 @@
     Class& operator=(const Class&) = delete
 
 
-#ifdef UTILS_LIB_BUILD
-#define UTILS_EXPORT __declspec(dllexport)
-#else
-#define UTILS_EXPORT __declspec(dllimport)
-#endif
+#define UTILS_EXPORT
+//#ifdef UTILS_LIB_BUILD
+//#define UTILS_EXPORT __declspec(dllexport)
+//#else
+//#define UTILS_EXPORT __declspec(dllimport)
+//#endif

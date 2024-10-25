@@ -9,7 +9,8 @@ Function SourceFiles([string]$extension) {
 $content = (@'
 cmake_policy(SET CMP0076 NEW)
 target_sources(${{PROJECT_NAME}}-utils
-    PRIVATE
+#    PRIVATE
+    PUBLIC
     FILE_SET modules TYPE CXX_MODULES FILES
 {0}
 )

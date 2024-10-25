@@ -1,18 +1,11 @@
-import file;
-
-import std.core;
+import utils.file;
 
 //#include <fstream>
 
-#include "file.hpp"
+//#include "file.hpp"
 
 namespace sim::utils
 {
-
-void FileDeleter::operator()(FILE* file) const
-{
-    fclose(file);
-}
 
 void FStreamDeleter::operator()(std::fstream* stream) const
 {
