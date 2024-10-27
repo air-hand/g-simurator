@@ -1,10 +1,9 @@
 module;
 
 #include "windows.hpp"
+#include "macro.hpp"
 
 export module utils.window;
-
-#include "macro.hpp"
 
 import std;
 

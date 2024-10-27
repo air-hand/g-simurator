@@ -1,7 +1,8 @@
+module;
+
 #include <functional>
 
 #include "windows.hpp"
-import utils.capture;
 
 // https://blogs.windows.com/windowsdeveloper/2019/09/16/new-ways-to-do-screen-capture/
 // https://tips.hecomi.com/entry/2021/03/23/230947
@@ -13,6 +14,7 @@ import utils.capture;
 #include <winrt/Windows.Graphics.DirectX.Direct3d11.h>
 
 // https://github.com/microsoft/DirectXTK/wiki/ScreenGrab
+module utils.capture;
 
 namespace sim::utils
 {

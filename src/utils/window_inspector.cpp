@@ -1,6 +1,9 @@
+module;
+
 #include "windows.hpp"
 
-import utils.window_inspector;
+module utils.window_inspector;
+
 import utils.unicode;
 import utils.logger;
 
