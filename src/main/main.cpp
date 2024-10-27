@@ -1,4 +1,4 @@
-#include "main_proc.hpp"
+import main.main_proc;
 
 int main(int argc, char** argv)
 {

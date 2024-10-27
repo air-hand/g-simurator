@@ -1,4 +1,10 @@
-#include "keyboard.hpp"
+module;
+
+#include "utils/windows.hpp"
+
+module main.controller.keyboard;
+
+import std.compat;
 
 namespace sim::controller
 {

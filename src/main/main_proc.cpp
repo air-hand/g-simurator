@@ -1,19 +1,20 @@
-#include <filesystem>
-#include <iostream>
+module;
+
 #include <boost/program_options.hpp>
 #include <directxtk/Keyboard.h>
 
 #include <google/protobuf/message_lite.h>
 #include <google/protobuf/util/json_util.h>
 
+#include "utils/windows.hpp"
+
+module main.main_proc;
+
 import utils.logger;
 import utils.window_inspector;
 import utils.capture;
-
-#include "main_proc.hpp"
-
-#include "controller/keyboard.hpp"
-#include "route/route.hpp"
+import main.controller.keyboard;
+import main.route.route;
 
 namespace options = boost::program_options;
 namespace logging = sim::utils::logging;
