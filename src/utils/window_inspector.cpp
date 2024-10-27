@@ -1,11 +1,8 @@
-#include <string>
 #include "windows.hpp"
 
-#include "window_inspector.hpp"
-#include "window.hpp"
-#include "unicode.hpp"
-
-#include "logger.hpp"
+import utils.window_inspector;
+import utils.unicode;
+import utils.logger;
 
 namespace sim::utils::window
 {

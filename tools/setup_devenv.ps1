@@ -1,7 +1,14 @@
-﻿
+﻿Param(
+    [switch]$clean
+)
+
 Import-Module $PSScriptRoot\vs_utils.psm1
 
-Function InstallVisualStudio([switch]$clean) {
+Function InstallVisualStudio([boolean]$clean) {
+    if (-not($clean) -and (PathToVisualStudio)) {
+        Write-Host "VisualStudio is already installed."
+        return
+    }
     # The Community edition is compatible with The Enterprise edition. https://github.com/actions/runner-images/blob/main/images/windows/Windows2022-Readme.md#visual-studio-enterprise-2022
     $winget_visualstudio_id = "Microsoft.VisualStudio.2022.Community"
     $vsconfig = ".vsconfig"
@@ -40,16 +47,14 @@ Function InstallOthers() {
 #    }
 }
 
-Function Main() {
+Function Main([boolean]$clean) {
     pushd $PSScriptRoot > $null
 
     SetupPathToVSInstaller
-    if (-not(PathToVisualStudio)) {
-        InstallVisualStudio
-    }
+    InstallVisualStudio $clean
     InstallOthers
     popd > $null
 }
 
 $ErrorActionPreference = "Stop"
-Main
+Main -clean $clean.IsPresent

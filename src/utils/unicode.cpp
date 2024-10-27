@@ -1,6 +1,8 @@
 #include "windows.hpp"
 
-#include "unicode.hpp"
+import std;
+
+import utils.unicode;
 
 namespace sim::utils::unicode
 {

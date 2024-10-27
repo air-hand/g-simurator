@@ -1,8 +1,10 @@
+#include "windows.hpp"
+
 #include <opencv2/opencv.hpp>
 #include <opencv2/highgui.hpp>
 #include <opencv2/videoio.hpp>
 
-#include "window.hpp"
+import utils.window;
 
 namespace sim::utils::window
 {

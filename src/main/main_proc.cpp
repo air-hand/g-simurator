@@ -6,9 +6,9 @@
 #include <google/protobuf/message_lite.h>
 #include <google/protobuf/util/json_util.h>
 
-#include "utils/logger.hpp"
-#include "utils/window_inspector.hpp"
-#include "utils/capture.hpp"
+import utils.logger;
+import utils.window_inspector;
+import utils.capture;
 
 #include "main_proc.hpp"
 

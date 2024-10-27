@@ -1,17 +1,13 @@
-#pragma once
+export module utils.logger;
 
-#include <format>
-#include <string>
-#include <type_traits>
-
-#include "macro.hpp"
+import std;
 
 namespace sim::utils::logging
 {
 
-UTILS_EXPORT void init();
-UTILS_EXPORT void log(const std::string& message);
-UTILS_EXPORT void log(const std::wstring& message);
+export void init();
+export void log(const std::string& message);
+export void log(const std::wstring& message);
 
 template <typename ...Args> concept not_empty_args = requires {
     sizeof...(Args) > 0;
@@ -22,7 +18,7 @@ template<typename CharT> concept char_type =
     || std::is_same_v<CharT, char8_t>
     || std::is_same_v<CharT, wchar_t>;
 
-template<
+export template<
     char_type CharT,
     typename... Args
 >
@@ -43,7 +39,7 @@ void log(const CharT* format, Args&&... args)
     }
 }
 
-template<
+export template<
     char_type CharT
 >
 void log(const CharT* format)

@@ -1,7 +1,7 @@
 #include <functional>
 
 #include "windows.hpp"
-#include "capture.hpp"
+import utils.capture;
 
 // https://blogs.windows.com/windowsdeveloper/2019/09/16/new-ways-to-do-screen-capture/
 // https://tips.hecomi.com/entry/2021/03/23/230947
