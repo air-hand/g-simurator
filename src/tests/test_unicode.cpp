@@ -1,6 +1,6 @@
-#include <stdexcept>
 #include <gtest/gtest.h>
 
+import std;
 import utils.unicode;
 
 namespace

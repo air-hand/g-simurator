@@ -2,8 +2,6 @@ export module utils.file;
 
 import std;
 
-//#include "macro.hpp"
-
 namespace sim::utils
 {
 

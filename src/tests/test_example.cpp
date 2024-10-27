@@ -1,5 +1,6 @@
-#include <stdexcept>
 #include <gtest/gtest.h>
+
+import std;
 
 namespace
 {

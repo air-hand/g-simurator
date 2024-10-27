@@ -35,8 +35,6 @@ set(CXX_FLAGS_SHARED
     "/wd5050"
 )
 
-#add_library(${{PROJECT_NAME}}-std STATIC "$ENV{{VCToolsInstallDir}}/modules/std.ixx")
-#add_library(${{PROJECT_NAME}}-std STATIC "C:/Program Files/Microsoft Visual Studio/2022/Community/VC/Tools/MSVC/14.41.34120/modules/std.ixx")
 add_library(${{PROJECT_NAME}}-std STATIC)
 {0}
 target_compile_options(${{PROJECT_NAME}}-std
@@ -131,7 +129,6 @@ target_include_directories(${{PROJECT_NAME}}
 target_link_libraries(${{PROJECT_NAME}}
     PRIVATE
     Microsoft::DirectXTK
-#    protobuf::libprotobuf
     Boost::program_options
     ${{PROJECT_NAME}}-std
     ${{PROJECT_NAME}}-proto
