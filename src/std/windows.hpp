@@ -1,6 +1,5 @@
-module;
+#pragma once
 
 #define WIN32_LEAN_AND_MEAN
+#define NOMINMAX
 #include <Windows.h>
-
-export module utils.windows;

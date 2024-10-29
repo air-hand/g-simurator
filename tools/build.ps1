@@ -19,6 +19,10 @@ Get-ChildItem ./src -Include "*.proto" -Recurse | % { Split-Path $_ -Parent } | 
     protoc -I"./${_}" --cpp_out="./${_}/gen" "./${_}/*.proto"
 }
 
+Get-ChildItem ./ -Include "CMakeList.txt" -Exclude @("./build", "./tools") -Recurse | Sort-Object | % {
+    Remove-Item $_
+}
+
 Get-ChildItem ./ -Include "CMake*.ps1" -Exclude @("./build", "./tools") -Recurse | Sort-Object | % {
     Write-Host "Running $_"
     pwsh $_

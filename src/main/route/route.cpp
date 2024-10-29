@@ -1,12 +1,6 @@
-module;
+#include "route.hpp"
 
 #include <google/protobuf/util/json_util.h>
-
-#pragma warning(push, 3)
-#include "proto/gen/route.pb.h"
-#pragma warning(pop)
-
-module main.route.route;
 
 import utils.file;
 import utils.logger;

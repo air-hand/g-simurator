@@ -29,8 +29,6 @@ jobs:
     - name: Install winget
       uses: Cyberboss/install-winget@v1
 
-    # FIXME: specify x86 or x64 to speed-up
-
     # https://learn.microsoft.com/en-us/vcpkg/consume/binary-caching-github-actions-cache
     - name: Export env for cache vcpkg
       uses: actions/github-script@v7

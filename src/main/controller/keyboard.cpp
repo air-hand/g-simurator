@@ -1,8 +1,6 @@
-module;
+#include "keyboard.hpp"
 
-#include "utils/windows.hpp"
-
-module main.controller.keyboard;
+#include "std/windows.hpp"
 
 import std.compat;
 

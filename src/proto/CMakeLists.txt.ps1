@@ -1,4 +1,4 @@
-﻿cd $PSScriptRoot
+cd $PSScriptRoot
 
 Function SourceFiles([string]$extension) {
     return (Get-ChildItem .\* -Include @("*.${extension}") -Recurse | Sort-Object | % {
@@ -7,11 +7,16 @@ Function SourceFiles([string]$extension) {
 }
 
 $content = (@'
-target_sources(${{PROJECT_NAME}}
-    PRIVATE
+cmake_policy(SET CMP0076 NEW)
+target_sources(${{PROJECT_NAME}}-proto
+    PUBLIC
+    FILE_SET modules TYPE CXX_MODULES FILES
 {0}
 )
-'@ -F (SourceFiles "cpp")
+target_sources(${{PROJECT_NAME}}-proto
+    PRIVATE
+{1}
 )
+'@ -F (SourceFiles "ixx"), (SourceFiles "cc"))
 
 Set-Content -Path CMakeLists.txt -Value $content

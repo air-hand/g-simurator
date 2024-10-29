@@ -22,7 +22,7 @@
     },
     "terminal.integrated.defaultProfile.windows": "vs2022dev_pwsh",
     "cmake.generator": "Ninja",
-    "C_Cpp.default.cppStandard": "c++20",
+    "C_Cpp.default.cppStandard": "c++23",
     "c-cpp-flylint.cppcheck.enable": false,
     "c-cpp-flylint.standard": [
         "c17",

@@ -1,9 +1,8 @@
 #pragma once
 
-#include <functional>
-#include <memory>
-
 #include "utils/macro.hpp"
+
+import std;
 
 namespace sim
 {

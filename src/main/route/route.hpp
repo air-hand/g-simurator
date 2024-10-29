@@ -1,12 +1,9 @@
 #pragma once
 
-#include <filesystem>
+#include "proto/route.hpp"
+#include "utils/macro.hpp"
 
-#include "controller/keyboard.hpp"
-
-#pragma warning(push, 3)
-#include "proto/gen/route.pb.h"
-#pragma warning(pop)
+import std;
 
 namespace sim::route
 {

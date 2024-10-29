@@ -1,20 +1,19 @@
-module;
-
 #include <boost/program_options.hpp>
 #include <directxtk/Keyboard.h>
 
 #include <google/protobuf/message_lite.h>
 #include <google/protobuf/util/json_util.h>
 
-#include "utils/windows.hpp"
+#include "std/windows.hpp"
 
-module main.main_proc;
+#include "controller/keyboard.hpp"
+#include "route/route.hpp"
+
+#include "main_proc.hpp"
 
 import utils.logger;
 import utils.window_inspector;
 import utils.capture;
-import main.controller.keyboard;
-import main.route.route;
 
 namespace options = boost::program_options;
 namespace logging = sim::utils::logging;
@@ -91,10 +90,6 @@ private:
         AddFinalizer([] {
             utils::Capture::Get().Finalize();
         });
-#if DEBUG
-        logging::log(L"Hello, World!");
-        logging::log("C++ Version: {} WinVer: {}", __cplusplus, _WIN32_WINNT);
-#endif
         options::options_description desc("Options");
         desc.add_options()
             ("route", options::value<std::filesystem::path>(&route_path_), "Route file")

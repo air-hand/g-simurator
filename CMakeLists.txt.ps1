@@ -33,6 +33,7 @@ set(CXX_FLAGS_SHARED
     "/wd4267"
     "/wd4365"
     "/wd5050"
+    "/wd5244"
 )
 
 add_library(${{PROJECT_NAME}}-std STATIC)
@@ -90,6 +91,7 @@ target_compile_definitions(${{PROJECT_NAME}}-utils
 target_include_directories(${{PROJECT_NAME}}-utils
     PRIVATE
     ${{OpenCV_INCLUDE_DIRS}}
+    ${{CMAKE_CURRENT_SOURCE_DIR}}/src
 )
 target_include_directories(${{PROJECT_NAME}}-utils
     PUBLIC
