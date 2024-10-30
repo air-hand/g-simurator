@@ -4,8 +4,6 @@ module;
 #include <opencv2/highgui.hpp>
 #include <opencv2/videoio.hpp>
 
-#include "std/windows.hpp"
-
 module utils;
 
 namespace sim::utils::window

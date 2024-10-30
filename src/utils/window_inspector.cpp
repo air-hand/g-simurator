@@ -1,7 +1,3 @@
-module;
-
-#include "std/windows.hpp"
-
 module utils;
 
 import :unicode;

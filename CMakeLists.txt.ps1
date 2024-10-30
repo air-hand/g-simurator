@@ -85,7 +85,10 @@ target_compile_options(${{PROJECT_NAME}}-utils
 )
 target_compile_definitions(${{PROJECT_NAME}}-utils
     PRIVATE
-    UTILS_LIB_BUILD
+)
+target_precompile_headers(${{PROJECT_NAME}}-utils
+    PRIVATE
+    ${{CMAKE_CURRENT_SOURCE_DIR}}/src/std/pch.hpp
 )
 
 target_include_directories(${{PROJECT_NAME}}-utils
@@ -93,10 +96,10 @@ target_include_directories(${{PROJECT_NAME}}-utils
     ${{OpenCV_INCLUDE_DIRS}}
     ${{CMAKE_CURRENT_SOURCE_DIR}}/src
 )
-target_include_directories(${{PROJECT_NAME}}-utils
-    PUBLIC
-    ${{CMAKE_CURRENT_BINARY_DIR}}
-)
+#target_include_directories(${{PROJECT_NAME}}-utils
+#    PUBLIC
+#    ${{CMAKE_CURRENT_BINARY_DIR}}
+#)
 
 target_link_libraries(${{PROJECT_NAME}}-utils
     PRIVATE
@@ -119,6 +122,10 @@ target_compile_options(${{PROJECT_NAME}}
     /WX
     /Qspectre
     /wd5045
+)
+target_precompile_headers(${{PROJECT_NAME}}
+    PRIVATE
+    ${{CMAKE_CURRENT_SOURCE_DIR}}/src/std/pch.hpp
 )
 
 target_include_directories(${{PROJECT_NAME}}
@@ -153,6 +160,10 @@ target_compile_options(${{PROJECT_NAME}}-test
     ${{CXX_FLAGS_SHARED}}
     /Wall
     /WX
+)
+target_precompile_headers(${{PROJECT_NAME}}-test
+    PRIVATE
+    ${{CMAKE_CURRENT_SOURCE_DIR}}/src/std/pch.hpp
 )
 
 target_include_directories(${{PROJECT_NAME}}-test

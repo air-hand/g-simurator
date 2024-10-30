@@ -4,8 +4,6 @@
 #include <google/protobuf/message_lite.h>
 #include <google/protobuf/util/json_util.h>
 
-#include "std/windows.hpp"
-
 #include "controller/keyboard.hpp"
 #include "route/route.hpp"
 

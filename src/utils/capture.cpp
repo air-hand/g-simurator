@@ -1,7 +1,5 @@
 module;
 
-#include "std/windows.hpp"
-
 // https://blogs.windows.com/windowsdeveloper/2019/09/16/new-ways-to-do-screen-capture/
 // https://tips.hecomi.com/entry/2021/03/23/230947
 

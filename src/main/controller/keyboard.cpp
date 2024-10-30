@@ -1,7 +1,5 @@
 #include "keyboard.hpp"
 
-#include "std/windows.hpp"
-
 import std.compat;
 
 namespace sim::controller
