@@ -2,10 +2,10 @@ module;
 
 #include "macro.hpp"
 
-export module utils.window_inspector;
+export module utils:window_inspector;
 
 import std;
-import utils.window;
+import :window;
 
 namespace sim::utils::window
 {

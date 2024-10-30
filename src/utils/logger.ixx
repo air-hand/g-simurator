@@ -1,4 +1,4 @@
-export module utils.logger;
+export module utils:logger;
 
 import std;
 

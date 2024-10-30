@@ -3,7 +3,7 @@ module;
 #include "std/windows.hpp"
 #include "macro.hpp"
 
-export module utils.window;
+export module utils:window;
 
 import std;
 

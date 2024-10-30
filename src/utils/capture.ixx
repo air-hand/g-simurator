@@ -2,7 +2,7 @@ module;
 
 #include "macro.hpp"
 
-export module utils.capture;
+export module utils:capture;
 
 namespace sim::utils
 {

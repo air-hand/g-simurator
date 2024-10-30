@@ -11,9 +11,7 @@
 
 #include "main_proc.hpp"
 
-import utils.logger;
-import utils.window_inspector;
-import utils.capture;
+import utils;
 
 namespace options = boost::program_options;
 namespace logging = sim::utils::logging;

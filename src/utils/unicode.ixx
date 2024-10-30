@@ -1,4 +1,4 @@
-export module utils.unicode;
+export module utils:unicode;
 
 import std;
 

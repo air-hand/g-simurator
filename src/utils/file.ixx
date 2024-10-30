@@ -1,4 +1,4 @@
-export module utils.file;
+export module utils:file;
 
 import std;
 

@@ -1,4 +1,4 @@
-module utils.file;
+module utils;
 
 namespace sim::utils
 {

@@ -5,7 +5,7 @@ module;
 #include <plog/Appenders/ConsoleAppender.h>
 #include <plog/Formatters/TxtFormatter.h>
 
-module utils.logger;
+module utils;
 
 namespace
 {

@@ -12,7 +12,7 @@ module;
 #include <winrt/Windows.Graphics.DirectX.Direct3d11.h>
 
 // https://github.com/microsoft/DirectXTK/wiki/ScreenGrab
-module utils.capture;
+module utils;
 
 import std;
 

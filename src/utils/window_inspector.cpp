@@ -2,10 +2,10 @@ module;
 
 #include "std/windows.hpp"
 
-module utils.window_inspector;
+module utils;
 
-import utils.unicode;
-import utils.logger;
+import :unicode;
+import :logger;
 
 namespace sim::utils::window
 {

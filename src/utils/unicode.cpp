@@ -2,7 +2,7 @@ module;
 
 #include "std/windows.hpp"
 
-module utils.unicode;
+module utils;
 
 namespace sim::utils::unicode
 {

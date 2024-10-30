@@ -1,7 +1,7 @@
 #include <gtest/gtest.h>
 
 import std;
-import utils.unicode;
+import utils;
 
 namespace
 {

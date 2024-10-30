@@ -6,7 +6,7 @@ module;
 
 #include "std/windows.hpp"
 
-module utils.window;
+module utils;
 
 namespace sim::utils::window
 {
