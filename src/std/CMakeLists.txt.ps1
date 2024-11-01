@@ -1,10 +1,23 @@
+$ErrorActionPreference = "Stop"
+
 cd $PSScriptRoot
 
 Copy-Item $Env:VCToolsInstallDir/modules/std.ixx -Destination .\std.ixx -Force
 Copy-Item $Env:VCToolsInstallDir/modules/std.compat.ixx -Destination .\std.compat.ixx -Force
 
-$source_files = Get-ChildItem .\* -Include @("*.ixx") | Sort-Object | % {
-    return ("`"{0}`"" -F $_.Name)
+#Invoke-Expression -Command (
+#    @(
+#        "cppwinrt.exe", "-output", ".\", "-verbose"
+#        , "-input", "${Env:SystemRoot}\System32\WinMetadata\Windows.Foundation.winmd"
+#    ) -join " "
+#)
+#Add-Content -Path .\winrt\winrt.ixx -Value @(
+#    "// Added by ${PSScriptName}"
+#    , '#include "../winrt.hpp"'
+#)
+
+$source_files = Get-ChildItem .\* -Include @("*.ixx") -Recurse | Sort-Object | % {
+    return ((Resolve-Path $_ -Relative) -replace '\\', '/')
 } | Join-String -Separator "`r`n"
 
 $content = (@'

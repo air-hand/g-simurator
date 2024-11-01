@@ -13,6 +13,9 @@ module;
 module utils;
 
 import std;
+import :logger;
+
+// https://github.com/microsoft/cppwinrt/blob/b82340f3fce1ee9bbcc13151f6f74c374d03f24d/cppwinrt/main.cpp#L372
 
 namespace sim::utils
 {
@@ -28,12 +31,14 @@ Capture& Capture::Get() noexcept
 
 void Capture::Init() const noexcept
 {
+    logging::log("Capture::Init()");
     winrt::init_apartment();
 }
 
 void Capture::Finalize() const noexcept
 {
     winrt::uninit_apartment();
+    logging::log("Capture::Finalize()");
 }
 
 //void capture()
