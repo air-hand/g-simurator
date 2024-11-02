@@ -28,7 +28,7 @@ public:
     }
     ~Impl()
     {
-        Cleanup();
+        Finalize();
     }
 
     int Run()
@@ -97,7 +97,7 @@ private:
         notify(vm);
     }
 
-    void Cleanup() const
+    void Finalize() const
     {
         std::for_each(std::crbegin(finalizers_), std::crend(finalizers_), [](auto&& func) {
             func();
