@@ -37,9 +37,6 @@ jobs:
           core.exportVariable('ACTIONS_CACHE_URL', process.env.ACTIONS_CACHE_URL || '');
           core.exportVariable('ACTIONS_RUNTIME_TOKEN', process.env.ACTIONS_RUNTIME_TOKEN || '');
 
-#    - uses: ilammy/msvc-dev-cmd@v1
-#      with:
-#        vsversion: 2022
     - name: Setup development environment
       run: .\tools\setup_devenv.ps1
 
@@ -48,5 +45,13 @@ jobs:
         .\tools\build.ps1
 
     - name: Run tests
+      run: |
+        .\tools\test.ps1
+
+    - name: Build (Release)
+      run: |
+        .\tools\build.ps1 -release
+
+    - name: Run tests (Release)
       run: |
         .\tools\test.ps1

@@ -1,5 +1,6 @@
 ﻿Param(
-    [switch]$clean
+    [switch]$clean,
+    [switch]$release
 )
 
 $ErrorActionPreference = "Stop"
@@ -29,11 +30,15 @@ Get-ChildItem ./ -Include "CMake*.ps1" -Exclude @("./build", "./tools") -Recurse
 }
 
 $Env:CMAKE_BUILD_PARALLEL_LEVEL = ([int]$Env:NUMBER_OF_PROCESSORS * 2)
+$CMAKE_BUILD_TYPE = "Debug"
+if ($release) {
+    $CMAKE_BUILD_TYPE = "Release"
+}
 
 $CMAKE_PRESET_COMMAND = @(
     "cmake"
     , "--preset=vcpkg"
-    , "-DCMAKE_BUILD_TYPE=Debug"
+    , "-DCMAKE_BUILD_TYPE=${CMAKE_BUILD_TYPE}"
     , "-DCMAKE_EXPORT_COMPILE_COMMANDS=ON"
     , "-B .\build"
 )
