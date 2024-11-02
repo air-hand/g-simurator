@@ -17,19 +17,21 @@ export template<
 auto fmt(const CharT* format, Args&&... args)
 {
     constexpr const std::size_t size = sizeof...(Args);
-    const auto format_str = std::basic_string<CharT>(format);
+    std::basic_string<CharT> buf;
     if constexpr (size == 0)
     {
-        return format_str;
+        buf.assign(format);
+        return buf;
     }
     else if constexpr (std::is_same_v<CharT, wchar_t>)
     {
-        return std::vformat(format_str, std::make_wformat_args(args...));
+        std::vformat_to(std::back_inserter(buf), format, std::make_wformat_args(args...));
     }
     else
     {
-        return std::vformat(format_str, std::make_format_args(args...));
+        std::vformat_to(std::back_inserter(buf), format, std::make_format_args(args...));
     }
+    return buf;
 }
 
 }
