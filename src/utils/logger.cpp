@@ -30,4 +30,14 @@ void log(const std::wstring& message)
     PLOG_DEBUG << message;
 }
 
+LogSpan::LogSpan(const std::string& message) noexcept : message_(message)
+{
+    PLOG_DEBUG << message_ << " [BEGIN]";
+}
+
+LogSpan::~LogSpan()
+{
+    PLOG_DEBUG << message_ << " [END]";
+}
+
 }

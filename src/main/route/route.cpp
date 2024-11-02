@@ -2,6 +2,8 @@
 
 #include <google/protobuf/util/json_util.h>
 
+#include "utils/logger.hpp"
+
 import utils;
 
 namespace sim::route
@@ -17,8 +19,9 @@ public:
 
     Route ReadJSONFile(const std::filesystem::path& path) const
     {
+        DEBUG_LOG_SPAN(log);
         const auto json = utils::read_all(utils::open_file(path, std::ios::in | std::ios::binary));
-        logging::log("Read JSON file: [{}]", json);
+        DEBUG_LOG_ARGS("Read JSON file: [{}]", json);
         Route route;
         if (const auto result = google::protobuf::util::JsonStringToMessage(json, &route); !result.ok()) {
             logging::log("Failed to parse JSON file: {}", result.ToString());

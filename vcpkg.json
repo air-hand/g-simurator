@@ -1,5 +1,7 @@
 {
+  "builtin-baseline": "9558037875497b9db8cf38fcd7db68ec661bffe7",
   "dependencies": [
+    "boost-program-options",
     "directxtk",
     "gtest",
     {
@@ -9,10 +11,8 @@
       ]
     },
     "plog",
-    "protobuf",
-    "boost-program-options"
+    "protobuf"
   ],
-  "builtin-baseline": "9558037875497b9db8cf38fcd7db68ec661bffe7",
   "overrides": [
     {
       "$comment": "protobuf 3.25.1 and later have a bug with MSVC /std:c++20 (/permissive-). https://github.com/microsoft/vcpkg/issues/39459",

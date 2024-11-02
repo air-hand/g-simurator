@@ -32,6 +32,7 @@ set(CXX_FLAGS_SHARED
     # disable warnings
     "/wd4267"
     "/wd4365"
+    "/wd4686"
     "/wd5050"
     "/wd5244"
 )

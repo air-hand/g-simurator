@@ -1,6 +1,11 @@
+module;
+
+#include "macro.hpp"
+
 export module utils:logger;
 
 import std;
+import :strings;
 
 namespace sim::utils::logging
 {
@@ -13,13 +18,8 @@ template <typename ...Args> concept not_empty_args = requires {
     sizeof...(Args) > 0;
 };
 
-template<typename CharT> concept char_type = 
-    std::is_same_v<CharT, char>
-    || std::is_same_v<CharT, char8_t>
-    || std::is_same_v<CharT, wchar_t>;
-
 export template<
-    char_type CharT,
+    strings::char_type CharT,
     typename... Args
 >
 requires not_empty_args<Args...>
@@ -28,23 +28,28 @@ void log(const CharT* format, Args&&... args)
     constexpr std::size_t size = sizeof...(Args);
     static_assert(size > 0, "At least one argument is required");
 
-    const auto fmt = std::basic_string_view<CharT>(format);
-    if constexpr (std::is_same_v<CharT, wchar_t>)
-    {
-        log(std::vformat(fmt, std::make_wformat_args(args...)));
-    }
-    else
-    {
-        log(std::vformat(fmt, std::make_format_args(args...)));
-    }
+    log(strings::fmt(format, std::forward<Args>(args)...));
 }
 
 export template<
-    char_type CharT
+    strings::char_type CharT
 >
 void log(const CharT* format)
 {
     log(std::basic_string<CharT>(format));
 }
+
+export class LogSpan final
+{
+public:
+    explicit LogSpan(const std::string& message) noexcept;
+    ~LogSpan();
+    LogSpan(LogSpan&&) = delete;
+    LogSpan& operator=(LogSpan&&) = delete;
+
+    DELETE_COPY_AND_ASSIGN(LogSpan);
+private:
+    const std::string message_;
+};
 
 }

@@ -11,7 +11,6 @@ public:
     void operator()(std::fstream* stream) const;
 };
 
-
 export using FStreamPtr = std::unique_ptr<std::fstream, FStreamDeleter>;
 
 export FStreamPtr open_file(const std::filesystem::path& path, std::ios_base::openmode mode);

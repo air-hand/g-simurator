@@ -4,10 +4,11 @@
 #include <google/protobuf/message_lite.h>
 #include <google/protobuf/util/json_util.h>
 
+#include "main_proc.hpp"
+
+#include "utils/logger.hpp"
 #include "controller/keyboard.hpp"
 #include "route/route.hpp"
-
-#include "main_proc.hpp"
 
 import utils;
 
@@ -32,6 +33,7 @@ public:
 
     int Run()
     {
+//        DEBUG_LOG_SPAN(log_span);
         if (!std::filesystem::exists(route_path_))
         {
             logging::log("Route file not found. {}", route_path_.string());
@@ -79,7 +81,7 @@ private:
             logging::log("Good bye, World...");
         });
         AddFinalizer([] {
-            logging::log("Shutting down protobuf library...");
+            DEBUG_LOG("Shutting down protobuf library...");
             google::protobuf::ShutdownProtobufLibrary();
         });
         utils::Capture::Get().Init();

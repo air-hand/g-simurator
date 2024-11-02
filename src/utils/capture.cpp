@@ -9,6 +9,8 @@ module;
 #include <winrt/Windows.Graphics.DirectX.h>
 #include <winrt/Windows.Graphics.DirectX.Direct3d11.h>
 
+#include "logger.hpp"
+
 // https://github.com/microsoft/DirectXTK/wiki/ScreenGrab
 module utils;
 
@@ -31,14 +33,14 @@ Capture& Capture::Get() noexcept
 
 void Capture::Init() const noexcept
 {
-    logging::log("Capture::Init()");
     winrt::init_apartment();
+    DEBUG_LOG("init_apartment()");
 }
 
 void Capture::Finalize() const noexcept
 {
     winrt::uninit_apartment();
-    logging::log("Capture::Finalize()");
+    DEBUG_LOG("uninit_apartment()");
 }
 
 //void capture()

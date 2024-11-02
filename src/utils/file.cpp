@@ -1,4 +1,10 @@
+module;
+
+#include "logger.hpp"
+
 module utils;
+
+import :logger;
 
 namespace sim::utils
 {
@@ -11,6 +17,7 @@ void FStreamDeleter::operator()(std::fstream* stream) const
 
 FStreamPtr open_file(const std::filesystem::path& path, std::ios_base::openmode mode)
 {
+    DEBUG_LOG_ARGS("open file: {}", path.string());
     if (!std::filesystem::exists(path))
     {
         return nullptr;
