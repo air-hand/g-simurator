@@ -19,7 +19,7 @@ public:
 
     Route ReadJSONFile(const std::filesystem::path& path) const
     {
-        DEBUG_LOG_SPAN(log);
+        DEBUG_LOG_SPAN(_);
         const auto json = utils::read_all(utils::open_file(path, std::ios::in | std::ios::binary));
         DEBUG_LOG_ARGS("Read JSON file: [{}]", json);
         Route route;
