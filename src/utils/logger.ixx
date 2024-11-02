@@ -44,10 +44,9 @@ export class LogSpan final
 public:
     explicit LogSpan(const std::string& message) noexcept;
     ~LogSpan();
-    LogSpan(LogSpan&&) = delete;
-    LogSpan& operator=(LogSpan&&) = delete;
 
     DELETE_COPY_AND_ASSIGN(LogSpan);
+    DELETE_MOVE_AND_ASSIGN(LogSpan);
 private:
     const std::string message_;
 };
