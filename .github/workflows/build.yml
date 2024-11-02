@@ -26,8 +26,8 @@ jobs:
     steps:
     - uses: actions/checkout@v4
 
-    - name: Install winget
-      uses: Cyberboss/install-winget@v1
+#    - name: Install winget
+#      uses: Cyberboss/install-winget@v1
 
     # https://learn.microsoft.com/en-us/vcpkg/consume/binary-caching-github-actions-cache
     - name: Export env for cache vcpkg
