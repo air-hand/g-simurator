@@ -11,6 +11,7 @@ namespace sim::utils
 
 void FStreamDeleter::operator()(std::fstream* stream) const
 {
+    DEBUG_LOG_SPAN(_);
     stream->close();
     delete stream;
 }
