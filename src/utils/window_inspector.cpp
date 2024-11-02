@@ -12,7 +12,7 @@ public:
     Impl() {}
     ~Impl() {};
 
-#if DEBUG
+#ifdef DEBUG
     void EnumWindows() const
     {
         // https://docs.microsoft.com/en-us/windows/win32/api/winuser/nf-winuser-enumwindows
