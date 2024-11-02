@@ -33,7 +33,7 @@ public:
 
     int Run()
     {
-//        DEBUG_LOG_SPAN(log_span);
+        DEBUG_LOG_SPAN(_);
         if (!std::filesystem::exists(route_path_))
         {
             logging::log("Route file not found. {}", route_path_.string());
