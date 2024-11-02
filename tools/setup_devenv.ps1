@@ -29,7 +29,7 @@ Function InstallVisualStudio([boolean]$clean) {
 }
 
 Function InstallOthers() {
-#    winget install -e --id Cppcheck.Cppcheck --silent --disable-interactivity --location "${Env:ProgramFiles}\Cppcheck" --accept-source-agreements
+    winget install -e --id Cppcheck.Cppcheck --silent --disable-interactivity --location "${Env:ProgramFiles}\Cppcheck" --accept-source-agreements
 #    if (-not(Get-Command cppcheck.exe -ErrorAction SilentlyContinue)) {
 #        Write-Host "Setup path to Cppcheck..."
 #        $cppcheck_path = "${Env:ProgramFiles}\Cppcheck"
