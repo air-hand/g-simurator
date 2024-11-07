@@ -23,11 +23,6 @@
     "terminal.integrated.defaultProfile.windows": "vs2022dev_pwsh",
     "cmake.generator": "Ninja",
     "C_Cpp.default.cppStandard": "c++23",
-    "c-cpp-flylint.cppcheck.enable": false,
-    "c-cpp-flylint.standard": [
-        "c17",
-        "c++20"
-    ],
     "protoc": {
 //        "path": "${workspaceFolder}/vcpkg_installed/x64-windows/tools/protobuf/protoc.exe",
         "path": "./vcpkg_installed/x64-windows/tools/protobuf/protoc.exe",
