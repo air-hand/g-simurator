@@ -4,7 +4,12 @@ module;
 #include <opencv2/highgui.hpp>
 #include <opencv2/videoio.hpp>
 
+#include "logger.hpp"
+
 module utils;
+
+import std;
+import :logger;
 
 namespace sim::utils::window
 {
@@ -17,12 +22,14 @@ public:
 
     void Activate() const
     {
+        DEBUG_LOG_SPAN(_);
         // https://learn.microsoft.com/ja-jp/windows/win32/api/winuser/nf-winuser-setforegroundwindow
         SetForegroundWindow(handle_);
     }
 
     void Capture() const
     {
+        DEBUG_LOG_SPAN(_);
         RECT rect;
         GetWindowRect(handle_, &rect);
 
@@ -49,7 +56,7 @@ public:
         BitBlt(hMemDC, rect.left, rect.top, width, height, hDC, 0, 0, SRCCOPY);
         GetDIBits(hMemDC, hBitmap, 0, height, monitor_img.data, reinterpret_cast<BITMAPINFO*>(&bmpInfo), DIB_RGB_COLORS);
 
-        cv::imwrite("sample.jpeg", monitor_img);
+        cv::imwrite("sample.jpg", monitor_img);
 
         ReleaseDC(handle_, hDC);
         DeleteDC(hMemDC);

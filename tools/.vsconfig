@@ -1,6 +1,7 @@
 {
   "version": "1.0",
   "components": [
+    "Microsoft.VisualStudio.Workload.NativeDesktop",
     "Microsoft.VisualStudio.Component.CoreEditor",
     "Microsoft.VisualStudio.Workload.CoreEditor",
     "Microsoft.VisualStudio.Component.Roslyn.Compiler",

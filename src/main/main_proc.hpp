@@ -2,7 +2,7 @@
 
 #include "utils/macro.hpp"
 
-import std;
+import std.compat;
 
 namespace sim
 {
@@ -10,14 +10,14 @@ namespace sim
 class MainProc final
 {
 public:
-    MainProc(int argc, char** argv) noexcept;
+    MainProc(uint32_t argc, char** argv) noexcept;
     ~MainProc();
     MainProc(MainProc&&) noexcept;
     MainProc& operator=(MainProc&&);
 
     DELETE_COPY_AND_ASSIGN(MainProc);
 
-    int Run();
+    int32_t Run();
     void AddFinalizer(std::function<void()> finalizer);
 private:
     class Impl;

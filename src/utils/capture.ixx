@@ -1,25 +1,55 @@
 module;
 
+//#include <d3d11.h>
+#include <winrt/Windows.Graphics.DirectX.h>
+#include <winrt/Windows.Graphics.DirectX.Direct3d11.h>
+#include <directxtk/ScreenGrab.h>
+
 #include "macro.hpp"
 
 export module utils:capture;
 
+import std;
+
 namespace sim::utils
 {
 
-export class Capture final
+using DevicePtr = winrt::com_ptr<ID3D11Device>;
+
+export class CaptureWindow final
 {
 public:
-    ~Capture();
-    DELETE_COPY_AND_ASSIGN(Capture);
+    CaptureWindow(HWND hwnd, const DevicePtr& device) noexcept;
+    ~CaptureWindow();
+    CaptureWindow(CaptureWindow&&) noexcept;
+    CaptureWindow& operator=(CaptureWindow&&) noexcept;
 
-    static Capture& Get() noexcept;
+    DELETE_COPY_AND_ASSIGN(CaptureWindow);
 
-    void Init() const noexcept;
+    void Start() const;
+
+private:
+    class Impl;
+    std::unique_ptr<Impl> impl_;
+};
+
+export class CaptureContext final
+{
+public:
+    ~CaptureContext();
+    DELETE_COPY_AND_ASSIGN(CaptureContext);
+
+    static CaptureContext& Get() noexcept;
+
+    CaptureWindow CaptureForWindowHandle(HWND handle) const;
+
+    void Init() /* const*/ noexcept;
     void Finalize() const noexcept;
 
 private:
-    Capture() noexcept;
+    CaptureContext() noexcept;
+
+    DevicePtr device_;
 };
 
 }

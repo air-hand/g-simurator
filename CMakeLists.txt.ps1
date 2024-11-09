@@ -33,6 +33,7 @@ set(CXX_FLAGS_SHARED
     "/wd4267"
     "/wd4365"
     "/wd4686"
+    "/wd4820"
     "/wd5050"
     "/wd5244"
 )
@@ -104,6 +105,8 @@ target_include_directories(${{PROJECT_NAME}}-utils
 
 target_link_libraries(${{PROJECT_NAME}}-utils
     PRIVATE
+    d3d11.lib
+    Microsoft::DirectXTK
     ${{OpenCV_LIBS}}
     plog::plog
     ${{PROJECT_NAME}}-std

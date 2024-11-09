@@ -22,7 +22,7 @@ namespace sim
 class MainProc::Impl
 {
 public:
-    Impl(int argc, char** argv)
+    Impl(uint32_t argc, char** argv)
     {
         Init(argc, argv);
     }
@@ -31,7 +31,7 @@ public:
         Finalize();
     }
 
-    int Run()
+    int32_t Run()
     {
         DEBUG_LOG_SPAN(_);
         if (!std::filesystem::exists(route_path_))
@@ -40,10 +40,12 @@ public:
             return 1;
         }
 
-#if false // test code
-        const auto desktop = window::Window(GetDesktopWindow());
-        desktop.Activate();
-        desktop.Capture();
+#ifdef DEBUG // test code
+        {
+            const auto desktop = window::Window(GetDesktopWindow());
+            desktop.Activate();
+            desktop.Capture();
+        }
 #endif
 
         const auto reader = route::RouteReader();
@@ -74,7 +76,7 @@ private:
     std::vector<std::function<void()>> finalizers_;
     std::filesystem::path route_path_;
 
-    void Init(int argc, char** argv)
+    void Init(uint32_t argc, char** argv)
     {
         logging::init();
         AddFinalizer([] {
@@ -84,9 +86,9 @@ private:
             DEBUG_LOG("Shutting down protobuf library...");
             google::protobuf::ShutdownProtobufLibrary();
         });
-        utils::Capture::Get().Init();
+        utils::CaptureContext::Get().Init();
         AddFinalizer([] {
-            utils::Capture::Get().Finalize();
+            utils::CaptureContext::Get().Finalize();
         });
         options::options_description desc("Options");
         desc.add_options()
@@ -105,7 +107,7 @@ private:
     }
 };
 
-MainProc::MainProc(int argc, char** argv) noexcept
+MainProc::MainProc(uint32_t argc, char** argv) noexcept
     : impl_(std::make_unique<Impl>(argc, argv))
 {
 }
@@ -122,7 +124,7 @@ MainProc& MainProc::operator=(MainProc&& rhs)
     return *this;
 }
 
-int MainProc::Run()
+int32_t MainProc::Run()
 {
     return impl_->Run();
 }
