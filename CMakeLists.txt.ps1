@@ -106,6 +106,7 @@ target_include_directories(${{PROJECT_NAME}}-utils
 target_link_libraries(${{PROJECT_NAME}}-utils
     PRIVATE
     d3d11.lib
+    dxgi.lib
     Microsoft::DirectXTK
     ${{OpenCV_LIBS}}
     plog::plog

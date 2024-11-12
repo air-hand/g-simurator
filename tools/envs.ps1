@@ -26,7 +26,7 @@ if (-not(Test-Path "${Env:VCPKG_ROOT}\.git")) {
     popd > $null
 }
 
-pushd $PSScriptRoot\.. > $null
+cd $PSScriptRoot\..
 
 $Env:VCPKG_TARGET_TRIPLET = "x64-windows"
 vcpkg install --triplet $Env:VCPKG_TARGET_TRIPLET
@@ -36,5 +36,3 @@ $vcpkg_tools_path = (vcpkg env --tools "echo %PATH%")
 $Env:PATH = "${Env:PATH};${vcpkg_tools_path}"
 
 $Env:ENVS_PS1_LOADED = "1"
-
-popd > $null

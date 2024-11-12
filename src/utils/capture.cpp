@@ -9,6 +9,7 @@ module;
 #include <Windows.Graphics.Capture.Interop.h>
 #include <winrt/Windows.Graphics.DirectX.h>
 #include <winrt/Windows.Graphics.DirectX.Direct3d11.h>
+#include <Windows.Graphics.DirectX.Direct3D11.Interop.h>
 
 #include "macro.hpp"
 #include "logger.hpp"
@@ -25,7 +26,7 @@ import :capture;
 namespace sim::utils
 {
 
-CaptureContext::CaptureContext() noexcept = default;
+CaptureContext::CaptureContext() noexcept : device_(nullptr) {}
 CaptureContext::~CaptureContext() = default;
 
 CaptureContext& CaptureContext::Get() noexcept
@@ -40,7 +41,11 @@ void CaptureContext::Init() /*const*/ noexcept
     winrt::init_apartment();
     
     UINT flags = D3D11_CREATE_DEVICE_BGRA_SUPPORT;
-    D3D11CreateDevice(
+#ifdef DEBUG
+    flags |= D3D11_CREATE_DEVICE_DEBUG;
+#endif
+    winrt::com_ptr<::ID3D11Device> d3d11Device;
+    ::D3D11CreateDevice(
         nullptr,
         D3D_DRIVER_TYPE_HARDWARE,
         nullptr,
@@ -48,10 +53,14 @@ void CaptureContext::Init() /*const*/ noexcept
         nullptr,
         0,
         D3D11_SDK_VERSION,
-        device_.put(),
+        d3d11Device.put(),
         nullptr,
         nullptr
     );
+    auto dxgiDevice = d3d11Device.as<::IDXGIDevice>();
+    winrt::com_ptr<::IInspectable> device;
+    winrt::check_hresult(::CreateDirect3D11DeviceFromDXGIDevice(dxgiDevice.get(), device.put()));
+    device_ = device.as<Device>();
 }
 
 void CaptureContext::Finalize() const noexcept
@@ -74,7 +83,7 @@ CaptureWindow CaptureContext::CaptureForWindowHandle(HWND handle) const
 class CaptureWindow::Impl final
 {
 public:
-    Impl(HWND hwnd, const DevicePtr& device) noexcept
+    Impl(HWND hwnd, const Device& device) noexcept
         : hwnd_(hwnd), device_(device)
     {
     }
@@ -84,6 +93,11 @@ public:
     void Start() const
     {
         auto item = CreateCaptureItemForWindow();
+        const auto size = item.Size();
+        DEBUG_LOG_ARGS("Capture window size: {}x{}", size.Width, size.Height);
+
+        auto d3dDevice = GetDXGIInterfaceFromObject<::ID3D11Device>(device_);
+//        d3dDevice->GetImmediateContext();
     }
 private:
     auto CreateCaptureItemForWindow() const
@@ -97,10 +111,10 @@ private:
     }
 
     const HWND hwnd_;
-    const DevicePtr& device_;
+    const Device& device_;
 };
 
-CaptureWindow::CaptureWindow(HWND hwnd, const DevicePtr& device) noexcept
+CaptureWindow::CaptureWindow(HWND hwnd, const Device& device) noexcept
     : impl_(std::make_unique<Impl>(hwnd, device))
 {
 }

@@ -31,7 +31,7 @@ public:
         Finalize();
     }
 
-    int32_t Run()
+    uint32_t Run()
     {
         DEBUG_LOG_SPAN(_);
         if (!std::filesystem::exists(route_path_))
@@ -44,7 +44,7 @@ public:
         {
             const auto desktop = window::Window(GetDesktopWindow());
             desktop.Activate();
-            desktop.Capture();
+//            desktop.Capture();
         }
 #endif
 
@@ -124,7 +124,7 @@ MainProc& MainProc::operator=(MainProc&& rhs)
     return *this;
 }
 
-int32_t MainProc::Run()
+uint32_t MainProc::Run()
 {
     return impl_->Run();
 }
