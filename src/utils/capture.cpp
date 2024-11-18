@@ -88,14 +88,38 @@ public:
         : hwnd_(hwnd), device_(device)
     {
     }
+    ~Impl()
+    {
+        if (frameArrived_)
+        {
+            frameArrived_.revoke();
+        }
+        if (framePool_)
+        {
+            framePool_.Close();
+        }
+        if (session_)
+        {
+            session_.Close();
+        }
+        swapChain_ = nullptr;
+        framePool_ = nullptr;
+        session_ = nullptr;
+        item_ = nullptr;
+    }
 
     DELETE_COPY_AND_ASSIGN(Impl);
 
-    void Start() const
+    void Start()
     {
         DEBUG_LOG_SPAN(_);
-        auto item = CreateCaptureItemForWindow();
-        const auto size = item.Size();
+
+        // FIXME: Recreate tmp directory.
+        std::filesystem::remove_all("./tmp");
+        std::filesystem::create_directory(L"./tmp");
+
+        item_ = CreateCaptureItemForWindow();
+        const auto size = item_.Size();
         DEBUG_LOG_ARGS("Capture window size: {}x{}", size.Width, size.Height);
 
         const auto d3dDevice = GetDXGIInterfaceFromObject<::ID3D11Device>(device_);
@@ -109,25 +133,16 @@ public:
             static_cast<DXGI_FORMAT>(winrt::Windows::Graphics::DirectX::DirectXPixelFormat::B8G8R8A8UIntNormalized),
             2
             );
-        framePool_ = winrt::Windows::Graphics::Capture::Direct3D11CaptureFramePool::Create(
+        framePool_ = winrt::Windows::Graphics::Capture::Direct3D11CaptureFramePool::CreateFreeThreaded(
             device_,
             winrt::Windows::Graphics::DirectX::DirectXPixelFormat::B8G8R8A8UIntNormalized,
             2,
             size
         );
-        auto session_ = framePool_.CreateCaptureSession(item);
-        // CaptureFramePoolのコンストラクタに合わせなければならない device, itemを受け取るこんすとらくた
-        auto frameArrived_ = framePool_.FrameArrived(winrt::auto_revoke, { this, &Impl::OnFrame });
+        session_ = framePool_.CreateCaptureSession(item_);
+        frameArrived_ = framePool_.FrameArrived(winrt::auto_revoke, { this, &Impl::OnFrameArrived });
 
         session_.StartCapture();
-
-        frameArrived_.revoke();
-        framePool_.Close();
-        session_.Close();
-        swapChain_ = nullptr;
-        framePool_ = nullptr;
-        session_ = nullptr;
-        item = nullptr;
     }
 private:
     auto CreateCaptureItemForWindow() const
@@ -187,19 +202,29 @@ private:
             const auto frame = sender.TryGetNextFrame();
             const auto frameContentSize = frame.ContentSize();
 
+            const auto frameSurface = GetDXGIInterfaceFromObject<::ID3D11Texture2D>(frame.Surface());
+
             winrt::com_ptr<::ID3D11Texture2D> backBuffer;
-            swapChain_->GetBuffer(0, winrt::guid_of<::ID3D11Texture2D>(), backBuffer.put_void());
-            DirectX::SaveWICTextureToFile(d3dContext_.get(), backBuffer.get(), GUID_ContainerFormatPng, L"capture.png");
+            winrt::check_hresult(swapChain_->GetBuffer(0, winrt::guid_of<::ID3D11Texture2D>(), backBuffer.put_void()));
+            d3dContext_->CopyResource(backBuffer.get(), frameSurface.get());
+
+            const auto now = std::chrono::system_clock::now();
+            const auto filename = sim::utils::strings::fmt(L"./tmp/capture_{:%Y%m%d%H%M%S}.png", std::chrono::time_point_cast<std::chrono::milliseconds>(now));
+            DirectX::SaveWICTextureToFile(d3dContext_.get(), backBuffer.get(), GUID_ContainerFormatPng, filename.c_str());
         }
         DXGI_PRESENT_PARAMETERS params = {0};
         swapChain_->Present1(1, 0, &params);
+        throw std::runtime_error("stop");
     }
 
     const HWND hwnd_;
     const Device& device_;
-    winrt::com_ptr<::IDXGISwapChain1> swapChain_;
-    winrt::com_ptr<::ID3D11DeviceContext> d3dContext_;
-    winrt::Windows::Graphics::Capture::Direct3D11CaptureFramePool framePool_;
+    winrt::Windows::Graphics::Capture::GraphicsCaptureItem item_ { nullptr };
+    winrt::com_ptr<::IDXGISwapChain1> swapChain_ { nullptr };
+    winrt::com_ptr<::ID3D11DeviceContext> d3dContext_ { nullptr };
+    winrt::Windows::Graphics::Capture::GraphicsCaptureSession session_ { nullptr };
+    winrt::Windows::Graphics::Capture::Direct3D11CaptureFramePool framePool_ { nullptr };
+    winrt::Windows::Graphics::Capture::Direct3D11CaptureFramePool::FrameArrived_revoker frameArrived_;
 };
 
 CaptureWindow::CaptureWindow(HWND hwnd, const Device& device) noexcept

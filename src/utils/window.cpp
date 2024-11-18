@@ -11,6 +11,7 @@ module utils;
 import std;
 import :logger;
 import :capture;
+import :time;
 
 namespace sim::utils::window
 {
@@ -33,6 +34,9 @@ public:
         DEBUG_LOG_SPAN(_);
         const auto c = sim::utils::CaptureContext::Get().CaptureForWindowHandle(handle_);
         c.Start();
+
+        sim::utils::time::sleep(3000);
+
 //        RECT rect;
 //        GetWindowRect(handle_, &rect);
 //
