@@ -214,7 +214,6 @@ private:
         }
         DXGI_PRESENT_PARAMETERS params = {0};
         swapChain_->Present1(1, 0, &params);
-        throw std::runtime_error("stop");
     }
 
     const HWND hwnd_;
