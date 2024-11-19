@@ -55,7 +55,7 @@ public:
     CaptureWindow CaptureForWindowHandle(HWND handle) const;
 
     void Init() /* const*/ noexcept;
-    void Finalize() const noexcept;
+    void Finalize() /*const*/ noexcept;
 
 private:
     CaptureContext() noexcept;
