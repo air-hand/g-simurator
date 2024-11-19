@@ -19,6 +19,7 @@ find_package(plog CONFIG REQUIRED)
 find_package(OpenCV CONFIG REQUIRED)
 find_package(protobuf CONFIG REQUIRED)
 find_package(boost_program_options CONFIG REQUIRED)
+find_package(Tesseract CONFIG REQUIRED)
 
 set(CMAKE_CXX_STANDARD 23) # c++latest
 set(CMAKE_CXX_STANDARD_REQUIRED ON)
@@ -111,6 +112,7 @@ target_link_libraries(${{PROJECT_NAME}}-utils
     Microsoft::DirectXTK
     ${{OpenCV_LIBS}}
     plog::plog
+    Tesseract::libtesseract
     ${{PROJECT_NAME}}-std
 )
 target_link_options(${{PROJECT_NAME}}-utils
