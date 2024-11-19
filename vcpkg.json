@@ -11,7 +11,8 @@
       ]
     },
     "plog",
-    "protobuf"
+    "protobuf",
+    "tesseract"
   ],
   "overrides": [
     {
