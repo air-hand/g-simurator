@@ -64,9 +64,10 @@ void CaptureContext::Init() /*const*/ noexcept
     device_ = device.as<Device>();
 }
 
-void CaptureContext::Finalize() const noexcept
+void CaptureContext::Finalize() noexcept
 {
     DEBUG_LOG_SPAN(_);
+    device_ = nullptr;
     winrt::uninit_apartment();
 }
 
