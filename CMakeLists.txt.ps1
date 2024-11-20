@@ -12,6 +12,7 @@ $content = (@'
 cmake_minimum_required(VERSION 3.29)
 cmake_policy(SET CMP0155 NEW)
 
+
 project(simurator)
 
 find_package(directxtk CONFIG REQUIRED)
@@ -194,6 +195,26 @@ target_link_options(${{PROJECT_NAME}}-test
 add_test(NAME test COMMAND ${{PROJECT_NAME}}-test)
 
 #gtest_discover_tests(${{PROJECT_NAME}}-test)
+
+# tessdata
+set(FILES_TO_DOWNLOAD
+    "https://github.com/tesseract-ocr/tessdata/raw/main/eng.traineddata|$ENV{{TESSDATA_PREFIX}}/eng.traineddata|DAA0C97D651C19FBA3B25E81317CD697E9908C8208090C94C3905381C23FC047"
+    "https://github.com/tesseract-ocr/tessdata/raw/main/jpn.traineddata|$ENV{{TESSDATA_PREFIX}}/jpn.traineddata|6F416B902D129D8CC28E99C33244034B1CF52549E8560F6320B06D317852159A"
+)
+
+foreach(files ${{FILES_TO_DOWNLOAD}})
+    string(REPLACE "|" ";" files_list ${{files}})
+    list(GET files_list 0 URL)
+    list(GET files_list 1 DEST)
+    list(GET files_list 2 SHA256_HASH)
+
+    file(DOWNLOAD
+        ${{URL}}
+        ${{DEST}}
+        EXPECTED_HASH SHA256=${{SHA256_HASH}}
+        SHOW_PROGRESS
+    )
+endforeach()
 
 # Lint
 find_program(CPPCHECK_EXECUTABLE NAMES cppcheck)

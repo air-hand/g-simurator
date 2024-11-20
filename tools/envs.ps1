@@ -35,4 +35,6 @@ $vcpkg_tools_path = (vcpkg env --tools "echo %PATH%")
 # avoid arch mismatch by adding to the end
 $Env:PATH = "${Env:PATH};${vcpkg_tools_path}"
 
+$Env:TESSDATA_PREFIX=(Resolve-Path $PSScriptRoot\..\tessdata)
+
 $Env:ENVS_PS1_LOADED = "1"

@@ -1,30 +1,75 @@
 module;
 
-#include <tesseract/baseapi.h>
 #include <opencv2/opencv.hpp>
+#include <tesseract/baseapi.h>
+
+#include "macro.hpp"
+#include "logger.hpp"
 
 module utils;
 
-namespace
-{
-
-std::string foo(const cv::Mat& image)
-{
-    tesseract::TessBaseAPI tess;
-    tess.SetImage(image.data, image.cols, image.rows, 1, image.step);
-    const char* output = tess.GetUTF8Text();
-    std::string out(output);
-    delete[] output;
-    return out;
-}
-
-}
+import std;
+import :logger;
+import :recognize;
 
 namespace sim::utils::recognize
 {
-RecognizeText::RecognizeText()
+
+class RecognizeText::Impl
 {
-    cv::Mat image;
-    foo(image);
+public:
+    Impl() : tess_()
+    {
+        tess_.Init(nullptr, "eng");
+    }
+    ~Impl()
+    {
+        tess_.End();
+    }
+
+    DELETE_COPY_AND_ASSIGN(Impl);
+
+    std::string ImageToText(const cv::Mat& image)
+    {
+        tess_.Clear();
+        tess_.SetImage(image.data, image.cols, image.rows, 1, image.step);
+        const char* output = tess_.GetUTF8Text();
+        std::string out(output);
+        delete[] output;
+        DEBUG_LOG_ARGS("Recognized: [{}]", out);
+        return out;
+    }
+private:
+    tesseract::TessBaseAPI tess_;
+};
+
+RecognizeText::RecognizeText() : impl_(std::make_unique<Impl>())
+{
 }
+
+RecognizeText::~RecognizeText() = default;
+
+RecognizeText& RecognizeText::Get()
+{
+    static RecognizeText inst;
+    return inst;
+}
+
+std::string RecognizeText::ImageToText(const cv::Mat& image)
+{
+    return impl_->ImageToText(image);
+}
+
+std::string RecognizeText::ImageToText(const std::filesystem::path& path)
+{
+    const auto image = cv::imread(path.string());
+    cv::Mat optimized = image(cv::Rect(0, 0, 400, 180)); //
+    const auto output = path.parent_path() / (path.stem().string() + "_optimized" + path.extension().string());
+    DEBUG_LOG_ARGS("Output to {}", output.string());
+//    cv::resize(image, optimized, cv::Size(), 0.5, 0.5); // resize 50%
+    cv::imwrite(output.string(), optimized);
+//    return ImageToText(optimized);
+    return ImageToText(image);
+}
+
 }

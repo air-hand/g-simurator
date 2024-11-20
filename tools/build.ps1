@@ -20,13 +20,17 @@ Get-ChildItem ./src -Include "*.proto" -Recurse | % { Split-Path $_ -Parent } | 
     protoc -I"./${_}" --cpp_out="./${_}/gen" "./${_}/*.proto"
 }
 
-Get-ChildItem ./ -Include "CMakeList.txt" -Exclude @("./build", "./tools") -Recurse | Sort-Object | % {
-    Remove-Item $_
+Get-ChildItem ./ -Exclude @(".git", "build", "tools", "vcpkg_installed") | ForEach-Object -Parallel {
+    Get-ChildItem $_.FullName -Include "CMakeLists.txt" -Recurse | % {
+        Write-Host "Remove ${_}"
+        Remove-Item $_
+    }
 }
-
-Get-ChildItem ./ -Include "CMake*.ps1" -Exclude @("./build", "./tools") -Recurse | Sort-Object | % {
-    Write-Host "Running $_"
-    pwsh $_
+Get-ChildItem ./ -Exclude @(".git", "build", "tools", "vcpkg_installed") | ForEach-Object -Parallel {
+    Get-ChildItem $_.FullName -Include "CMake*.ps1" -Recurse | Sort-Object | % {
+        Write-Host "Running ${_}"
+        pwsh $_
+    }
 }
 
 $Env:CMAKE_BUILD_PARALLEL_LEVEL = ([int]$Env:NUMBER_OF_PROCESSORS * 2)

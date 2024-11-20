@@ -40,6 +40,12 @@ public:
             return 1;
         }
 
+        {
+            DEBUG_LOG("recognize...");
+            auto& recognizer = utils::recognize::RecognizeText::Get();
+            recognizer.ImageToText(route_path_);
+        }
+
 #ifdef DEBUG // test code
         {
             const auto desktop = window::Window(GetDesktopWindow());
