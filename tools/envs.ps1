@@ -6,6 +6,8 @@ if ($Env:ENVS_PS1_LOADED -eq "1") {
 
 chcp 65001
 
+cd $PSScriptRoot
+
 if ($Env:VCINSTALLDIR -eq $null) {
     Import-Module $PSScriptRoot\vs_utils.psm1
     SetupPathToVSInstaller

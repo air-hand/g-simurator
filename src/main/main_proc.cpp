@@ -40,6 +40,7 @@ public:
             return 1;
         }
 
+        if (route_path_.extension() == ".png")
         {
             DEBUG_LOG("recognize...");
             auto& recognizer = utils::recognize::RecognizeText::Get();

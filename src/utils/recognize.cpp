@@ -20,7 +20,7 @@ class RecognizeText::Impl
 public:
     Impl() : tess_()
     {
-        tess_.Init(nullptr, "eng");
+        tess_.Init(nullptr, "jpn");
     }
     ~Impl()
     {
@@ -62,14 +62,17 @@ std::string RecognizeText::ImageToText(const cv::Mat& image)
 
 std::string RecognizeText::ImageToText(const std::filesystem::path& path)
 {
+    DEBUG_LOG_SPAN(_);
     const auto image = cv::imread(path.string());
-    cv::Mat optimized = image(cv::Rect(0, 0, 400, 180)); //
+    cv::Mat optimized = image(cv::Rect(0, 0, 400, 200));
+//    cv::Mat optimized = image(cv::Rect(0, 0, 2560, 1440));
+    cv::cvtColor(optimized, optimized, cv::COLOR_BGR2GRAY);
+    cv::threshold(optimized, optimized, 128, 255, cv::THRESH_BINARY);
     const auto output = path.parent_path() / (path.stem().string() + "_optimized" + path.extension().string());
     DEBUG_LOG_ARGS("Output to {}", output.string());
 //    cv::resize(image, optimized, cv::Size(), 0.5, 0.5); // resize 50%
     cv::imwrite(output.string(), optimized);
-//    return ImageToText(optimized);
-    return ImageToText(image);
+    return ImageToText(optimized);
 }
 
 }

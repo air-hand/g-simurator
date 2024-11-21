@@ -31,6 +31,7 @@ set(CXX_FLAGS_SHARED
     "/Zc:__cplusplus"
     "/utf-8"
     "/EHsc"
+    "/analyze" # https://learn.microsoft.com/en-us/cpp/code-quality/code-analysis-for-c-cpp-overview?view=msvc-170#command-line-support
     # disable warnings
     "/wd4267"
     "/wd4365"
