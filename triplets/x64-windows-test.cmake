@@ -3,9 +3,15 @@ set(VCPKG_CRT_LINKAGE dynamic)
 set(VCPKG_LIBRARY_LINKAGE dynamic)
 
 # /permissive for protobuf.
-set(VCPKG_CXX_FLAGS "/std:c++latest /Zc:__cplusplus /permissive /utf-8" CACHE STRING "")
-set(VCPKG_C_FLAGS "/std:c17 /utf-8" CACHE STRING "")
+set(VCPKG_CXX_FLAGS "/Zc:__cplusplus /permissive /utf-8" CACHE STRING "")
+set(VCPKG_C_FLAGS "/utf-8" CACHE STRING "")
+#
+## force C++17 to opencv4
+##set(CMAKE_CXX_STANDARD 14 CACHE STRING "")
+##set(CMAKE_CXX_STANDARD_REQUIRED ON)
+#set(CMAKE_CXX_STANDARD 20)
+#set(CMAKE_CXX_STANDARD_REQUIRED ON)
 
-# force C++latest to opencv4
-set(CMAKE_CXX_STANDARD 23 CACHE STRING "Use C++23")
-set(CMAKE_CXX_STANDARD_REQUIRED ON)
+#set(CMAKE_CUDA_STANDARD 20 CACHE STRING "")
+#set(CMAKE_CUDA_STANDARD_REQUIRED ON)
+#set(CUDA_NVCC_FLAGS ${CUDA_NVCC_FLAGS} --std c++20;--verbose)
