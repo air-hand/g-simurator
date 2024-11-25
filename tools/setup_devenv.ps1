@@ -32,6 +32,7 @@ Function InstallOthers() {
     if (-not(Get-Command nvcc -ErrorAction SilentlyContinue)) {
         Write-Host "nvcc not found."
         winget install -e --id Nvidia.CUDA -v "12.6" --silent --disable-interactivity --accept-source-agreements --override "-s nvcc_12.6 npp_12.6 --installpath=${Env:AppData}\CUDA"
+        Get-ChildItem $Env:AppData\CUDA
     }
 }
 
