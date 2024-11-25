@@ -1,11 +1,12 @@
 {
-  "builtin-baseline": "834977918592e4f5d5ec5fe48ba338c608faf9f9",
+  "builtin-baseline": "5e5d0e1cd7785623065e77eff011afdeec1a3574",
   "dependencies": [
     "boost-program-options",
     "directxtk",
     "gtest",
     {
       "name": "opencv4",
+      "default-features": false,
       "features": [
         "cuda",
         "jpeg"
@@ -15,11 +16,11 @@
     "protobuf",
     "tesseract"
   ],
-  "$overrides": [
+  "overrides": [
     {
-      "$comment": "protobuf 3.25.1 and later have a bug with MSVC /std:c++20 (/permissive-). https://github.com/microsoft/vcpkg/issues/39459",
-      "name": "protobuf",
-      "version": "3.21.12#4"
+      "$comment": "This is a comment",
+      "name": "opencv4",
+      "version": "4.10.0#1"
     }
   ]
 }

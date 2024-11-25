@@ -31,7 +31,7 @@ Function InstallVisualStudio([boolean]$clean) {
 Function InstallOthers() {
     if (-not(Get-Command nvcc -ErrorAction SilentlyContinue)) {
         Write-Host "nvcc not found."
-        winget install -e --id Nvidia.CUDA -v "12.6" --silent --disable-interactivity --accept-source-agreements
+        winget install -e --id Nvidia.CUDA -v "12.5" --silent --disable-interactivity --accept-source-agreements
     }
 }
 
