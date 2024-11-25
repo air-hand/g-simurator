@@ -29,11 +29,12 @@ Function InstallVisualStudio([boolean]$clean) {
 }
 
 Function InstallOthers() {
-    if (-not(Get-Command nvcc -ErrorAction SilentlyContinue)) {
-        Write-Host "nvcc not found."
-        winget install -e --id Nvidia.CUDA -v "12.6" --silent --disable-interactivity --accept-source-agreements --override "-s nvcc_12.6 npp_12.6 --installpath=${Env:AppData}\CUDA"
-        Get-ChildItem $Env:AppData\CUDA
-    }
+    winget install -e --id Nvidia.CUDA -v "12.6" --silent --disable-interactivity --accept-source-agreements `
+        --override "-s nvcc_12.6 npp_12.6"
+    $installed_path = "${Env:ProgramFiles}\NVIDIA GPU Computing Toolkit\CUDA\v12.6"
+    Get-ChildItem $installed_path
+    (Get-ChildItem Env: | % { "{0}: {1}" -F ($_.Key, $_.Value) })
+    $Env:CUDA_PATH = $installed_path
 }
 
 Function Main([boolean]$clean) {
