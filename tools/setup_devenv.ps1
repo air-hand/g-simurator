@@ -29,9 +29,26 @@ Function InstallVisualStudio([boolean]$clean) {
 }
 
 Function InstallOthers() {
-    winget install -e --id Nvidia.CUDA -v "12.6" --silent --disable-interactivity --accept-source-agreements `
-        --override "-s nvcc_12.6 npp_12.6 cudart_12.6 -n"
-    $installed_path = "${Env:ProgramFiles}\NVIDIA GPU Computing Toolkit\CUDA\v12.6"
+    $cuda_version = "12.6"
+    winget uninstall -e --id Nvidia.CUDA -v $cuda_version --silent --disable-interactivity
+    # https://docs.nvidia.com/cuda/cuda-installation-guide-microsoft-windows/#id3
+    $sub_packages = @(
+        "nvcc_${cuda_version}"
+        , "nvml_dev_${cuda_version}"
+        , "nvrtc_dev_${cuda_version}"
+        , "npp_${cuda_version}"
+        , "npp_dev_${cuda_version}"
+        , "nvjpeg_dev_${cuda_version}"
+        , "cudart_${cuda_version}"
+        , "cublas_dev_${cuda_version}"
+        , "cufft_dev_${cuda_version}"
+        , "curand_dev_${cuda_version}"
+        , "cusolver_dev_${cuda_version}"
+        , "cusparse_dev_${cuda_version}"
+    )
+    winget install -e --id Nvidia.CUDA -v $cuda_version --silent --disable-interactivity --accept-source-agreements `
+        --override ("-s {0} -n" -F ($sub_packages -join " "))
+    $installed_path = "${Env:ProgramFiles}\NVIDIA GPU Computing Toolkit\CUDA\v${cuda_version}"
     if (-not(Test-Path $installed_path)) {
         throw "CUDA not found."
     }
