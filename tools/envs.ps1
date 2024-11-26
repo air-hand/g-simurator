@@ -22,8 +22,10 @@ if ($Env:VCINSTALLDIR -eq $null) {
 $Env:VCPKG_ROOT = $PSScriptRoot + '\vendor\vcpkg'
 $Env:PATH = "${Env:VCPKG_ROOT};${Env:PATH}"
 if (-not(Test-Path "${Env:VCPKG_ROOT}\.git")) {
-    git clone https://github.com/microsoft/vcpkg.git $Env:VCPKG_ROOT
+#    git clone https://github.com/microsoft/vcpkg.git $Env:VCPKG_ROOT
+    git clone https://github.com/air-hand/vcpkg.git $Env:VCPKG_ROOT
     pushd $Env:VCPKG_ROOT > $null
+    git switch opencv-cuda
     .\bootstrap-vcpkg.bat
     popd > $null
 }
