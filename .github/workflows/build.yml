@@ -42,8 +42,8 @@ jobs:
     - name: Setup development environment
       run: |
         .\tools\setup_devenv.ps1
-        (Get-ChildItem Env: | % { "{0}: {1}" -F ($_.Key, $_.Value) })
-        exit 1
+        echo "CUDA_PATH=${Env:CUDA_PATH}" >> $Env:GITHUB_ENV
+        echo "${Env:CUDA_PATH}\bin" >> $Env:GITHUB_PATH
 
     - name: Build
       run: |

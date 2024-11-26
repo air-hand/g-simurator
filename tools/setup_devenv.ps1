@@ -36,6 +36,7 @@ Function InstallOthers() {
         throw "CUDA not found."
     }
     $Env:CUDA_PATH = $installed_path
+    $Env:PATH = "${Env:CUDA_PATH}\bin;${Env:PATH}"
 }
 
 Function Main([boolean]$clean) {
