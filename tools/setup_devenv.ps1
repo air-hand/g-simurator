@@ -30,10 +30,11 @@ Function InstallVisualStudio([boolean]$clean) {
 
 Function InstallOthers() {
     winget install -e --id Nvidia.CUDA -v "12.6" --silent --disable-interactivity --accept-source-agreements `
-        --override "-s nvcc_12.6 npp_12.6"
+        --override "-n -s nvcc_12.6 npp_12.6"
     $installed_path = "${Env:ProgramFiles}\NVIDIA GPU Computing Toolkit\CUDA\v12.6"
-    Get-ChildItem $installed_path
-    (Get-ChildItem Env: | % { "{0}: {1}" -F ($_.Key, $_.Value) })
+    if (-not(Test-Path $installed_path)) {
+        throw "CUDA not found."
+    }
     $Env:CUDA_PATH = $installed_path
 }
 

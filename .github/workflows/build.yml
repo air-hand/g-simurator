@@ -40,7 +40,10 @@ jobs:
           core.exportVariable('ACTIONS_RUNTIME_TOKEN', process.env.ACTIONS_RUNTIME_TOKEN || '');
 
     - name: Setup development environment
-      run: .\tools\setup_devenv.ps1
+      run: |
+        .\tools\setup_devenv.ps1
+        (Get-ChildItem Env: | % { "{0}: {1}" -F ($_.Key, $_.Value) })
+        exit 1
 
     - name: Build
       run: |
