@@ -37,6 +37,7 @@ Function InstallOthers() {
     }
     $Env:CUDA_PATH = $installed_path
     $Env:PATH = "${Env:CUDA_PATH}\bin;${Env:PATH}"
+    [System.Environment]::SetEnvironmentVariable("CUDA_PATH", $Env:CUDA_PATH, [System.EnvironmentVariableTarget]::User)
 }
 
 Function Main([boolean]$clean) {
