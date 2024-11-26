@@ -6,7 +6,7 @@
       "name": "microsoft"
     }
   ],
-  "$overlay-triplets": [
+  "overlay-triplets": [
     "./triplets"
   ]
 }
