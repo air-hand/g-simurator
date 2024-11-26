@@ -9,7 +9,8 @@
       "default-features": false,
       "features": [
         "cuda",
-        "jpeg"
+        "jpeg",
+        "highgui"
       ]
     },
     "plog",
