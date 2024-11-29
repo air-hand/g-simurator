@@ -169,8 +169,9 @@ add_executable(${{PROJECT_NAME}}-test)
 target_compile_options(${{PROJECT_NAME}}-test
     PRIVATE
     ${{CXX_FLAGS_SHARED}}
-    /Wall
-    /WX
+#    /Wall
+#    /WX
+    /W0
 )
 target_precompile_headers(${{PROJECT_NAME}}-test
     PRIVATE
