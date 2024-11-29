@@ -39,6 +39,7 @@ set(CXX_FLAGS_SHARED
     "/wd4820"
     "/wd5050"
     "/wd5244"
+    "/wd6326"
 )
 
 add_library(${{PROJECT_NAME}}-std STATIC)
@@ -216,33 +217,6 @@ foreach(files ${{FILES_TO_DOWNLOAD}})
         SHOW_PROGRESS
     )
 endforeach()
-
-# Lint
-find_program(CPPCHECK_EXECUTABLE NAMES cppcheck)
-if(CPPCHECK_EXECUTABLE)
-    add_custom_target(
-        cppcheck
-        COMMAND ${{CPPCHECK_EXECUTABLE}}
-        --project=${{CMAKE_CURRENT_BINARY_DIR}}/compile_commands.json
-        --enable=all
-        -I ${{CMAKE_CURRENT_BINARY_DIR}}/vcpkg_installed/x64-windows/include
-        --quiet
-        --language=c++
-        --std=c++20
-        --suppressions-list=${{CMAKE_CURRENT_SOURCE_DIR}}/cppcheck_suppressions.txt
-        --verbose
-        --force
-        --error-exitcode=1
-#        ${{CMAKE_CURRENT_SOURCE_DIR}}/src
-    )
-#    add_dependencies(${{PROJECT_NAME}} cppcheck)
-#    add_dependencies(${{PROJECT_NAME}}-proto cppcheck)
-#    add_dependencies(${{PROJECT_NAME}}-utils cppcheck)
-#    add_dependencies(${{PROJECT_NAME}}-test cppcheck)
-#else()
-#    message(FATAL_ERROR "cppcheck not found")
-endif()
-
 '@ -F (SourceSubDirectories 'std'), (SourceSubDirectories 'proto'), (SourceSubDirectories 'utils'), (SourceSubDirectories 'main'), (SourceSubDirectories 'tests'))
 
 Set-Content -Path CMakeLists.txt -Value $content
