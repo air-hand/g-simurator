@@ -68,11 +68,5 @@ if ($? -ne $true) {
     throw "Build failed."
 }
 
-#Invoke-Expression -Command (@(
-#    "cppcheck",
-#    "--project=build/compile_commands.json",
-#    "--enable=all",
-#    "--quiet",)
-#cppcheck --project=build/compile_commands.json --enable=all --inconclusive --force --inline-suppr --xml 2> cppcheck.xml
 # https://discourse.cmake.org/t/ctest-scripting-cmake-presets/9610/2
 #ctest --build .\build --preset=test -C Debug
