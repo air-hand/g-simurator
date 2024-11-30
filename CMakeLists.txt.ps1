@@ -22,6 +22,7 @@ find_package(protobuf CONFIG REQUIRED)
 find_package(boost_program_options CONFIG REQUIRED)
 find_package(Tesseract CONFIG REQUIRED)
 
+set(CMAKE_CXX_COMPILER "$ENV{{CXX}}")
 set(CMAKE_CXX_STANDARD 23) # c++latest
 set(CMAKE_CXX_STANDARD_REQUIRED ON)
 #set(CMAKE_CXX_FLAGS "-Wall")
@@ -62,7 +63,7 @@ set_target_properties(${{PROJECT_NAME}}-proto
 target_compile_options(${{PROJECT_NAME}}-proto
     PRIVATE
     ${{CXX_FLAGS_SHARED}}
-    /W0
+    /w
 )
 
 target_include_directories(${{PROJECT_NAME}}-proto
@@ -74,128 +75,123 @@ target_link_libraries(${{PROJECT_NAME}}-proto
     protobuf::libprotobuf
 )
 
-#add_library(${{PROJECT_NAME}}-utils SHARED)
-add_library(${{PROJECT_NAME}}-utils STATIC)
-{2}
-
-set_target_properties(${{PROJECT_NAME}}-utils
-    PROPERTIES
-    CXX_VISIBILITY_PRESET hidden
-)
-
-target_compile_options(${{PROJECT_NAME}}-utils
-    PRIVATE
-    ${{CXX_FLAGS_SHARED}}
-    /Wall
-    /WX
-)
-target_compile_definitions(${{PROJECT_NAME}}-utils
-    PRIVATE
-)
-target_precompile_headers(${{PROJECT_NAME}}-utils
-    PRIVATE
-    ${{CMAKE_CURRENT_SOURCE_DIR}}/src/std/pch.hpp
-)
-
-target_include_directories(${{PROJECT_NAME}}-utils
-    PRIVATE
-    ${{OpenCV_INCLUDE_DIRS}}
-    ${{CMAKE_CURRENT_SOURCE_DIR}}/src
-)
-#target_include_directories(${{PROJECT_NAME}}-utils
-#    PUBLIC
-#    ${{CMAKE_CURRENT_BINARY_DIR}}
+##add_library(${{PROJECT_NAME}}-utils SHARED)
+#add_library(${{PROJECT_NAME}}-utils STATIC)
+#{2}
+#
+#set_target_properties(${{PROJECT_NAME}}-utils
+#    PROPERTIES
+#    CXX_VISIBILITY_PRESET hidden
 #)
-
-target_link_libraries(${{PROJECT_NAME}}-utils
-    PRIVATE
-    d3d11.lib
-    dxgi.lib
-    uuid.lib
-    Microsoft::DirectXTK
-    ${{OpenCV_LIBS}}
-    plog::plog
-    Tesseract::libtesseract
-    ${{PROJECT_NAME}}-std
-)
-target_link_options(${{PROJECT_NAME}}-utils
-    PRIVATE
-    /WX
-)
-
-add_executable(${{PROJECT_NAME}})
-{3}
-
-target_compile_options(${{PROJECT_NAME}}
-    PRIVATE
-    ${{CXX_FLAGS_SHARED}}
-    /Wall
-    /WX
-    /Qspectre
-    /wd5045
-)
-target_precompile_headers(${{PROJECT_NAME}}
-    PRIVATE
-    ${{CMAKE_CURRENT_SOURCE_DIR}}/src/std/pch.hpp
-)
-
-target_include_directories(${{PROJECT_NAME}}
-    PRIVATE
-    ${{OpenCV_INCLUDE_DIRS}}
-    ${{CMAKE_CURRENT_SOURCE_DIR}}/src
-    ${{CMAKE_CURRENT_SOURCE_DIR}}/src/main
-)
-
-target_link_libraries(${{PROJECT_NAME}}
-    PRIVATE
-    Microsoft::DirectXTK
-    Boost::program_options
-    ${{PROJECT_NAME}}-std
-    ${{PROJECT_NAME}}-proto
-    ${{PROJECT_NAME}}-utils
-)
-target_link_options(${{PROJECT_NAME}}
-    PRIVATE
-    /WX
-)
-
-# tests
-enable_testing()
-
-find_package(GTest CONFIG REQUIRED)
-add_executable(${{PROJECT_NAME}}-test)
-{4}
-
-target_compile_options(${{PROJECT_NAME}}-test
-    PRIVATE
-    ${{CXX_FLAGS_SHARED}}
+#
+#target_compile_options(${{PROJECT_NAME}}-utils
+#    PRIVATE
+#    ${{CXX_FLAGS_SHARED}}
 #    /Wall
 #    /WX
-    /W0
-)
-target_precompile_headers(${{PROJECT_NAME}}-test
-    PRIVATE
-    ${{CMAKE_CURRENT_SOURCE_DIR}}/src/std/pch.hpp
-)
+#)
+#target_compile_definitions(${{PROJECT_NAME}}-utils
+#    PRIVATE
+#)
+#target_precompile_headers(${{PROJECT_NAME}}-utils
+#    PRIVATE
+#    ${{CMAKE_CURRENT_SOURCE_DIR}}/src/std/pch.hpp
+#)
+#
+#target_include_directories(${{PROJECT_NAME}}-utils
+#    PRIVATE
+#    ${{OpenCV_INCLUDE_DIRS}}
+#    ${{CMAKE_CURRENT_SOURCE_DIR}}/src
+#)
+#
+#target_link_libraries(${{PROJECT_NAME}}-utils
+#    PRIVATE
+#    d3d11.lib
+#    dxgi.lib
+#    uuid.lib
+#    Microsoft::DirectXTK
+#    ${{OpenCV_LIBS}}
+#    plog::plog
+#    Tesseract::libtesseract
+#    ${{PROJECT_NAME}}-std
+#)
+#target_link_options(${{PROJECT_NAME}}-utils
+#    PRIVATE
+#    /WX
+#)
+#
+#add_executable(${{PROJECT_NAME}})
+#{3}
+#
+#target_compile_options(${{PROJECT_NAME}}
+#    PRIVATE
+#    ${{CXX_FLAGS_SHARED}}
+#    /Wall
+#    /WX
+#    /Qspectre
+#    /wd5045
+#)
+#target_precompile_headers(${{PROJECT_NAME}}
+#    PRIVATE
+#    ${{CMAKE_CURRENT_SOURCE_DIR}}/src/std/pch.hpp
+#)
+#
+#target_include_directories(${{PROJECT_NAME}}
+#    PRIVATE
+#    ${{OpenCV_INCLUDE_DIRS}}
+#    ${{CMAKE_CURRENT_SOURCE_DIR}}/src
+#    ${{CMAKE_CURRENT_SOURCE_DIR}}/src/main
+#)
+#
+#target_link_libraries(${{PROJECT_NAME}}
+#    PRIVATE
+#    Microsoft::DirectXTK
+#    Boost::program_options
+#    ${{PROJECT_NAME}}-std
+#    ${{PROJECT_NAME}}-proto
+#    ${{PROJECT_NAME}}-utils
+#)
+#target_link_options(${{PROJECT_NAME}}
+#    PRIVATE
+#    /WX
+#)
 
-target_include_directories(${{PROJECT_NAME}}-test
-    PRIVATE
-    ${{CMAKE_CURRENT_SOURCE_DIR}}/src
-    ${{CMAKE_CURRENT_SOURCE_DIR}}/src/tests
-)
+# tests
+#enable_testing()
 
-target_link_libraries(${{PROJECT_NAME}}-test
-    PRIVATE
-    GTest::gtest GTest::gtest_main GTest::gmock GTest::gmock_main
-    ${{PROJECT_NAME}}-std
-    ${{PROJECT_NAME}}-utils
-)
-target_link_options(${{PROJECT_NAME}}-test
-    PRIVATE
-    /WX
-)
-
-add_test(NAME test COMMAND ${{PROJECT_NAME}}-test)
+#find_package(GTest CONFIG REQUIRED)
+#add_executable(${{PROJECT_NAME}}-test)
+#{4}
+#
+#target_compile_options(${{PROJECT_NAME}}-test
+#    PRIVATE
+#    ${{CXX_FLAGS_SHARED}}
+#    /Wall
+#    /WX
+#)
+#target_precompile_headers(${{PROJECT_NAME}}-test
+#    PRIVATE
+#    ${{CMAKE_CURRENT_SOURCE_DIR}}/src/std/pch.hpp
+#)
+#
+#target_include_directories(${{PROJECT_NAME}}-test
+#    PRIVATE
+#    ${{CMAKE_CURRENT_SOURCE_DIR}}/src
+#    ${{CMAKE_CURRENT_SOURCE_DIR}}/src/tests
+#)
+#
+#target_link_libraries(${{PROJECT_NAME}}-test
+#    PRIVATE
+#    GTest::gtest GTest::gtest_main GTest::gmock GTest::gmock_main
+#    ${{PROJECT_NAME}}-std
+#    ${{PROJECT_NAME}}-utils
+#)
+#target_link_options(${{PROJECT_NAME}}-test
+#    PRIVATE
+#    /WX
+#)
+#
+#add_test(NAME test COMMAND ${{PROJECT_NAME}}-test)
 
 #gtest_discover_tests(${{PROJECT_NAME}}-test)
 

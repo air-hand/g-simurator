@@ -1,6 +1,11 @@
 module;
 
+#pragma warning(push, 2)
+#pragma warning(disable: 6269)
+#pragma warning(disable: 6294)
+#pragma warning(disable: 6201)
 #include <opencv2/opencv.hpp>
+#pragma warning(pop)
 
 #include "macro.hpp"
 
@@ -18,15 +23,10 @@ public:
 
     DELETE_COPY_AND_ASSIGN(RecognizeText);
 
-//#if 0
     static RecognizeText& Get();
-
-//    void Init();
-//    void Finalize();
 
     std::string ImageToText(const cv::Mat& image);
     std::string ImageToText(const std::filesystem::path& path);
-//#endif
 
 private:
     RecognizeText();

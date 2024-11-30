@@ -30,6 +30,8 @@ if (-not(Test-Path "${Env:VCPKG_ROOT}\.git")) {
     popd > $null
 }
 
+$Env:CXX = (Get-Command "clang-cl.exe").Source
+
 cd $PSScriptRoot\..
 
 $Env:VCPKG_TARGET_TRIPLET = "x64-windows"

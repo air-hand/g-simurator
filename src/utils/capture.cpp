@@ -4,13 +4,13 @@ module;
 // https://tips.hecomi.com/entry/2021/03/23/230947
 
 #include <wincodec.h>
-#include <directxtk/ScreenGrab.h>
+//#include <directxtk/ScreenGrab.h>
 #include <winrt/Windows.Foundation.Collections.h>
 #include <winrt/Windows.Graphics.Capture.h>
 #include <Windows.Graphics.Capture.Interop.h>
-#include <winrt/Windows.Graphics.DirectX.h>
-#include <winrt/Windows.Graphics.DirectX.Direct3d11.h>
-#include <Windows.Graphics.DirectX.Direct3D11.Interop.h>
+//#include <winrt/Windows.Graphics.DirectX.h>
+//#include <winrt/Windows.Graphics.DirectX.Direct3d11.h>
+//#include <Windows.Graphics.DirectX.Direct3D11.Interop.h>
 
 #include "macro.hpp"
 #include "logger.hpp"
