@@ -12,7 +12,6 @@ public:
     Impl() {}
     ~Impl() {};
 
-#ifdef DEBUG
     void EnumWindows() const
     {
         // https://docs.microsoft.com/en-us/windows/win32/api/winuser/nf-winuser-enumwindows
@@ -25,13 +24,12 @@ public:
                 return TRUE;
             }
             wchar_t windowTitle[256] = {NULL};
-            GetWindowTextW(hWnd, windowTitle, sizeof(windowTitle));
+            GetWindowTextW(hWnd, windowTitle, std::size(windowTitle));
             
             logging::log(windowTitle);
             return TRUE;
         }, NULL);
     }
-#endif
 
     std::unique_ptr<Window> Find(const std::string& windowName) const
     {

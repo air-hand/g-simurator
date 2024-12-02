@@ -40,6 +40,7 @@ public:
             return 1;
         }
 
+#ifdef DEBUG // test code
         if (route_path_.extension() == ".png")
         {
             DEBUG_LOG("recognize...");
@@ -47,7 +48,6 @@ public:
             recognizer.ImageToText(route_path_);
         }
 
-#ifdef DEBUG // test code
         {
             const auto desktop = window::Window(GetDesktopWindow());
             desktop.Activate();
@@ -61,7 +61,8 @@ public:
         const auto windowName = route.window_name();
         const window::WindowInspector inspector {};
         const auto window = inspector.Find(windowName);
-        if (window == nullptr) {
+        if (window == nullptr)
+        {
             logging::log("Window not found: [{}]", windowName);
             return 1;
         }

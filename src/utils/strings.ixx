@@ -16,9 +16,6 @@ export template<
 >
 auto fmt(const CharT* format, Args&&... args)
 {
-    constexpr bool all_valid = (... && (std::is_arithmetic_v<Args> || std::is_convertible_v<Args, std::basic_string<CharT>>));
-    static_assert(all_valid, "fmt arguments must be number or string types.");
-
     constexpr const std::size_t size = sizeof...(Args);
     std::basic_string<CharT> buf;
     if constexpr (size == 0)
