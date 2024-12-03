@@ -6,6 +6,7 @@ export import :image;
 export import :logger;
 export import :recognize;
 export import :strings;
+export import :task;
 export import :time;
 export import :unicode;
 export import :window;

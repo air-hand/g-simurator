@@ -1,6 +1,6 @@
 #pragma once
 
-#include "proto/route.hpp"
+#include "proto/gen/route.pb.h"
 #include "utils/macro.hpp"
 
 import std;

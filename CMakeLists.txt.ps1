@@ -13,7 +13,7 @@ cmake_minimum_required(VERSION 3.29)
 cmake_policy(SET CMP0155 NEW)
 
 
-project(simurator)
+project(simurator LANGUAGES CXX CUDA)
 
 find_package(directxtk CONFIG REQUIRED)
 find_package(plog CONFIG REQUIRED)
@@ -21,6 +21,7 @@ find_package(OpenCV CONFIG REQUIRED)
 find_package(protobuf CONFIG REQUIRED)
 find_package(boost_program_options CONFIG REQUIRED)
 find_package(Tesseract CONFIG REQUIRED)
+find_package(CUDAToolkit REQUIRED)
 
 set(CMAKE_CXX_STANDARD 23) # c++latest
 set(CMAKE_CXX_STANDARD_REQUIRED ON)
@@ -104,6 +105,7 @@ target_precompile_headers(${{PROJECT_NAME}}-utils
 target_include_directories(${{PROJECT_NAME}}-utils
     PRIVATE
     ${{OpenCV_INCLUDE_DIRS}}
+    ${{CUDAToolkit_INCLUDE_DIRS}}
     ${{CMAKE_CURRENT_SOURCE_DIR}}/src
 )
 
@@ -114,6 +116,7 @@ target_link_libraries(${{PROJECT_NAME}}-utils
     uuid.lib
     Microsoft::DirectXTK
     ${{OpenCV_LIBS}}
+    ${{CUDAToolkit_LIBRARY_DIR}}
     plog::plog
     Tesseract::libtesseract
     ${{PROJECT_NAME}}-std
