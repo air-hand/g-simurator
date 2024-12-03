@@ -1,14 +1,9 @@
 module;
 
-#pragma warning(push, 1)
-#pragma warning(disable: 28253)
-#pragma warning(disable: 28252)
-#pragma warning(disable: 2)
 #include <winrt/Windows.Graphics.DirectX.h>
 #include <winrt/Windows.Graphics.DirectX.Direct3d11.h>
 #include <Windows.Graphics.DirectX.Direct3D11.Interop.h>
 #include <directxtk/ScreenGrab.h>
-#pragma warning(pop)
 
 #include "macro.hpp"
 
