@@ -1,11 +1,6 @@
 module;
 
-#pragma warning(push, 2)
-#pragma warning(disable: 6269)
-#pragma warning(disable: 6294)
-#pragma warning(disable: 6201)
 #include <opencv2/opencv.hpp>
-#pragma warning(pop)
 
 #include "macro.hpp"
 
