@@ -22,37 +22,37 @@ import :logger;
 namespace sim::utils::image
 {
 
-cv::cuda::GpuMat crop(const cv::cuda::GpuMat& input, const cv::Rect& roi)
-{
-    return input(roi);
-}
-
-cv::cuda::GpuMat grayScale(const cv::cuda::GpuMat& input)
-{
-    cv::cuda::GpuMat output;
-    cv::cuda::cvtColor(input, output, cv::COLOR_BGR2GRAY);
-    return output;
-}
-
-cv::cuda::GpuMat threshold(const cv::cuda::GpuMat& input)
-{
-    cv::cuda::GpuMat output;
-    cv::cuda::threshold(input, output, 128.0, 255.0, cv::THRESH_BINARY);
-    return output;
-}
-
-cv::Mat fromGPU(const cv::cuda::GpuMat& image)
-{
-    cv::Mat result;
-    image.download(result);
-    return result;
-}
-
-cv::cuda::GpuMat fromD3D11Texture2D([[maybe_unused]] const winrt::com_ptr<::ID3D11Texture2D>& texture)
-{
-    cv::cuda::GpuMat result;
-    assert(false);
-    return result;
-}
+//cv::cuda::GpuMat crop(const cv::cuda::GpuMat& input, const cv::Rect& roi)
+//{
+//    return input(roi);
+//}
+//
+//cv::cuda::GpuMat grayScale(const cv::cuda::GpuMat& input)
+//{
+//    cv::cuda::GpuMat output;
+//    cv::cuda::cvtColor(input, output, cv::COLOR_BGR2GRAY);
+//    return output;
+//}
+//
+//cv::cuda::GpuMat threshold(const cv::cuda::GpuMat& input)
+//{
+//    cv::cuda::GpuMat output;
+//    cv::cuda::threshold(input, output, 128.0, 255.0, cv::THRESH_BINARY);
+//    return output;
+//}
+//
+//cv::Mat fromGPU(const cv::cuda::GpuMat& image)
+//{
+//    cv::Mat result;
+//    image.download(result);
+//    return result;
+//}
+//
+//cv::cuda::GpuMat fromD3D11Texture2D([[maybe_unused]] const winrt::com_ptr<::ID3D11Texture2D>& texture)
+//{
+//    cv::cuda::GpuMat result;
+//    assert(false);
+//    return result;
+//}
 
 }

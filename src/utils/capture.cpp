@@ -151,7 +151,7 @@ private:
         winrt::Windows::Graphics::Capture::GraphicsCaptureItem item = { nullptr };
 
         auto activation_factory = winrt::get_activation_factory<decltype(item)>();
-        auto interop_factory = activation_factory.as<IGraphicsCaptureItemInterop>();
+        auto interop_factory = activation_factory.as<::IGraphicsCaptureItemInterop>();
         interop_factory->CreateForWindow(hwnd_, winrt::guid_of<ABI::Windows::Graphics::Capture::IGraphicsCaptureItem>(), reinterpret_cast<void**>(winrt::put_abi(item)));
         return item;
     }

@@ -2,6 +2,7 @@ export module utils;
 
 export import :capture;
 export import :file;
+export import :gpu;
 export import :image;
 export import :logger;
 export import :recognize;

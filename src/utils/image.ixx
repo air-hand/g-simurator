@@ -14,12 +14,12 @@ export module utils:image;
 namespace sim::utils::image
 {
 
-cv::cuda::GpuMat fromD3D11Texture2D(const winrt::com_ptr<::ID3D11Texture2D>& texture);
-
-cv::cuda::GpuMat crop(const cv::cuda::GpuMat& input, const cv::Rect& roi);
-cv::cuda::GpuMat grayScale(const cv::cuda::GpuMat& input);
-cv::cuda::GpuMat threshold(const cv::cuda::GpuMat& input);
-
-cv::Mat fromGPU(const cv::cuda::GpuMat& input);
+//cv::cuda::GpuMat fromD3D11Texture2D(const winrt::com_ptr<::ID3D11Texture2D>& texture);
+//
+//cv::cuda::GpuMat crop(const cv::cuda::GpuMat& input, const cv::Rect& roi);
+//cv::cuda::GpuMat grayScale(const cv::cuda::GpuMat& input);
+//cv::cuda::GpuMat threshold(const cv::cuda::GpuMat& input);
+//
+//cv::Mat fromGPU(const cv::cuda::GpuMat& input);
 
 }

@@ -93,6 +93,8 @@ target_compile_options(${{PROJECT_NAME}}-utils
     ${{CXX_FLAGS_SHARED}}
     /Wall
     /WX
+    /Qspectre
+    /wd5045
 )
 target_compile_definitions(${{PROJECT_NAME}}-utils
     PRIVATE
