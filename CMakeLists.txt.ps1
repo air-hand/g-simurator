@@ -25,8 +25,8 @@ find_package(CUDAToolkit REQUIRED)
 
 set(CMAKE_CXX_STANDARD 23) # c++latest
 set(CMAKE_CXX_STANDARD_REQUIRED ON)
-set(CMAKE_CXX_FLAGS_DEBUG "-DDEBUG")
-set(CMAKE_CXX_FLAGS_RELEASE "-DNDEBUG")
+set(CMAKE_CXX_FLAGS_DEBUG "-DDEBUG /MDd")
+set(CMAKE_CXX_FLAGS_RELEASE "-DNDEBUG /MD")
 set(CXX_FLAGS_SHARED
     "/Zc:__cplusplus"
     "/utf-8"
@@ -127,6 +127,7 @@ target_link_libraries(${{PROJECT_NAME}}-utils
 target_link_options(${{PROJECT_NAME}}-utils
     PRIVATE
     /WX
+    /VERBOSE
 )
 
 add_executable(${{PROJECT_NAME}})
