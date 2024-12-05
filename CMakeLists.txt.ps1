@@ -45,6 +45,7 @@ set(CXX_FLAGS_SHARED
     "/external:anglebrackets"
     "/external:W0"
 )
+set(CMAKE_MSVC_RUNTIME_LIBRARY "MultiThreaded$<$<CONFIG:Debug>:Debug>DLL")
 
 add_library(${{PROJECT_NAME}}-std STATIC)
 {0}
@@ -113,9 +114,9 @@ target_include_directories(${{PROJECT_NAME}}-utils
 
 target_link_libraries(${{PROJECT_NAME}}-utils
     PRIVATE
-    d3d11.lib
-    dxgi.lib
-    uuid.lib
+    d3d11
+    dxgi
+    uuid
     Microsoft::DirectXTK
     ${{OpenCV_LIBS}}
     ${{CUDAToolkit_LIBRARY_DIR}}
@@ -162,6 +163,7 @@ target_link_libraries(${{PROJECT_NAME}}
 target_link_options(${{PROJECT_NAME}}
     PRIVATE
     /WX
+    /NODEFAULTLIB:LIBCMT
 )
 
 # tests

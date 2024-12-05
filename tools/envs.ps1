@@ -38,11 +38,13 @@ $Env:VCPKG_TARGET_TRIPLET = "x64-windows"
 vcpkg install --triplet $Env:VCPKG_TARGET_TRIPLET
 
 $vcpkg_tools_path = (vcpkg env --tools "echo %PATH%")
-# avoid arch mismatch by adding to the end
-$Env:PATH = "${Env:PATH};${vcpkg_tools_path}"
+$Env:PATH = "${vcpkg_tools_path};${Env:PATH}"
 
 # CUDA
-$Env:PATH = "${Env:CUDA_PATH}\bin;${Env:PATH}"
+$cuda_bin_path = "${Env:CUDA_PATH}\bin"
+if (($Env:PATH -split ";") -notcontains $cuda_bin_path) {
+    $Env:PATH = "${cuda_bin_path};${Env:PATH}"
+}
 
 $Env:TESSDATA_PREFIX = (Resolve-Path $PSScriptRoot\..\tessdata)
 
