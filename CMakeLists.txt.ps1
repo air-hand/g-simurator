@@ -41,6 +41,7 @@ set(CXX_FLAGS_SHARED
     "/wd4820"
     "/wd5050"
     "/wd5244"
+    "/wd5267"
     "/wd6326"
     "/external:anglebrackets"
     "/external:W0"

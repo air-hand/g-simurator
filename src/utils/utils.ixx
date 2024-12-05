@@ -1,6 +1,7 @@
 export module utils;
 
 export import :capture;
+export import :container;
 export import :file;
 export import :gpu;
 export import :image;
