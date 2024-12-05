@@ -19,8 +19,9 @@ module;
 module utils;
 
 import std;
-import :logger;
 import :capture;
+import :gpu;
+import :logger;
 
 // https://github.com/microsoft/cppwinrt/blob/b82340f3fce1ee9bbcc13151f6f74c374d03f24d/cppwinrt/main.cpp#L372
 
@@ -209,7 +210,11 @@ private:
             winrt::check_hresult(swapChain_->GetBuffer(0, winrt::guid_of<::ID3D11Texture2D>(), backBuffer.put_void()));
             d3dContext_->CopyResource(backBuffer.get(), frameSurface.get());
 
-#if 0
+            {
+                const auto gpuMat = gpu::d3D11Texture2DToGpuMat(backBuffer.get());
+            }
+
+#ifdef DEBUG
             const auto now = std::chrono::system_clock::now();
             const auto filename = sim::utils::strings::fmt(L"./tmp/capture_{:%Y%m%d%H%M%S}.png", std::chrono::time_point_cast<std::chrono::milliseconds>(now));
             DirectX::SaveWICTextureToFile(d3dContext_.get(), backBuffer.get(), GUID_ContainerFormatPng, filename.c_str());

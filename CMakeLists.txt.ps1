@@ -13,7 +13,7 @@ cmake_minimum_required(VERSION 3.29)
 cmake_policy(SET CMP0155 NEW)
 
 
-project(simurator LANGUAGES CXX CUDA)
+project(simurator)
 
 find_package(directxtk CONFIG REQUIRED)
 find_package(plog CONFIG REQUIRED)

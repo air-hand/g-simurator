@@ -19,53 +19,82 @@ module;
 
 module utils;
 
+import std.compat;
+
 import :gpu;
 import :logger;
 
 namespace
 {
 
-class D3D11Texture2DToCUDAFunctor final
+class D3D11Texture2DToGpuMatFunctor final
 {
 public:
-    D3D11Texture2DToCUDAFunctor() noexcept : cudaResource_(nullptr)
+    explicit D3D11Texture2DToGpuMatFunctor(::ID3D11Texture2D* d3dTexture) noexcept : cudaResource_(nullptr), width_(0), height_(0)
     {
         DEBUG_LOG_SPAN(_);
+
+        {
+            ::D3D11_TEXTURE2D_DESC desc;
+            d3dTexture->GetDesc(&desc);
+            width_ = desc.Width;
+            height_ = desc.Height;
+        }
+
+        {
+            const auto error = cudaGraphicsD3D11RegisterResource(&cudaResource_, d3dTexture, cudaGraphicsRegisterFlags::cudaGraphicsRegisterFlagsNone);
+            if (error != cudaError::cudaSuccess)
+            {
+                DEBUG_LOG_ARGS("cudaGraphicsD3D11RegisterResource failed: {}", cudaGetErrorString(error));
+                cudaResource_ = nullptr;
+                return;
+            }
+        }
+        {
+            const auto error = cudaGraphicsMapResources(1, &cudaResource_, 0);
+            if (error != cudaError::cudaSuccess)
+            {
+                DEBUG_LOG_ARGS("cudaGraphicsMapResources failed: {}", cudaGetErrorString(error));
+                // デストラクタに解放させたいので nullptr にはしない
+                return;
+            }
+        }
     }
-    ~D3D11Texture2DToCUDAFunctor() noexcept
+
+    ~D3D11Texture2DToGpuMatFunctor() noexcept
     {
         DEBUG_LOG_SPAN(_);
         if (cudaResource_)
         {
-            // 7. リソースをアンマップ
             cudaGraphicsUnmapResources(1, &cudaResource_, 0);
 
-            // 8. CUDAリソースの登録解除
             cudaGraphicsUnregisterResource(cudaResource_);
         }
         cudaResource_ = nullptr;
     }
 
-    cv::cuda::GpuMat operator()(/*const */::ID3D11Texture2D* d3dTexture)
+    cv::cuda::GpuMat operator()() const
     {
-        // FIXME
-        int width = 0, height = 0;
-        cv::cuda::GpuMat gpuMat(height, width, CV_8UC4);
-
-        cudaGraphicsD3D11RegisterResource(&cudaResource_, d3dTexture, cudaGraphicsRegisterFlags::cudaGraphicsRegisterFlagsNone);
-        cudaGraphicsMapResources(1, &cudaResource_, 0);
+        DEBUG_LOG_SPAN(_);
+        cv::cuda::GpuMat gpuMat(height_, width_, CV_8UC4);
+        if (cudaResource_ == nullptr)
+        {
+            return gpuMat;
+        }
 
         // get cudaArray from cudaResource
         cudaArray* cudaArray;
         cudaGraphicsSubResourceGetMappedArray(&cudaArray, cudaResource_, 0, 0);
 
         // cudaArray to GpuMat
-        cudaMemcpy2DFromArray(gpuMat.data, gpuMat.step, cudaArray, 0, 0, width * 4, height, cudaMemcpyDeviceToDevice);
+        cudaMemcpy2DFromArray(gpuMat.data, gpuMat.step, cudaArray, 0, 0, width_ * 4, height_, cudaMemcpyDeviceToDevice);
 
         return gpuMat;
     }
 private:
     ::cudaGraphicsResource* cudaResource_;
+    uint32_t width_;
+    uint32_t height_;
 };
 
 }
@@ -73,9 +102,9 @@ private:
 namespace sim::utils::gpu
 {
 
-cv::cuda::GpuMat d3D11Texture2DToCUDA(/*const*/::ID3D11Texture2D* texture)
+cv::cuda::GpuMat d3D11Texture2DToGpuMat(::ID3D11Texture2D* texture)
 {
-    return D3D11Texture2DToCUDAFunctor()(texture);
+    return D3D11Texture2DToGpuMatFunctor(texture)();
 }
 
 }
