@@ -5,10 +5,12 @@ module;
 #include <boost/circular_buffer.hpp>
 
 #include "macro.hpp"
+#include "logger.hpp"
 
 export module utils:container;
 
 import std;
+import :logger;
 
 namespace sim::utils::container
 {
@@ -25,10 +27,11 @@ public:
 
     DELETE_COPY_AND_ASSIGN(BoundedBuffer);
 
-    void push(T&& value)
+    void push(const T& value)
     {
+        DEBUG_LOG_SPAN(_);
         auto lock = std::unique_lock<std::mutex>(mutex_);
-        // ここで待つのもできるが、popも相応にできないといけないので一方を待つだけでもいいんじゃないだろうか
+        // TODO: ここで待つのもできるが、popも相応にできないといけないので一方を待つだけでもいいんじゃないだろうか
         //condition_.wait(lock, [this] { return !container_.full(); });
         container_.push_back(value);
         is_not_empty_.notify_one();
@@ -36,6 +39,7 @@ public:
 
     auto pop()
     {
+        DEBUG_LOG_SPAN(_);
         auto lock = std::unique_lock<std::mutex>(mutex_);
         is_not_empty_.wait(lock, [this] { return !container_.empty(); });
         auto result = container_.front();
@@ -45,6 +49,7 @@ public:
 
     auto size() noexcept
     {
+        DEBUG_LOG_SPAN(_);
         auto lock = std::unique_lock<std::mutex>(mutex_);
         return container_.size();
     }

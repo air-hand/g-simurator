@@ -25,8 +25,10 @@ find_package(CUDAToolkit REQUIRED)
 
 set(CMAKE_CXX_STANDARD 23) # c++latest
 set(CMAKE_CXX_STANDARD_REQUIRED ON)
-set(CMAKE_CXX_FLAGS_DEBUG "-DDEBUG /MDd")
-set(CMAKE_CXX_FLAGS_RELEASE "-DNDEBUG /MD")
+#set(CMAKE_CXX_FLAGS_DEBUG "-DDEBUG /MTd")
+#set(CMAKE_CXX_FLAGS_RELEASE "-DNDEBUG /MT")
+set(CMAKE_CXX_FLAGS_DEBUG "-DDEBUG")
+set(CMAKE_CXX_FLAGS_RELEASE "-DNDEBUG")
 set(CXX_FLAGS_SHARED
     "/Zc:__cplusplus"
     "/utf-8"
@@ -46,7 +48,7 @@ set(CXX_FLAGS_SHARED
     "/external:anglebrackets"
     "/external:W0"
 )
-set(CMAKE_MSVC_RUNTIME_LIBRARY "MultiThreaded$<$<CONFIG:Debug>:Debug>DLL")
+#set(CMAKE_MSVC_RUNTIME_LIBRARY "MultiThreaded$<$<CONFIG:Debug>:Debug>")
 
 add_library(${{PROJECT_NAME}}-std STATIC)
 {0}
@@ -165,7 +167,7 @@ target_link_libraries(${{PROJECT_NAME}}
 target_link_options(${{PROJECT_NAME}}
     PRIVATE
     /WX
-    /NODEFAULTLIB:LIBCMT
+#    /NODEFAULTLIB:LIBCMT
 )
 
 # tests

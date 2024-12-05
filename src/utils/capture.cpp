@@ -20,7 +20,9 @@ module utils;
 
 import std;
 import :capture;
+import :container;
 import :gpu;
+import :image;
 import :logger;
 
 // https://github.com/microsoft/cppwinrt/blob/b82340f3fce1ee9bbcc13151f6f74c374d03f24d/cppwinrt/main.cpp#L372
@@ -87,7 +89,7 @@ class CaptureWindow::Impl final
 {
 public:
     Impl(HWND hwnd, const Device& device) noexcept
-        : hwnd_(hwnd), device_(device)
+        : hwnd_(hwnd), device_(device), buffer_(30)
     {
     }
     ~Impl()
@@ -210,14 +212,17 @@ private:
             winrt::check_hresult(swapChain_->GetBuffer(0, winrt::guid_of<::ID3D11Texture2D>(), backBuffer.put_void()));
             d3dContext_->CopyResource(backBuffer.get(), frameSurface.get());
 
-            {
-                const auto gpuMat = gpu::d3D11Texture2DToGpuMat(backBuffer.get());
-            }
+
+            const auto gpuMat = gpu::d3D11Texture2DToGpuMat(backBuffer.get());
+            const auto mat = image::fromGPU(gpuMat);
+
+//            buffer_.push(mat);
 
 #ifdef DEBUG
             const auto now = std::chrono::system_clock::now();
             const auto filename = sim::utils::strings::fmt(L"./tmp/capture_{:%Y%m%d%H%M%S}.png", std::chrono::time_point_cast<std::chrono::milliseconds>(now));
-            DirectX::SaveWICTextureToFile(d3dContext_.get(), backBuffer.get(), GUID_ContainerFormatPng, filename.c_str());
+//            DirectX::SaveWICTextureToFile(d3dContext_.get(), backBuffer.get(), GUID_ContainerFormatPng, filename.c_str());
+//            image::saveImage(mat, sim::utils::unicode::to_utf8(filename));
 #endif
         }
         DXGI_PRESENT_PARAMETERS params = {0};
@@ -232,6 +237,7 @@ private:
     winrt::Windows::Graphics::Capture::GraphicsCaptureSession session_ { nullptr };
     winrt::Windows::Graphics::Capture::Direct3D11CaptureFramePool framePool_ { nullptr };
     winrt::Windows::Graphics::Capture::Direct3D11CaptureFramePool::FrameArrived_revoker frameArrived_;
+    container::BoundedBuffer<cv::Mat> buffer_;
 };
 
 CaptureWindow::CaptureWindow(HWND hwnd, const Device& device) noexcept

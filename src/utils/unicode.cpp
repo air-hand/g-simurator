@@ -34,4 +34,39 @@ std::wstring to_utf16(const std::string& utf8)
     return utf16;
 }
 
+std::string to_utf8(const std::wstring& utf16)
+{
+    std::string utf8;
+    if (utf16.empty())
+    {
+        return utf8;
+    }
+    int result = ::WideCharToMultiByte(
+        CP_UTF8,
+        WC_ERR_INVALID_CHARS,
+        utf16.data(),
+        utf16.length(),
+        nullptr,
+        0,
+        NULL,
+        NULL
+    );
+    if (result == 0)
+    {
+        return utf8;
+    }
+    utf8.resize(result);
+    ::WideCharToMultiByte(
+        CP_UTF8,
+        WC_ERR_INVALID_CHARS,
+        utf16.data(),
+        utf16.length(),
+        utf8.data(),
+        result,
+        NULL,
+        NULL
+    );
+    return utf8;
+}
+
 }
