@@ -55,6 +55,7 @@ Function InstallOthers() {
     $Env:CUDA_PATH = $installed_path
     $Env:PATH = "${Env:CUDA_PATH}\bin;${Env:PATH}"
     [System.Environment]::SetEnvironmentVariable("CUDA_PATH", $Env:CUDA_PATH, [System.EnvironmentVariableTarget]::User)
+    winget install -e --id GnuWin32.Make --silent --disable-interactivity --accept-source-agreements
 }
 
 Function Main([boolean]$clean) {
