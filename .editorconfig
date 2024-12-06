@@ -12,4 +12,7 @@ charset = cp932
 
 [*.json]
 indent_size = 2
-#end_of_line = lf
+
+[{Makefile,*.mk}]
+indent_style = tab
+indent_size = 4

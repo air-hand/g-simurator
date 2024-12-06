@@ -41,22 +41,22 @@ jobs:
 
     - name: Setup development environment
       run: |
-        .\tools\setup_devenv.ps1
+        nmake setup
         echo "CUDA_PATH=${Env:CUDA_PATH}" >> $Env:GITHUB_ENV
         echo "${Env:CUDA_PATH}\bin" >> $Env:GITHUB_PATH
 
     - name: Build
       run: |
-        .\tools\build.ps1
+        nmake build
 
     - name: Run tests
       run: |
-        .\tools\test.ps1
+        nmake test
 
     - name: Build (Release)
       run: |
-        .\tools\build.ps1 -release
+        nmake build CONFIGURATION=Release
 
     - name: Run tests (Release)
       run: |
-        .\tools\test.ps1
+        nmake test

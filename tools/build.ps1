@@ -1,9 +1,12 @@
 ﻿Param(
-    [switch]$clean,
-    [switch]$release
+    [string]$config,
+    [int]$clean
 )
 
 $ErrorActionPreference = "Stop"
+
+$release = $config -eq "Release"
+$clean = $clean -eq 1
 
 . $PSScriptRoot\envs.ps1
 
