@@ -167,6 +167,7 @@ target_link_libraries(${{PROJECT_NAME}}
 target_link_options(${{PROJECT_NAME}}
     PRIVATE
     /WX
+    /VERBOSE
 #    /NODEFAULTLIB:LIBCMT
 )
 
@@ -203,6 +204,7 @@ target_link_libraries(${{PROJECT_NAME}}-test
 target_link_options(${{PROJECT_NAME}}-test
     PRIVATE
     /WX
+    /VERBOSE
 )
 
 add_test(NAME test COMMAND ${{PROJECT_NAME}}-test)
