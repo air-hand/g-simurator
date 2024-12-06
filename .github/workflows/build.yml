@@ -41,7 +41,7 @@ jobs:
 
     - name: Setup development environment
       run: |
-        nmake setup
+        .\tools\setup_devenv.ps1
         echo "CUDA_PATH=${Env:CUDA_PATH}" >> $Env:GITHUB_ENV
         echo "${Env:CUDA_PATH}\bin" >> $Env:GITHUB_PATH
 
