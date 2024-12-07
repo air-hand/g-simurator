@@ -48,6 +48,7 @@ set(CXX_FLAGS_SHARED
     "/external:anglebrackets"
     "/external:W0"
 )
+#set(CUDA_USE_STATIC_CUDA_RUNTIME OFF)
 #set(CMAKE_MSVC_RUNTIME_LIBRARY "MultiThreaded$<$<CONFIG:Debug>:Debug>")
 
 add_library(${{PROJECT_NAME}}-std STATIC)
@@ -122,7 +123,8 @@ target_link_libraries(${{PROJECT_NAME}}-utils
     uuid
     Microsoft::DirectXTK
     ${{OpenCV_LIBS}}
-    ${{CUDAToolkit_LIBRARY_DIR}}
+    ${{CUDA_LIBRARIES}}
+    Boost::container
     plog::plog
     Tesseract::libtesseract
     ${{PROJECT_NAME}}-std
@@ -131,7 +133,13 @@ target_link_options(${{PROJECT_NAME}}-utils
     PRIVATE
     /WX
     /VERBOSE
+#    /NODEFAULTLIB:LIBCMT
 )
+#set_target_properties(${{PROJECT_NAME}}-utils
+#    PROPERTIES
+#    MSVC_RUNTIME_LIBRARY "MultiThreaded$<$<CONFIG:Debug>:Debug>DLL"
+#    OUTPUT_NAME "${{PROJECT_NAME}}-utils"
+#)
 
 add_executable(${{PROJECT_NAME}})
 {3}
@@ -168,7 +176,7 @@ target_link_options(${{PROJECT_NAME}}
     PRIVATE
     /WX
     /VERBOSE
-#    /NODEFAULTLIB:LIBCMT
+    /NODEFAULTLIB:LIBCMT
 )
 
 # tests
@@ -183,6 +191,9 @@ target_compile_options(${{PROJECT_NAME}}-test
     ${{CXX_FLAGS_SHARED}}
     /Wall
     /WX
+    # test
+    /Qspectre
+    /wd5045
 )
 target_precompile_headers(${{PROJECT_NAME}}-test
     PRIVATE
@@ -191,6 +202,8 @@ target_precompile_headers(${{PROJECT_NAME}}-test
 
 target_include_directories(${{PROJECT_NAME}}-test
     PRIVATE
+    # test
+    ${{OpenCV_INCLUDE_DIRS}}
     ${{CMAKE_CURRENT_SOURCE_DIR}}/src
     ${{CMAKE_CURRENT_SOURCE_DIR}}/src/tests
 )

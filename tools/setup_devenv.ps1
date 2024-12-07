@@ -36,15 +36,22 @@ Function InstallOthers() {
     $sub_packages = @(
         "nvcc_${cuda_version}"
         , "nvml_dev_${cuda_version}"
+        , "nvrtc_${cuda_version}"
         , "nvrtc_dev_${cuda_version}"
         , "npp_${cuda_version}"
         , "npp_dev_${cuda_version}"
+        , "nvjpeg_${cuda_version}"
         , "nvjpeg_dev_${cuda_version}"
         , "cudart_${cuda_version}"
+        , "cublas_${cuda_version}"
         , "cublas_dev_${cuda_version}"
+        , "cufft_${cuda_version}"
         , "cufft_dev_${cuda_version}"
+        , "curand_${cuda_version}"
         , "curand_dev_${cuda_version}"
+        , "cusolver_${cuda_version}"
         , "cusolver_dev_${cuda_version}"
+        , "cusparse_${cuda_version}"
         , "cusparse_dev_${cuda_version}"
     )
     winget install -e --id Nvidia.CUDA -v $cuda_version --silent --disable-interactivity --accept-source-agreements `
@@ -57,6 +64,7 @@ Function InstallOthers() {
     [System.Environment]::SetEnvironmentVariable("CUDA_PATH", $Env:CUDA_PATH, [System.EnvironmentVariableTarget]::User)
     if (($Env:PATH -split ";") -notcontains "${Env:CUDA_PATH}\bin") {
         $Env:PATH = "${Env:CUDA_PATH}\bin;${Env:PATH}"
+        [System.Environment]::SetEnvironmentVariable("PATH", $Env:PATH, [System.EnvironmentVariableTarget]::User)
     }
 }
 

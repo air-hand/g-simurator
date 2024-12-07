@@ -16,7 +16,7 @@ import :logger;
 namespace sim::utils::image
 {
 
-cv::cuda::GpuMat crop(const cv::cuda::GpuMat& input, const cv::Rect& roi)
+cv::cuda::GpuMat clip(const cv::cuda::GpuMat& input, const cv::Rect& roi)
 {
     return input(roi);
 }

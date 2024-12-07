@@ -11,6 +11,7 @@
       "features": [
         "cuda",
         "jpeg",
+        "png",
         "highgui"
       ]
     },

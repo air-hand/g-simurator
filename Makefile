@@ -18,9 +18,9 @@ test: phony
 	@echo "Testing..."
 	@$(SHELL) .\tools\test.ps1
 
-setup: phony
-	@echo "Setting up..."
-	@$(SHELL) .\tools\setup_devenv.ps1
+#setup: phony
+#	@echo "Setting up..."
+#	@$(SHELL) .\tools\setup_devenv.ps1
 
 # pesudotarget
 phony:
