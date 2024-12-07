@@ -24,7 +24,8 @@ cv::cuda::GpuMat clip(const cv::cuda::GpuMat& input, const cv::Rect& roi)
 cv::cuda::GpuMat grayScale(const cv::cuda::GpuMat& input)
 {
     cv::cuda::GpuMat output;
-    cv::cuda::cvtColor(input, output, cv::COLOR_BGR2GRAY);
+    DEBUG_LOG_ARGS("input channels: {}", input.channels());
+    cv::cuda::cvtColor(input, output, cv::COLOR_BGRA2GRAY);
     return output;
 }
 

@@ -223,16 +223,15 @@ private:
                 DEBUG_LOG("Thresholding...");
                 const auto thresholded = image::threshold(gray);
                 DEBUG_LOG("Convert GpuMat to Mat...");
-                mat = image::fromGPU(thresholded);
+                out = image::fromGPU(thresholded);
             }
-
-            buffer_.push(mat);
+//            buffer_.push(out);
 
 #ifdef DEBUG
             const auto now = std::chrono::system_clock::now();
             const auto filename = sim::utils::strings::fmt(L"./tmp/capture_{:%Y%m%d%H%M%S}.png", std::chrono::time_point_cast<std::chrono::milliseconds>(now));
 //            DirectX::SaveWICTextureToFile(d3dContext_.get(), backBuffer.get(), GUID_ContainerFormatPng, filename.c_str());
-            image::saveImage(mat, sim::utils::unicode::to_utf8(filename));
+            image::saveImage(out, sim::utils::unicode::to_utf8(filename));
 #endif
         }
         DXGI_PRESENT_PARAMETERS params = {0};
