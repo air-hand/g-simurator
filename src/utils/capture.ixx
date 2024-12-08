@@ -1,5 +1,6 @@
 module;
 
+#include <opencv2/opencv.hpp>
 #include <winrt/Windows.Graphics.DirectX.h>
 #include <winrt/Windows.Graphics.DirectX.Direct3d11.h>
 #include <Windows.Graphics.DirectX.Direct3D11.Interop.h>
@@ -37,6 +38,7 @@ public:
     DELETE_COPY_AND_ASSIGN(CaptureWindow);
 
     void Start() const;
+    cv::Mat Pop() const;
 
 private:
     class Impl;

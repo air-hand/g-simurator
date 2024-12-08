@@ -29,6 +29,12 @@ public:
         SetForegroundWindow(handle_);
     }
 
+    CaptureWindow CreateCapture() const 
+    {
+        DEBUG_LOG_SPAN(_);
+        return sim::utils::CaptureContext::Get().CaptureForWindowHandle(handle_);
+    }
+
     void Capture() const
     {
         DEBUG_LOG_SPAN(_);
@@ -98,9 +104,9 @@ void Window::Activate() const
     impl_->Activate();
 }
 
-void Window::Capture() const
+CaptureWindow Window::CreateCapture() const
 {
-    impl_->Capture();
+    return impl_->CreateCapture();
 }
 
 }

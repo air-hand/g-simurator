@@ -5,6 +5,7 @@ module;
 export module utils:window;
 
 import std;
+import :capture;
 
 namespace sim::utils::window
 {
@@ -20,7 +21,7 @@ public:
     DELETE_COPY_AND_ASSIGN(Window);
 
     void Activate() const;
-    void Capture() const;
+    CaptureWindow CreateCapture() const;
 private:
     class Impl;
     std::unique_ptr<Impl> impl_;

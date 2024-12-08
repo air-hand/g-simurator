@@ -24,6 +24,7 @@ import :container;
 import :gpu;
 import :image;
 import :logger;
+import :time;
 
 // https://github.com/microsoft/cppwinrt/blob/b82340f3fce1ee9bbcc13151f6f74c374d03f24d/cppwinrt/main.cpp#L372
 
@@ -148,6 +149,11 @@ public:
 
         session_.StartCapture();
     }
+
+    cv::Mat Pop()
+    {
+        return buffer_.pop();
+    }
 private:
     auto CreateCaptureItemForWindow() const
     {
@@ -199,7 +205,7 @@ private:
     void OnFrameArrived(
         const winrt::Windows::Graphics::Capture::Direct3D11CaptureFramePool& sender,
         [[maybe_unused]] const winrt::Windows::Foundation::IInspectable& args
-    ) const
+    ) /*const*/
     {
         DEBUG_LOG_SPAN(_);
         {
@@ -211,7 +217,6 @@ private:
             winrt::com_ptr<::ID3D11Texture2D> backBuffer;
             winrt::check_hresult(swapChain_->GetBuffer(0, winrt::guid_of<::ID3D11Texture2D>(), backBuffer.put_void()));
             d3dContext_->CopyResource(backBuffer.get(), frameSurface.get());
-
 
             cv::Mat out;
             {
@@ -225,7 +230,7 @@ private:
                 DEBUG_LOG("Convert GpuMat to Mat...");
                 out = image::fromGPU(thresholded);
             }
-//            buffer_.push(out);
+            buffer_.push(out);
 
 #ifdef DEBUG
             const auto now = std::chrono::system_clock::now();
@@ -236,6 +241,7 @@ private:
         }
         DXGI_PRESENT_PARAMETERS params = {0};
         swapChain_->Present1(1, 0, &params);
+        sim::utils::time::sleep(30);
     }
 
     const HWND hwnd_;
@@ -260,6 +266,11 @@ CaptureWindow& CaptureWindow::operator=(CaptureWindow&&) noexcept = default;
 void CaptureWindow::Start() const
 {
     return impl_->Start();
+}
+
+cv::Mat CaptureWindow::Pop() const
+{
+    return impl_->Pop();
 }
 
 }

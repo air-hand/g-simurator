@@ -34,6 +34,7 @@ public:
         // TODO: ここで待つのもできるが、popも相応にできないといけないので一方を待つだけでもいいんじゃないだろうか
         //condition_.wait(lock, [this] { return !container_.full(); });
         container_.push_back(value);
+        lock.unlock();
         is_not_empty_.notify_one();
     }
 

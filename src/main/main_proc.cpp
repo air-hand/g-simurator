@@ -67,7 +67,21 @@ public:
             return 1;
         }
         window->Activate();
-        window->Capture();
+
+        {
+            auto capture = window->CreateCapture();
+            capture.Start();
+            DEBUG_LOG("Capture started.");
+            auto& recognizer = utils::recognize::RecognizeText::Get();
+//            while (true)
+            for (uint32_t i = 0; i < 100; ++i)
+            {
+                DEBUG_LOG_ARGS("Recognize captured image: {}", i);
+                const auto mat = capture.Pop();
+                const auto text = recognizer.ImageToText(mat);
+                logging::log("Recognized: [{}]", text);
+            }
+        }
 
         const auto& keyboard = sim::controller::Keyboard::Get();
         keyboard.KeyDown({'A', 'B', 'C', Keys::Enter});
