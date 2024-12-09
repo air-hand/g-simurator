@@ -19,6 +19,7 @@ if ($Env:VCINSTALLDIR -eq $null) {
     . $vsdevcmd_script -Arch amd64
 }
 
+$Env:VCPKG_NO_BINARY_CACHING = "1"
 $Env:VCPKG_ROOT = $PSScriptRoot + '\vendor\vcpkg'
 $Env:PATH = "${Env:VCPKG_ROOT};${Env:PATH}"
 if (-not(Test-Path "${Env:VCPKG_ROOT}\.git")) {
@@ -33,7 +34,6 @@ git reset --hard origin/opencv-cuda
 popd > $null
 
 cd $PSScriptRoot\..
-$Env:VCPKG_NO_BINARY_CACHING = "1"
 $Env:VCPKG_TARGET_TRIPLET = "x64-windows"
 vcpkg install --triplet $Env:VCPKG_TARGET_TRIPLET
 

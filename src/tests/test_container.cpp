@@ -7,7 +7,7 @@ namespace
 
 namespace container = sim::utils::container;
 
-TEST(test_bounded_buffer, push_pop)
+TEST(test_ring_buffer, push_pop)
 {
     container::BoundedBuffer<int> buffer(3);
     buffer.push(100);
@@ -24,6 +24,19 @@ TEST(test_bounded_buffer, push_pop)
     EXPECT_EQ(buffer.pop(), 43);
 
     EXPECT_EQ(buffer.size(), 0);
+}
+
+TEST(test_ring_buffer, push_condition)
+{
+    const uint8_t capacity = 3;
+    container::BoundedBuffer<int> buffer(3);
+    buffer.push(100);
+    buffer.push(41, [&capacity](const auto& container) { return container.size() == capacity; });
+    buffer.push(42);
+
+    EXPECT_EQ(buffer.size(), 2);
+    EXPECT_EQ(buffer.pop(), 42);
+    EXPECT_EQ(buffer.pop(), 100);
 }
 
 }
