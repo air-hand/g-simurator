@@ -228,6 +228,7 @@ add_test(NAME test COMMAND ${{PROJECT_NAME}}-test)
 set(FILES_TO_DOWNLOAD
     "https://github.com/tesseract-ocr/tessdata/raw/main/eng.traineddata|$ENV{{TESSDATA_PREFIX}}/eng.traineddata|DAA0C97D651C19FBA3B25E81317CD697E9908C8208090C94C3905381C23FC047"
     "https://github.com/tesseract-ocr/tessdata_best/raw/main/jpn.traineddata|$ENV{{TESSDATA_PREFIX}}/jpn.traineddata|36BDF9AC823F5911E624C30D0553E890B8ABC7C31A65B3EF14DA943658C40B79"
+    "https://github.com/tesseract-ocr/tessdata_best/raw/main/jpn_vert.traineddata|$ENV{{TESSDATA_PREFIX}}/jpn_vert.traineddata|1258BE6EB2A9851F18043234AD18CCA13ED32690BFFF62B335C898BBEA371548"
 )
 
 foreach(files ${{FILES_TO_DOWNLOAD}})
