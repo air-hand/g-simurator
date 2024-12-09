@@ -16,20 +16,20 @@ namespace sim::utils::container
 {
 
 export template <typename T>
-class BoundedBuffer final
+class RingBuffer final
 {
 private:
     boost::circular_buffer<T> container_;
     std::mutex mutex_;
     std::condition_variable is_not_empty_;
 public:
-    explicit BoundedBuffer(std::size_t capacity) noexcept : container_(capacity), mutex_()
+    explicit RingBuffer(std::size_t capacity) noexcept : container_(capacity), mutex_()
     {
         assert(capacity > 0);
     }
-    ~BoundedBuffer() = default;
+    ~RingBuffer() = default;
 
-    DELETE_COPY_AND_ASSIGN(BoundedBuffer);
+    DELETE_COPY_AND_ASSIGN(RingBuffer);
 
     bool push(const T& value, std::function<bool(const decltype(container_)&)> condition)
     {

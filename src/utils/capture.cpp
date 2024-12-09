@@ -252,7 +252,7 @@ private:
     winrt::Windows::Graphics::Capture::GraphicsCaptureSession session_ { nullptr };
     winrt::Windows::Graphics::Capture::Direct3D11CaptureFramePool framePool_ { nullptr };
     winrt::Windows::Graphics::Capture::Direct3D11CaptureFramePool::FrameArrived_revoker frameArrived_;
-    container::BoundedBuffer<cv::Mat> buffer_;
+    container::RingBuffer<cv::Mat> buffer_;
 };
 
 CaptureWindow::CaptureWindow(HWND hwnd, const Device& device) noexcept
