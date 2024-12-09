@@ -12,6 +12,8 @@ module;
 #include <winrt/Windows.Graphics.DirectX.Direct3d11.h>
 #include <Windows.Graphics.DirectX.Direct3D11.Interop.h>
 
+#include <opencv2/opencv.hpp>
+
 #include "macro.hpp"
 #include "logger.hpp"
 
@@ -230,13 +232,29 @@ private:
                 DEBUG_LOG("Convert GpuMat to Mat...");
                 out = image::fromGPU(thresholded);
             }
-            buffer_.push(out);
+            const auto pushed = buffer_.push(out, [&out](const auto& container)
+            {
+                if (container.empty())
+                {
+                    DEBUG_LOG("Container is empty.");
+                    return true;
+                }
+                const cv::Mat& last_pushed = container.back();
+                cv::Mat diff;
+                cv::absdiff(out, last_pushed, diff);
+                const auto non_zero = cv::countNonZero(diff);
+                DEBUG_LOG_ARGS("Non-zero pixel count: {}", non_zero);
+                // TODO: 要調整
+                return non_zero > 0;
+            });
 
 #ifdef DEBUG
-            const auto now = std::chrono::system_clock::now();
-            const auto filename = sim::utils::strings::fmt(L"./tmp/capture_{:%Y%m%d%H%M%S}.png", std::chrono::time_point_cast<std::chrono::milliseconds>(now));
-//            DirectX::SaveWICTextureToFile(d3dContext_.get(), backBuffer.get(), GUID_ContainerFormatPng, filename.c_str());
-            image::saveImage(out, sim::utils::unicode::to_utf8(filename));
+            if (pushed)
+            {
+                const auto now = std::chrono::system_clock::now();
+                const auto filename = sim::utils::strings::fmt(L"./tmp/capture_{:%Y%m%d%H%M%S}.png", std::chrono::time_point_cast<std::chrono::milliseconds>(now));
+                image::saveImage(out, sim::utils::unicode::to_utf8(filename));
+            }
 #endif
         }
         DXGI_PRESENT_PARAMETERS params = {0};
