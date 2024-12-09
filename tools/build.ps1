@@ -1,6 +1,6 @@
 ﻿Param(
-    [string]$config,
-    [int]$clean
+    [string]$config="Debug",
+    [int]$clean=0
 )
 
 $ErrorActionPreference = "Stop"
