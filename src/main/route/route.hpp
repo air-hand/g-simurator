@@ -1,6 +1,9 @@
 #pragma once
 
+#pragma warning(push)
+#pragma warning(disable : 4946)
 #include "proto/gen/route.pb.h"
+#pragma warning(pop)
 #include "utils/macro.hpp"
 
 import std;
@@ -18,7 +21,7 @@ public:
 
     DELETE_COPY_AND_ASSIGN(RouteReader);
 
-    Route ReadJSONFile(const std::filesystem::path& path) const;
+    RouteList ReadJSONFile(const std::filesystem::path& path) const;
 
 private:
     class Impl;

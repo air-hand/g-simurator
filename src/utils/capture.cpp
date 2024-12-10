@@ -259,7 +259,7 @@ private:
         }
         DXGI_PRESENT_PARAMETERS params = {0};
         swapChain_->Present1(1, 0, &params);
-        sim::utils::time::sleep(30);
+        sim::utils::time::sleep(100); // TODO
     }
 
     const HWND hwnd_;

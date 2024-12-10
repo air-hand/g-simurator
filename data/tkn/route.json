@@ -1,7 +1,32 @@
 {
     "name": "Tekken8",
     "windowName": "TEKKEN™8  ",
-    "keys": [
-        "A", "B", "C"
+    "routes": [
+      {
+        "expected": "TEKKEN™8",
+        "roi": {
+          "top_percent": 50,
+          "left_percent": 50,
+          "right_percent": 100,
+          "bottom_percent": 100
+        },
+        "keys": [
+            "A"
+        ]
+      },
+      {
+        "expected": "MAIN MENU",
+        "roi": {
+          "top_percent": 0,
+          "left_percent": 0,
+          "right_percent": 50,
+          "bottom_percent": 50
+        },
+        "keys": [
+            "P", "P",
+            "S", "S", "S", "S",
+            "ENTER"
+        ]
+      }
     ]
 }

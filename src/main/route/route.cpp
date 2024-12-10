@@ -16,12 +16,12 @@ public:
     Impl() = default;
     ~Impl() = default;
 
-    Route ReadJSONFile(const std::filesystem::path& path) const
+    RouteList ReadJSONFile(const std::filesystem::path& path) const
     {
         DEBUG_LOG_SPAN(_);
         const auto json = utils::read_all(utils::open_file(path, std::ios::in | std::ios::binary));
         DEBUG_LOG_ARGS("Read JSON file: [{}]", json);
-        Route route;
+        RouteList route;
         if (const auto result = google::protobuf::util::JsonStringToMessage(json, &route); !result.ok()) {
             logging::log("Failed to parse JSON file: {}", result.ToString());
         }
@@ -46,7 +46,7 @@ RouteReader& RouteReader::operator=(RouteReader&& rhs)
     return *this;
 }
 
-Route RouteReader::ReadJSONFile(const std::filesystem::path& path) const
+RouteList RouteReader::ReadJSONFile(const std::filesystem::path& path) const
 {
     return impl_->ReadJSONFile(path);
 }

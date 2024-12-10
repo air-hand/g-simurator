@@ -2,13 +2,22 @@ syntax = "proto3";
 
 package sim.route;
 
-message Route {
-    string name = 1;
-    string window_name = 2;
+message ROI {
+    int32 top_percent = 1;
+    int32 left_percent = 2;
+    int32 width_percent = 3;
+    int32 height_percent = 4;
+}
 
+message Route {
+    string expected = 1;
+    ROI roi = 2;
     repeated string keys = 3;
 }
 
 message RouteList {
-    repeated Route routes = 1;
+    string name = 1;
+    string window_name = 2;
+
+    repeated Route route = 3;
 }
