@@ -13,12 +13,12 @@ namespace
 
 namespace image = sim::utils::image;
 
-TEST(test_image, clip)
+TEST(test_image, crop)
 {
     cv::cuda::GpuMat input(100, 100, CV_8UC4);
     cv::cuda::GpuMat foo = input(cv::Rect(10, 10, 20, 20));
     cv::cuda::GpuMat output;
-    image::clip(input, cv::Rect(10, 10, 20, 20));
+    image::crop(input, cv::Rect(10, 10, 20, 20));
 //    cv::cuda::cvtColor(input, output, cv::COLOR_BGR2GRAY);
 }
 

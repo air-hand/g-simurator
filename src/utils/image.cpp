@@ -16,11 +16,6 @@ import :logger;
 namespace sim::utils::image
 {
 
-cv::cuda::GpuMat clip(const cv::cuda::GpuMat& input, const cv::Rect& roi)
-{
-    return input(roi);
-}
-
 cv::cuda::GpuMat grayScale(const cv::cuda::GpuMat& input)
 {
     cv::cuda::GpuMat output;

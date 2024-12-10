@@ -1,6 +1,9 @@
-#include "keyboard.hpp"
+module;
+
+module sim;
 
 import std.compat;
+import :keyboard;
 
 namespace sim::controller
 {

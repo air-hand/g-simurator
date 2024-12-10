@@ -1,9 +1,8 @@
 #pragma once
 
-#pragma warning(push)
-#pragma warning(disable : 4946)
-#include "proto/gen/route.pb.h"
-#pragma warning(pop)
+#include <opencv2/opencv.hpp>
+
+#include "proto/route.hpp"
 #include "utils/macro.hpp"
 
 import std;
@@ -27,5 +26,7 @@ private:
     class Impl;
     std::unique_ptr<Impl> impl_;
 };
+
+cv::Mat applyROI(const cv::Mat& input, const ROI& roi);
 
 }

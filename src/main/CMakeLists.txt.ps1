@@ -7,11 +7,17 @@ Function SourceFiles([string]$extension) {
 }
 
 $content = (@'
+cmake_policy(SET CMP0076 NEW)
 target_sources(${{PROJECT_NAME}}
     PRIVATE
+    FILE_SET modules TYPE CXX_MODULES FILES
 {0}
 )
-'@ -F (SourceFiles "cpp")
+target_sources(${{PROJECT_NAME}}
+    PRIVATE
+{1}
 )
+'@ -F (SourceFiles "ixx"), (SourceFiles "cpp"))
 
 Set-Content -Path CMakeLists.txt -Value $content
+

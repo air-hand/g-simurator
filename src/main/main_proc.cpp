@@ -1,16 +1,19 @@
+module;
+
 #include <boost/program_options.hpp>
 #include <directxtk/Keyboard.h>
 
 #include <google/protobuf/message_lite.h>
 #include <google/protobuf/util/json_util.h>
 
-#include "main_proc.hpp"
-
 #include "utils/logger.hpp"
-#include "controller/keyboard.hpp"
 #include "route/route.hpp"
 
+module sim;
+
 import utils;
+import :main;
+import :keyboard;
 
 namespace options = boost::program_options;
 namespace logging = sim::utils::logging;
@@ -68,12 +71,45 @@ public:
         }
         window->Activate();
 
+        const auto& keyboard = sim::controller::Keyboard::Get();
         {
             auto capture = window->CreateCapture();
             capture.Start();
             DEBUG_LOG("Capture started.");
             auto& recognizer = utils::recognize::RecognizeText::Get();
-//            while (true)
+            if (route.routes().empty())
+            {
+                sim::utils::time::sleep(1000);
+                return 0;
+            }
+
+            std::size_t index = 0;
+            while (index < static_cast<std::size_t>(route.routes_size()))
+            {
+                const auto& r = route.routes(index);
+                const auto& roi = r.roi();
+                const auto& expected = r.expected();
+                while (true)
+                {
+                    const auto mat = capture.Pop();
+                    const auto roiMat = route::applyROI(mat, roi);
+                    const auto text = recognizer.ImageToText(roiMat);
+                    logging::log("Recognized: [{}]", text);
+                    if (text.contains(expected))
+                    {
+                        logging::log("Expected [{}] contained.", expected);
+                        break;
+                    }
+                }
+                const auto& keys = r.keys();
+                for (const auto key : keys)
+                {
+                    keyboard.KeyDown(key.at(0));
+                    sim::utils::time::sleep(1000);
+                }
+                ++index;
+            }
+#if 0
             for (uint32_t i = 0; i < 100; ++i)
             {
                 DEBUG_LOG_ARGS("Recognize captured image: {}", i);
@@ -81,9 +117,9 @@ public:
                 const auto text = recognizer.ImageToText(mat);
                 logging::log("Recognized: [{}]", text);
             }
+#endif
         }
 
-        const auto& keyboard = sim::controller::Keyboard::Get();
         keyboard.KeyDown({'A', 'B', 'C', Keys::Enter});
 
         return 0;

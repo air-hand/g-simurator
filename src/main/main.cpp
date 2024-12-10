@@ -1,6 +1,5 @@
-#include "main_proc.hpp"
-
 import std.compat;
+import sim;
 
 uint32_t main(uint32_t argc, char** argv)
 {

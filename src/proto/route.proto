@@ -19,5 +19,5 @@ message RouteList {
     string name = 1;
     string window_name = 2;
 
-    repeated Route route = 3;
+    repeated Route routes = 3;
 }

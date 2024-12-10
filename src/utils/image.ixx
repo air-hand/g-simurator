@@ -7,10 +7,17 @@ module;
 
 export module utils:image;
 
+import std;
+
 namespace sim::utils::image
 {
 
-export cv::cuda::GpuMat clip(const cv::cuda::GpuMat& input, const cv::Rect& roi);
+export template<typename T>
+T crop(const T& input, const cv::Rect& roi)
+{
+    return input(roi);
+}
+
 export cv::cuda::GpuMat grayScale(const cv::cuda::GpuMat& input);
 export cv::cuda::GpuMat threshold(const cv::cuda::GpuMat& input);
 

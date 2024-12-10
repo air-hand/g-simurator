@@ -146,11 +146,11 @@ add_executable(${{PROJECT_NAME}})
 
 target_compile_options(${{PROJECT_NAME}}
     PRIVATE
-    ${{CXX_FLAGS_SHARED}}
     /Wall
     /WX
     /Qspectre
     /wd5045
+    ${{CXX_FLAGS_SHARED}}
 )
 target_precompile_headers(${{PROJECT_NAME}}
     PRIVATE
@@ -168,6 +168,7 @@ target_link_libraries(${{PROJECT_NAME}}
     PRIVATE
     Microsoft::DirectXTK
     Boost::program_options
+    protobuf::libprotobuf
     ${{PROJECT_NAME}}-std
     ${{PROJECT_NAME}}-proto
     ${{PROJECT_NAME}}-utils

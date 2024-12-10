@@ -1,13 +1,15 @@
-#pragma once
+module;
 
 #include "utils/macro.hpp"
+
+export module sim:main;
 
 import std.compat;
 
 namespace sim
 {
 
-class MainProc final
+export class MainProc final
 {
 public:
     MainProc(uint32_t argc, char** argv) noexcept;

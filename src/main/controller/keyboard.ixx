@@ -1,13 +1,15 @@
-#pragma once
+module;
 
 #include "utils/macro.hpp"
+
+export module sim:keyboard;
 
 import std;
 
 namespace sim::controller
 {
 
-class Keyboard final
+export class Keyboard final
 {
 public:
     static const Keyboard& Get();
