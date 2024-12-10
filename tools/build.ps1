@@ -42,6 +42,10 @@ if ($release) {
     $CMAKE_BUILD_TYPE = "Release"
 }
 
+if ($clean) {
+    Remove-Item -Recurse -Force ./build
+}
+
 $CMAKE_PRESET_COMMAND = @(
     "cmake"
     , "--preset=vcpkg"
