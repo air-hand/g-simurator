@@ -121,6 +121,7 @@ target_link_libraries(${{PROJECT_NAME}}-utils
     d3d11
     dxgi
     uuid
+    dbghelp
     Microsoft::DirectXTK
     ${{OpenCV_LIBS}}
     ${{CUDA_LIBRARIES}}
@@ -168,7 +169,7 @@ target_link_libraries(${{PROJECT_NAME}}
     PRIVATE
     Microsoft::DirectXTK
     Boost::program_options
-    protobuf::libprotobuf
+    ${{OpenCV_LIBS}}
     ${{PROJECT_NAME}}-std
     ${{PROJECT_NAME}}-proto
     ${{PROJECT_NAME}}-utils

@@ -248,14 +248,14 @@ private:
                 return non_zero > 0;
             });
 
-#ifdef DEBUG
             if (pushed)
             {
+#ifdef DEBUG
                 const auto now = std::chrono::system_clock::now();
                 const auto filename = sim::utils::strings::fmt(L"./tmp/capture_{:%Y%m%d%H%M%S}.png", std::chrono::time_point_cast<std::chrono::milliseconds>(now));
                 image::saveImage(out, sim::utils::unicode::to_utf8(filename));
-            }
 #endif
+            }
         }
         DXGI_PRESENT_PARAMETERS params = {0};
         swapChain_->Present1(1, 0, &params);
