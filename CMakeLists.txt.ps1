@@ -220,6 +220,7 @@ target_link_options(${{PROJECT_NAME}}-test
     PRIVATE
     /WX
     /VERBOSE
+    /NODEFAULTLIB:LIBCMT
 )
 
 add_test(NAME test COMMAND ${{PROJECT_NAME}}-test)

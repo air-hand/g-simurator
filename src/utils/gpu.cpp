@@ -107,4 +107,11 @@ cv::cuda::GpuMat d3D11Texture2DToGpuMat(::ID3D11Texture2D* texture)
     return D3D11Texture2DToGpuMatFunctor(texture)();
 }
 
+bool IsCudaAvailable()
+{
+    int device_count = 0;
+    const auto error_id = cudaGetDeviceCount(&device_count);
+    return error_id == cudaSuccess && device_count > 0;
+}
+
 }
