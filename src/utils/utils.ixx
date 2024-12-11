@@ -7,6 +7,7 @@ export import :gpu;
 export import :image;
 export import :logger;
 export import :recognize;
+export import :route_validator;
 export import :strings;
 export import :task;
 export import :time;
