@@ -3,6 +3,12 @@
   "dependencies": [
     "boost-circular-buffer",
     "boost-program-options",
+    {
+      "name": "boost-stacktrace",
+      "features": [
+        "windbg"
+      ]
+    },
     "directxtk",
     "gtest",
     {

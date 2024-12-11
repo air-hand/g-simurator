@@ -20,6 +20,25 @@
                 "moduleLoad": true,
                 "trace": true,
             }
+        },
+        {
+            "name": "Debug Minidump",
+            "type": "cppvsdbg",
+            "request": "launch",
+            "program": "${workspaceFolder}/build/simurator.exe",
+            "dumpPath": "${workspaceFolder}/${input:dumpFileRelativePath}",
+            "symbolSearchPath": "${workspaceFolder}",
+            "sourceFileMap": {
+                "/path/to/source": "${workspaceFolder}"
+            }
+        }
+    ],
+    "inputs": [
+        {
+            "id": "dumpFileRelativePath",
+            "type": "promptString",
+            "description": "Enter the path to dump file (relative to workspace, e.g. tmp/crash.dmp)",
+            "default": "tmp/crash.dmp"
         }
     ]
 }

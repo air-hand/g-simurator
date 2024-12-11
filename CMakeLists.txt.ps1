@@ -20,6 +20,7 @@ find_package(plog CONFIG REQUIRED)
 find_package(OpenCV CONFIG REQUIRED)
 find_package(protobuf CONFIG REQUIRED)
 find_package(boost_program_options CONFIG REQUIRED)
+find_package(boost_stacktrace_windbg CONFIG REQUIRED)
 find_package(Tesseract CONFIG REQUIRED)
 find_package(CUDAToolkit REQUIRED)
 
@@ -121,7 +122,6 @@ target_link_libraries(${{PROJECT_NAME}}-utils
     d3d11
     dxgi
     uuid
-    dbghelp
     Microsoft::DirectXTK
     ${{OpenCV_LIBS}}
     ${{CUDA_LIBRARIES}}
@@ -129,6 +129,8 @@ target_link_libraries(${{PROJECT_NAME}}-utils
     plog::plog
     Tesseract::libtesseract
     ${{PROJECT_NAME}}-std
+    $<$<CONFIG:Debug>:dbghelp>
+    $<$<CONFIG:Debug>:Boost::stacktrace_windbg>
 )
 target_link_options(${{PROJECT_NAME}}-utils
     PRIVATE
