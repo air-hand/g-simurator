@@ -12,16 +12,16 @@ $clean = $clean -eq 1
 
 cd $PSScriptRoot\..
 
-#Remove-Item ./src/**/proto/gen/*.pb.*
-#Get-ChildItem ./src -Include "*.proto" -Recurse | % { Split-Path $_ -Parent } | Sort-Object -Unique | % {
-#    (Resolve-Path $_ -Relative) -replace '\\', '/'
-#} | % {
-#    Write-Host "Running protoc $_"
-#    if (-not(Test-Path "./${_}/gen")) {
-#        mkdir "./${_}/gen"
-#    }
-#    protoc -I"./${_}" --cpp_out="./${_}/gen" "./${_}/*.proto"
-#}
+Remove-Item ./src/**/proto/gen/*.pb.*
+Get-ChildItem ./src -Include "*.proto" -Recurse | % { Split-Path $_ -Parent } | Sort-Object -Unique | % {
+    (Resolve-Path $_ -Relative) -replace '\\', '/'
+} | % {
+    Write-Host "Running protoc $_"
+    if (-not(Test-Path "./${_}/gen")) {
+        mkdir "./${_}/gen"
+    }
+    protoc -I"./${_}" --cpp_out="./${_}/gen" "./${_}/*.proto"
+}
 
 Get-ChildItem ./ -Exclude @(".git", "build", "tools", "vcpkg_installed") | ForEach-Object -Parallel {
     Get-ChildItem $_.FullName -Include "CMakeLists.txt" -Recurse | % {

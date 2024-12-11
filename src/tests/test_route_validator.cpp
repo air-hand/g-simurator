@@ -14,7 +14,7 @@ TEST(test_route_validator, validate)
     list.set_window_name("window");
     list.add_routes()->set_expected("expected").mutable_roi()->set_top_percent(0).set_left_percent(0).set_width_percent(100).set_height_percent(100);
 
-    sim::utils::RouteValidator validator(list);
+    const auto validator = sim::utils::RouteValidator(list);
     EXPECT_TRUE(validator.Validate());
 }
 
