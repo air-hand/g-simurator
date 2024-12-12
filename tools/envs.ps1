@@ -19,7 +19,6 @@ if ($Env:VCINSTALLDIR -eq $null) {
     . $vsdevcmd_script -Arch amd64
 }
 
-$Env:VCPKG_NO_BINARY_CACHING = "1"
 $Env:VCPKG_ROOT = $PSScriptRoot + '\vendor\vcpkg'
 $Env:PATH = "${Env:VCPKG_ROOT};${Env:PATH}"
 if (-not(Test-Path "${Env:VCPKG_ROOT}\.git")) {
@@ -30,12 +29,21 @@ pushd $Env:VCPKG_ROOT > $null
 git switch opencv-cuda
 git fetch
 git reset --hard origin/opencv-cuda
-.\bootstrap-vcpkg.bat
+if (-not(Get-Command vcpkg.exe -ErrorAction SilentlyContinue)) {
+    .\bootstrap-vcpkg.bat
+}
 popd > $null
 
 cd $PSScriptRoot\..
 $Env:VCPKG_TARGET_TRIPLET = "x64-windows"
+if (-not($Env:VCPKG_BINARY_SOURCES)) {
+    $Env:VCPKG_BINARY_SOURCES = "clear;"
+}
 vcpkg install --triplet $Env:VCPKG_TARGET_TRIPLET
+
+# test
+Get-ChildItem .\vcpkg_installed\x64-windows\tools\protobuf\*
+exit 1
 
 $vcpkg_tools_path = (vcpkg env --tools "echo %PATH%")
 $Env:PATH = "${vcpkg_tools_path};${Env:PATH}"
