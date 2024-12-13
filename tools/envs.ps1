@@ -29,9 +29,7 @@ pushd $Env:VCPKG_ROOT > $null
 git switch opencv-cuda
 git fetch
 git reset --hard origin/opencv-cuda
-if (-not(Get-Command vcpkg.exe -ErrorAction SilentlyContinue)) {
-    .\bootstrap-vcpkg.bat
-}
+.\bootstrap-vcpkg.bat
 popd > $null
 
 cd $PSScriptRoot\..
