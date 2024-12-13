@@ -39,10 +39,6 @@ if (-not($Env:VCPKG_BINARY_SOURCES)) {
 }
 vcpkg install --triplet $Env:VCPKG_TARGET_TRIPLET
 
-# test
-Get-ChildItem .\vcpkg_installed\x64-windows\tools -Recurse
-exit 1
-
 $vcpkg_tools_path = (vcpkg env --tools "echo %PATH%")
 $Env:PATH = "${vcpkg_tools_path};${Env:PATH}"
 
