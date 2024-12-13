@@ -12,6 +12,9 @@ $clean = $clean -eq 1
 
 cd $PSScriptRoot\..
 
+# test
+Write-Host $Env:PATH
+
 Remove-Item ./src/**/proto/gen/*.pb.*
 Get-ChildItem ./src -Include "*.proto" -Recurse | % { Split-Path $_ -Parent } | Sort-Object -Unique | % {
     (Resolve-Path $_ -Relative) -replace '\\', '/'
