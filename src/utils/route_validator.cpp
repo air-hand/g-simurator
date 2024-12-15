@@ -5,6 +5,7 @@ module;
 
 module utils;
 
+import std;
 import :route_validator;
 
 namespace sim::utils
@@ -12,7 +13,8 @@ namespace sim::utils
 
 namespace route = sim::route;
 
-class RouteValidator::Impl {
+class RouteValidator::Impl
+{
 private:
     const route::RouteList& r_;
     bool validateROI(const route::ROI& roi) const
@@ -35,7 +37,7 @@ private:
         return !list.name().empty() &&
                !list.window_name().empty() &&
                !list.routes().empty() &&
-               std::ranges::all_of(list.routes(), validateRoute);
+               std::ranges::all_of(list.routes(), [this](const route::Route& r) { return validateRoute(r); });
     }
 
 public:
@@ -48,6 +50,8 @@ public:
     {
         return validateRouteList(r_);
     }
+
+    DELETE_COPY_AND_ASSIGN(Impl);
 };
 
 RouteValidator::RouteValidator(const route::RouteList& r) noexcept
@@ -57,7 +61,7 @@ RouteValidator::RouteValidator(const route::RouteList& r) noexcept
 
 RouteValidator::~RouteValidator() = default;
 
-bool RouteValidator::Validate() const
+bool RouteValidator::operator()() const
 {
     return impl_->Validate();
 }

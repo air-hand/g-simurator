@@ -216,6 +216,7 @@ target_link_libraries(${{PROJECT_NAME}}-test
     PRIVATE
     GTest::gtest GTest::gtest_main GTest::gmock GTest::gmock_main
     ${{PROJECT_NAME}}-std
+    ${{PROJECT_NAME}}-proto
     ${{PROJECT_NAME}}-utils
 )
 target_link_options(${{PROJECT_NAME}}-test

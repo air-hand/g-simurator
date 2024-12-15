@@ -12,14 +12,15 @@ namespace sim::utils
 
 namespace route = sim::route;
 
-export class RouteValidator final {
+export class RouteValidator final
+{
 public:
     explicit RouteValidator(const route::RouteList& r) noexcept;
     ~RouteValidator();
 
     DELETE_COPY_AND_ASSIGN(RouteValidator);
 
-    bool Validate() const;
+    bool operator()() const;
 
 private:
     class Impl;

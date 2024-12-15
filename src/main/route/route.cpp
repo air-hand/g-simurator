@@ -30,6 +30,11 @@ public:
             logging::log("Failed to parse JSON file: {}", result.ToString());
             DEBUG_ASSERT(false);
         }
+        if (!sim::utils::RouteValidator(route)())
+        {
+            logging::log("Invalid route file: {}", path.string());
+            DEBUG_ASSERT(false);
+        }
         return route;
     }
 };
