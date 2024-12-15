@@ -30,7 +30,7 @@ namespace
 class D3D11Texture2DToGpuMatFunctor final
 {
 public:
-    explicit D3D11Texture2DToGpuMatFunctor(::ID3D11Texture2D* d3dTexture) noexcept : cudaResource_(nullptr), width_(0), height_(0)
+    explicit D3D11Texture2DToGpuMatFunctor(::ID3D11Texture2D* d3dTexture) : cudaResource_(nullptr), width_(0), height_(0)
     {
         DEBUG_LOG_SPAN(_);
 

@@ -92,6 +92,7 @@ public:
                 while (true)
                 {
                     const auto mat = capture.Pop();
+                    // FIXME: expectedが含まれる場合、captureにROIを渡して適用させるとかどうか？
                     const auto roiMat = route::applyROI(mat, roi);
                     const auto text = recognizer.ImageToText(roiMat);
                     logging::log("Recognized: [{}]", text);

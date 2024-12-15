@@ -1,5 +1,18 @@
 {
     "name": "Kindle",
     "windowName": "Kindle",
-    "routes": []
+    "routes": [
+      {
+        "expected": "Kindle",
+        "roi": {
+          "top_percent": 50,
+          "left_percent": 50,
+          "width_percent": 50,
+          "height_percent": 50
+        },
+        "keys": [
+            "A"
+        ]
+      }
+    ]
 }
