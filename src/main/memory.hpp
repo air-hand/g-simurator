@@ -38,7 +38,7 @@ public:
         for (const auto& [ptr, info] : allocations_)
         {
             std::cerr << "Memory leak: " << info.size << " bytes" << std::endl;
-            std::cerr << info.trace << std::endl;
+            std::cerr << boost::stacktrace::to_string(info.trace) << std::endl;
         }
     }
 private:
