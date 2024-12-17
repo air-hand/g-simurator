@@ -1,6 +1,9 @@
 #ifndef _MAIN_MEMORY_HPP_
 #define _MAIN_MEMORY_HPP_
 
+// override new and delete operators to track memory allocations (DEBUG build only)
+#ifdef DEBUG
+
 #include <boost/stacktrace.hpp>
 
 import std;
@@ -44,8 +47,6 @@ private:
     static inline std::mutex mutex_;
 };
 
-// override new and delete operators to track memory allocations (DEBUG build only)
-#ifdef DEBUG
 
 void* operator new(std::size_t size)
 {
