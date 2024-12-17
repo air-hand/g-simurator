@@ -1,5 +1,4 @@
-#ifndef _MAIN_MEMORY_HPP_
-#define _MAIN_MEMORY_HPP_
+#pragma once
 
 // override new and delete operators to track memory allocations (DEBUG build only)
 #ifdef DEBUG
@@ -103,5 +102,3 @@ void operator delete[](void* ptr, std::size_t) noexcept
 #define DEBUG_REPORT_MEMORY_LEAKS() do {} while (0)
 
 #endif // DEBUG
-
-#endif
