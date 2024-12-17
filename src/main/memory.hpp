@@ -4,6 +4,7 @@
 #ifdef DEBUG
 
 #include <boost/stacktrace.hpp>
+#include "utils/logger.hpp"
 
 import std;
 
@@ -31,14 +32,14 @@ public:
         std::lock_guard<std::mutex> lock(mutex_);
         if (allocations_.empty())
         {
-            std::cerr << "No memory leaks" << std::endl;
+            DEBUG_LOG("No memory leaks");
             return;
         }
-        std::cerr << "Memory leaks detected:" << std::endl;
+        DEBUG_LOG("Memory leaks detected:");
         for (const auto& [ptr, info] : allocations_)
         {
-            std::cerr << "Memory leak: " << info.size << " bytes" << std::endl;
-            std::cerr << boost::stacktrace::to_string(info.trace) << std::endl;
+            DEBUG_LOG_ARGS("Memory leak: {} bytes", info.size);
+            DEBUG_LOG_ARGS("Stack trace:\n{}", boost::stacktrace::to_string(info.trace));
         }
     }
 private:
