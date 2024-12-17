@@ -1,10 +1,9 @@
-#include "utils/debug.hpp"
-#include "memory.hpp"
+#include "debug/exception.hpp"
+#include "debug/memory.hpp"
 
-import std.compat;
 import sim;
 
-uint32_t main(uint32_t argc, char** argv)
+int main(int argc, char** argv)
 {
     DEBUG_REPORT_MEMORY_LEAKS();
     DEBUG_SET_EXCEPTION_HANDLER();

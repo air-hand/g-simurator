@@ -17,7 +17,7 @@ import :recognize;
 namespace
 {
 
-cv::Ptr<cv::freeType::FreeType2> freetype = nullptr;
+cv::Ptr<cv::freetype::FreeType2> freetype = nullptr;
 
 auto LoadFontData()
 {
@@ -67,7 +67,8 @@ cv::Mat RecognizeResults::DrawRects() const
             10,
             cv::Scalar(0, 255, 0),
             1,
-            cv::LINE_AA
+            cv::LINE_AA,
+            true
         );
     }
     return out;

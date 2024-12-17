@@ -130,8 +130,6 @@ target_link_libraries(${{PROJECT_NAME}}-utils
     plog::plog
     Tesseract::libtesseract
     ${{PROJECT_NAME}}-std
-    $<$<CONFIG:Debug>:dbghelp>
-    $<$<CONFIG:Debug>:Boost::stacktrace_windbg>
 )
 target_link_options(${{PROJECT_NAME}}-utils
     PRIVATE
@@ -176,6 +174,8 @@ target_link_libraries(${{PROJECT_NAME}}
     ${{PROJECT_NAME}}-std
     ${{PROJECT_NAME}}-proto
     ${{PROJECT_NAME}}-utils
+    $<$<CONFIG:Debug>:dbghelp>
+    $<$<CONFIG:Debug>:Boost::stacktrace_windbg>
 )
 target_link_options(${{PROJECT_NAME}}
     PRIVATE
