@@ -18,7 +18,8 @@
         "cuda",
         "jpeg",
         "png",
-        "highgui"
+        "highgui",
+        "freetype"
       ]
     },
     "plog",

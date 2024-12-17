@@ -1,6 +1,7 @@
 module;
 
 #include <opencv2/opencv.hpp>
+#include <opencv2/freetype.hpp>
 #include <tesseract/baseapi.h>
 
 #include "macro.hpp"
@@ -12,6 +13,23 @@ module utils;
 import std;
 import :logger;
 import :recognize;
+
+namespace
+{
+
+cv::Ptr<cv::freeType::FreeType2> freetype = nullptr;
+
+auto LoadFontData()
+{
+    if (freetype == nullptr)
+    {
+        freetype = cv::freetype::createFreeType2();
+    }
+    freetype->loadFontData("C:/Windows/Fonts/meiryo.ttc", 0);
+    return freetype;
+}
+
+}
 
 namespace sim::utils::recognize
 {
@@ -39,16 +57,17 @@ cv::Mat RecognizeResults::DrawRects() const
     {
         cv::rectangle(out, r.rect, cv::Scalar(0, 0, 255), 2);
 
-        const auto font = cv::FontFace("");
-        cv::FontFace::create(font);
+        const auto font = LoadFontData();
 
         const auto text_with_confidence = std::format("{}:[{:.2f}]", r.text, r.confidence);
-        cv::putText(
+        font->putText(
             out,
             text_with_confidence,
             cv::Point(r.rect.x, r.rect.y - 10),
-            cv::FONT_HERSHEY_SIMPLEX, 0.3,
-            cv::Scalar(0, 255, 0)
+            10,
+            cv::Scalar(0, 255, 0),
+            1,
+            cv::LINE_AA
         );
     }
     return out;
