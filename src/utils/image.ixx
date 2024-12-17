@@ -20,6 +20,7 @@ T crop(const T& input, const cv::Rect& roi)
 
 export cv::cuda::GpuMat grayScale(const cv::cuda::GpuMat& input);
 export cv::cuda::GpuMat threshold(const cv::cuda::GpuMat& input);
+export cv::cuda::GpuMat resize(const cv::cuda::GpuMat& input, double scale_width, double scale_height);
 
 export cv::Mat fromGPU(const cv::cuda::GpuMat& input);
 

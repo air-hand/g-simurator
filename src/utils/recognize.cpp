@@ -5,6 +5,7 @@ module;
 
 #include "macro.hpp"
 #include "logger.hpp"
+#include "debug.hpp"
 
 module utils;
 
@@ -14,6 +15,44 @@ import :recognize;
 
 namespace sim::utils::recognize
 {
+
+RecognizeResults::RecognizeResults(const cv::Mat& input, const std::vector<Result>& results) : input_(input), results_(results)
+{
+}
+
+std::string RecognizeResults::ToString() const
+{
+    std::string out;
+    std::for_each(results_.begin(), results_.end(), [&out](const auto& r) {
+        DEBUG_LOG_ARGS("Text: {}, Confidence: {}", r.text, r.confidence);
+        out += " " + r.text;
+    });
+    return out;
+}
+
+cv::Mat RecognizeResults::DrawRects() const
+{
+    cv::Mat out;
+    input_.copyTo(out);
+
+    for (const auto& r : results_)
+    {
+        cv::rectangle(out, r.rect, cv::Scalar(0, 0, 255), 2);
+
+        const auto font = cv::FontFace("");
+        cv::FontFace::create(font);
+
+        const auto text_with_confidence = std::format("{}:[{:.2f}]", r.text, r.confidence);
+        cv::putText(
+            out,
+            text_with_confidence,
+            cv::Point(r.rect.x, r.rect.y - 10),
+            cv::FONT_HERSHEY_SIMPLEX, 0.3,
+            cv::Scalar(0, 255, 0)
+        );
+    }
+    return out;
+}
 
 class RecognizeText::Impl
 {
@@ -29,15 +68,43 @@ public:
 
     DELETE_COPY_AND_ASSIGN(Impl);
 
-    std::string ImageToText(const cv::Mat& image)
+    std::vector<RecognizeResults::Result> RecognizeImage(const cv::Mat& image)
     {
         tess_.Clear();
+//        tess_.SetImage(image.data, image.cols, image.rows, image.channels(), image.step);
         tess_.SetImage(image.data, image.cols, image.rows, 1, image.step);
-        const char* output = tess_.GetUTF8Text();
-        std::string out(output);
-        delete[] output;
-        DEBUG_LOG_ARGS("Recognized: [{}]", out);
-        return out;
+
+        {
+            const auto result = tess_.Recognize(nullptr);
+            DEBUG_ASSERT(result == 0);
+        }
+
+        std::vector<RecognizeResults::Result> results;
+        auto* it = tess_.GetIterator();
+        const auto level = tesseract::RIL_WORD; // Recognize level word
+        if (it == nullptr)
+        {
+            return results;
+        }
+        do
+        {
+            decltype(results)::value_type result;
+
+            const char* output = it->GetUTF8Text(level);
+            result.text = output;
+            delete[] output;
+
+            int x1, y1, x2, y2;
+            it->BoundingBox(level, &x1, &y1, &x2, &y2);
+            result.rect = cv::Rect(x1, y1, x2 - x1, y2 - y1);
+
+            result.confidence = it->Confidence(level);
+
+            results.emplace_back(result);
+        } while (it->Next(level));
+        // TODO: 解放忘れを防ぎたい...
+        delete it;
+        return results;
     }
 private:
     tesseract::TessBaseAPI tess_;
@@ -55,24 +122,11 @@ RecognizeText& RecognizeText::Get()
     return inst;
 }
 
-std::string RecognizeText::ImageToText(const cv::Mat& image)
-{
-    return impl_->ImageToText(image);
-}
-
-std::string RecognizeText::ImageToText(const std::filesystem::path& path)
+RecognizeResults RecognizeText::RecognizeImage(const cv::Mat& image)
 {
     DEBUG_LOG_SPAN(_);
-    const auto image = cv::imread(path.string());
-    cv::Mat optimized = image(cv::Rect(0, 0, 400, 200));
-//    cv::Mat optimized = image(cv::Rect(0, 0, 2560, 1440));
-    cv::cvtColor(optimized, optimized, cv::COLOR_BGR2GRAY);
-    cv::threshold(optimized, optimized, 128, 255, cv::THRESH_BINARY);
-    const auto output = path.parent_path() / (path.stem().string() + "_optimized" + path.extension().string());
-    DEBUG_LOG_ARGS("Output to {}", output.string());
-//    cv::resize(image, optimized, cv::Size(), 0.5, 0.5); // resize 50%
-    cv::imwrite(output.string(), optimized);
-    return ImageToText(optimized);
+    const auto results = impl_->RecognizeImage(image);
+    return RecognizeResults(image, results);
 }
 
 }

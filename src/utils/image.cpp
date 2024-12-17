@@ -4,6 +4,7 @@ module;
 #include <opencv2/core/cuda.hpp>
 #include <opencv2/cudaarithm.hpp>
 #include <opencv2/cudaimgproc.hpp>
+#include <opencv2/cudawarping.hpp>
 #include <opencv2/imgcodecs.hpp>
 
 #include "logger.hpp"
@@ -28,6 +29,13 @@ cv::cuda::GpuMat threshold(const cv::cuda::GpuMat& input)
 {
     cv::cuda::GpuMat output;
     cv::cuda::threshold(input, output, 128.0, 255.0, cv::THRESH_BINARY);
+    return output;
+}
+
+cv::cuda::GpuMat resize(const cv::cuda::GpuMat& input, double scale_width, double scale_height)
+{
+    cv::cuda::GpuMat output;
+    cv::cuda::resize(input, output, cv::Size(), scale_width, scale_height, cv::INTER_AREA);
     return output;
 }
 

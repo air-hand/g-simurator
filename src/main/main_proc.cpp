@@ -44,13 +44,6 @@ public:
         }
 
 #ifdef DEBUG // test code
-        if (route_path_.extension() == ".png")
-        {
-            DEBUG_LOG("recognize...");
-            auto& recognizer = utils::recognize::RecognizeText::Get();
-            recognizer.ImageToText(route_path_);
-        }
-
         {
             const auto desktop = window::Window(GetDesktopWindow());
             desktop.Activate();
@@ -93,9 +86,15 @@ public:
                 {
                     const auto mat = capture.Pop();
                     // FIXME: expectedが含まれる場合、captureにROIを渡して適用させるとかどうか？
-                    const auto roiMat = route::applyROI(mat, roi);
-                    const auto text = recognizer.ImageToText(roiMat);
+                    /*const auto roiMat =*/ route::applyROI(mat, roi);
+//                    const auto results = recognizer.RecognizeImage(roiMat);
+                    const auto results = recognizer.RecognizeImage(mat);
+                    const auto text = results.ToString();
                     logging::log("Recognized: [{}]", text);
+#if DEBUG
+                    const auto filename = sim::utils::strings::fmt(L"./tmp/roi_applied_{:%Y%m%d%H%M%S}.png", std::chrono::system_clock::now());
+                    sim::utils::image::saveImage(results.DrawRects(), sim::utils::unicode::to_utf8(filename));
+#endif
                     if (text.contains(expected))
                     {
                         logging::log("Expected [{}] contained.", expected);

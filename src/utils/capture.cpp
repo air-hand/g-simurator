@@ -224,13 +224,16 @@ private:
             {
                 DEBUG_LOG_SPAN(mat_roi);
                 const auto gpuMat = gpu::d3D11Texture2DToGpuMat(backBuffer.get());
-//                const auto clipped = image::clip(gpuMat, cv::Rect(0, 0, frameContentSize.Width, frameContentSize.Height))a
-                DEBUG_LOG("Gray scaling...");
-                const auto gray = image::grayScale(gpuMat);
-                DEBUG_LOG("Thresholding...");
-                const auto thresholded = image::threshold(gray);
-                DEBUG_LOG("Convert GpuMat to Mat...");
-                out = image::fromGPU(thresholded);
+                const std::vector<std::function<cv::cuda::GpuMat(const cv::cuda::GpuMat&)>> transforms = {
+                    &image::grayScale,
+                    &image::threshold,
+//                    [](const cv::cuda::GpuMat& input) { return image::resize(input, 0.5, 0.5); },
+                };
+                const auto processed = std::accumulate(
+                    transforms.begin(), transforms.end(), gpuMat,
+                    [](const cv::cuda::GpuMat& acc, const auto& f) { return f(acc); }
+                );
+                out = image::fromGPU(processed);
             }
             const auto pushed = buffer_.push(out, [&out](const auto& container)
             {

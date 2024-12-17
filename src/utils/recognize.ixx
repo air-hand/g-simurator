@@ -11,7 +11,30 @@ import std;
 namespace sim::utils::recognize
 {
 
-export class RecognizeText
+export class RecognizeResults final
+{
+public:
+    struct Result
+    {
+        std::string text;
+        cv::Rect rect;
+        float confidence;
+    };
+
+    RecognizeResults(const cv::Mat& input, const std::vector<Result>& results);
+    ~RecognizeResults() = default;
+
+    DELETE_COPY_AND_ASSIGN(RecognizeResults);
+
+    std::string ToString() const;
+    cv::Mat DrawRects() const;
+private:
+    const cv::Mat& input_;
+    std::vector<Result> results_;
+};
+
+// image.ixx に統合してもよさそう
+export class RecognizeText final
 {
 public:
     ~RecognizeText();
@@ -20,9 +43,7 @@ public:
 
     static RecognizeText& Get();
 
-    std::string ImageToText(const cv::Mat& image);
-    std::string ImageToText(const std::filesystem::path& path);
-
+    RecognizeResults RecognizeImage(const cv::Mat& image);
 private:
     RecognizeText();
     class Impl;

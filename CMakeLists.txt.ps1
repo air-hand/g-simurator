@@ -48,6 +48,7 @@ set(CXX_FLAGS_SHARED
     "/wd6326"
     "/external:anglebrackets"
     "/external:W0"
+#    "/fsanitize=address"
 )
 #set(CUDA_USE_STATIC_CUDA_RUNTIME OFF)
 #set(CMAKE_MSVC_RUNTIME_LIBRARY "MultiThreaded$<$<CONFIG:Debug>:Debug>")
@@ -178,6 +179,7 @@ target_link_libraries(${{PROJECT_NAME}}
 )
 target_link_options(${{PROJECT_NAME}}
     PRIVATE
+#    /IGNORE:4300
     /WX
     /VERBOSE
     /NODEFAULTLIB:LIBCMT
@@ -221,6 +223,7 @@ target_link_libraries(${{PROJECT_NAME}}-test
 )
 target_link_options(${{PROJECT_NAME}}-test
     PRIVATE
+#    /IGNORE:4300
     /WX
     /VERBOSE
     /NODEFAULTLIB:LIBCMT

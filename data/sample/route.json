@@ -5,8 +5,8 @@
       {
         "expected": "Kindle",
         "roi": {
-          "top_percent": 50,
-          "left_percent": 50,
+          "top_percent": 0,
+          "left_percent": 0,
           "width_percent": 50,
           "height_percent": 50
         },
