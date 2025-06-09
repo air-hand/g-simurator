@@ -21,7 +21,12 @@ jobs:
         shell: pwsh
     env:
       VCPKG_BINARY_SOURCES: "clear;x-gha,readwrite"
-    runs-on: windows-2022
+    strategy:
+      fail-fast: false
+      matrix:
+        - runner: 'windows-2022'
+        - runner: 'windows-2025'
+    runs-on: ${{ matrix.runner }}
 
     steps:
     - uses: actions/checkout@v4
