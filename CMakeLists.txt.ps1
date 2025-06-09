@@ -50,6 +50,7 @@ set(CXX_FLAGS_SHARED
     "/external:anglebrackets"
     "/external:W0"
     # $<$<CONFIG:Debug>:/fsanitize=address /GS>
+    "/FAs"
 )
 #set(CUDA_USE_STATIC_CUDA_RUNTIME OFF)
 #set(CMAKE_MSVC_RUNTIME_LIBRARY "MultiThreaded$<$<CONFIG:Debug>:Debug>")
