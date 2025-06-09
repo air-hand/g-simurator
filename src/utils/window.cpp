@@ -40,40 +40,6 @@ public:
         DEBUG_LOG_SPAN(_);
         const auto c = sim::utils::CaptureContext::Get().CaptureForWindowHandle(handle_);
         c.Start();
-
-        sim::utils::time::sleep(3000);
-
-//        RECT rect;
-//        GetWindowRect(handle_, &rect);
-//
-//        int width = rect.right - rect.left;
-//        int height = rect.bottom - rect.top;
-//
-//        BITMAPINFO bmpInfo;
-//        bmpInfo.bmiHeader.biSize = sizeof(BITMAPINFOHEADER);
-//        bmpInfo.bmiHeader.biWidth = rect.right;
-//        bmpInfo.bmiHeader.biHeight = -rect.bottom;
-//        bmpInfo.bmiHeader.biPlanes = 1;
-//        bmpInfo.bmiHeader.biBitCount = 24; //cv::Matの画像をアルファチャンネル有りにする場合は32;
-//        bmpInfo.bmiHeader.biCompression = BI_RGB;
-//      
-//        LPDWORD lpPixel;
-//        HDC hDC = GetDC(handle_);
-//        HBITMAP hBitmap = CreateDIBSection(hDC, &bmpInfo, DIB_RGB_COLORS, reinterpret_cast<void**>(&lpPixel), NULL, 0);
-//        HDC hMemDC = CreateCompatibleDC(hDC);
-//        SelectObject(hMemDC, hBitmap);
-//      
-//        cv::Mat monitor_img;
-//        monitor_img.create(height, width, CV_8UC3);
-//
-//        BitBlt(hMemDC, rect.left, rect.top, width, height, hDC, 0, 0, SRCCOPY);
-//        GetDIBits(hMemDC, hBitmap, 0, height, monitor_img.data, reinterpret_cast<BITMAPINFO*>(&bmpInfo), DIB_RGB_COLORS);
-//
-//        cv::imwrite("sample.jpg", monitor_img);
-//
-//        ReleaseDC(handle_, hDC);
-//        DeleteDC(hMemDC);
-//        DeleteObject(hBitmap);
     }
 
 private:

@@ -8,19 +8,15 @@ CONFIGURATION=Debug
 CLEAN=0
 !ENDIF
 
-all: build test
+all: test
 
 build: phony
 	@echo "Building..."
-	@$(SHELL) .\tools\build.ps1 -config $(CONFIGURATION) -clean $(CLEAN)
+	@$(SHELL) .\tools\build.ps1 -config $(CONFIGURATION) -clean $(CLEAN) || exit 1
 
-test: phony
+test: build phony
 	@echo "Testing..."
-	@$(SHELL) .\tools\test.ps1
-
-#setup: phony
-#	@echo "Setting up..."
-#	@$(SHELL) .\tools\setup_devenv.ps1
+	@$(SHELL) .\tools\test.ps1 || exit 1
 
 # pesudotarget
 phony:

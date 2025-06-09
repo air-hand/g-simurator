@@ -1,5 +1,12 @@
 {
   "$builtin-baseline": "5e5d0e1cd7785623065e77eff011afdeec1a3574",
+  "$overrides": [
+    {
+      "$comment": "This is a comment",
+      "name": "opencv4",
+      "version": "4.10.0#1"
+    }
+  ],
   "dependencies": [
     "boost-circular-buffer",
     "boost-program-options",
@@ -16,21 +23,15 @@
       "default-features": false,
       "features": [
         "cuda",
-        "jpeg",
-        "png",
+        "freetype",
         "highgui",
-        "freetype"
+        "jpeg",
+        "png"
       ]
     },
     "plog",
     "protobuf",
-    "tesseract"
-  ],
-  "$overrides": [
-    {
-      "$comment": "This is a comment",
-      "name": "opencv4",
-      "version": "4.10.0#1"
-    }
+    "tesseract",
+    "mimalloc"
   ]
 }

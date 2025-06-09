@@ -20,6 +20,7 @@ public:
     DELETE_COPY_AND_ASSIGN(MainProc);
 
     uint32_t Run();
+    void Cancel();
     void AddFinalizer(std::function<void()> finalizer);
 private:
     class Impl;

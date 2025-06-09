@@ -33,6 +33,36 @@ import :time;
 namespace sim::utils
 {
 
+class CapturedImage::Impl final
+{
+public:
+    Impl(const std::filesystem::path& path) noexcept : path_(path) {}
+    ~Impl() = default;
+
+    DELETE_COPY_AND_ASSIGN(Impl);
+
+    cv::Mat Read() const
+    {
+        DEBUG_LOG_SPAN(_);
+        return cv::imread(path_.string());
+    }
+private:
+    const std::filesystem::path path_;
+};
+
+CapturedImage::CapturedImage(const std::filesystem::path& path) noexcept
+    : impl_(std::make_unique<Impl>(path))
+{
+}
+CapturedImage::~CapturedImage() = default;
+CapturedImage::CapturedImage(CapturedImage&&) noexcept = default;
+CapturedImage& CapturedImage::operator=(CapturedImage&&) noexcept = default;
+
+cv::Mat CapturedImage::Read() const
+{
+    return impl_->Read();
+}
+
 CaptureContext::CaptureContext() noexcept : device_(nullptr) {}
 CaptureContext::~CaptureContext() = default;
 
@@ -92,7 +122,7 @@ class CaptureWindow::Impl final
 {
 public:
     Impl(HWND hwnd, const Device& device) noexcept
-        : hwnd_(hwnd), device_(device), buffer_(30)
+        : hwnd_(hwnd), device_(device), buffer_(10000)
     {
     }
     ~Impl()
@@ -154,7 +184,8 @@ public:
 
     cv::Mat Pop()
     {
-        return buffer_.pop();
+        const auto popped = buffer_.pop();
+        return popped.Read();
     }
 private:
     auto CreateCaptureItemForWindow() const
@@ -211,6 +242,7 @@ private:
     {
         DEBUG_LOG_SPAN(_);
         {
+            // FIXME: Fix when changed window size.
             const auto frame = sender.TryGetNextFrame();
             const auto frameContentSize = frame.ContentSize();
 
@@ -222,12 +254,11 @@ private:
 
             cv::Mat out;
             {
-                DEBUG_LOG_SPAN(mat_roi);
+                DEBUG_LOG_SPAN(__);
                 const auto gpuMat = gpu::d3D11Texture2DToGpuMat(backBuffer.get());
                 const std::vector<std::function<cv::cuda::GpuMat(const cv::cuda::GpuMat&)>> transforms = {
-                    &image::grayScale,
                     &image::threshold,
-//                    [](const cv::cuda::GpuMat& input) { return image::resize(input, 0.5, 0.5); },
+                    &image::grayScale,
                 };
                 const auto processed = std::accumulate(
                     transforms.begin(), transforms.end(), gpuMat,
@@ -235,34 +266,14 @@ private:
                 );
                 out = image::fromGPU(processed);
             }
-            const auto pushed = buffer_.push(out, [&out](const auto& container)
-            {
-                if (container.empty())
-                {
-                    DEBUG_LOG("Container is empty.");
-                    return true;
-                }
-                const cv::Mat& last_pushed = container.back();
-                cv::Mat diff;
-                cv::absdiff(out, last_pushed, diff);
-                const auto non_zero = cv::countNonZero(diff);
-                DEBUG_LOG_ARGS("Non-zero pixel count: {}", non_zero);
-                // TODO: 要調整
-                return non_zero > 0;
-            });
+            const auto now = std::chrono::system_clock::now();
+            const auto filename = sim::utils::strings::fmt("./tmp/capture_{:%Y%m%d%H%M%S}.png", std::chrono::time_point_cast<std::chrono::milliseconds>(now));
+            image::saveImage(out, filename);
 
-            if (pushed)
-            {
-#ifdef DEBUG
-                const auto now = std::chrono::system_clock::now();
-                const auto filename = sim::utils::strings::fmt(L"./tmp/capture_{:%Y%m%d%H%M%S}.png", std::chrono::time_point_cast<std::chrono::milliseconds>(now));
-                image::saveImage(out, sim::utils::unicode::to_utf8(filename));
-#endif
-            }
+            buffer_.push(CapturedImage(filename));
         }
         DXGI_PRESENT_PARAMETERS params = {0};
         swapChain_->Present1(1, 0, &params);
-        sim::utils::time::sleep(100); // TODO
     }
 
     const HWND hwnd_;
@@ -273,7 +284,7 @@ private:
     winrt::Windows::Graphics::Capture::GraphicsCaptureSession session_ { nullptr };
     winrt::Windows::Graphics::Capture::Direct3D11CaptureFramePool framePool_ { nullptr };
     winrt::Windows::Graphics::Capture::Direct3D11CaptureFramePool::FrameArrived_revoker frameArrived_;
-    container::RingBuffer<cv::Mat> buffer_;
+    container::RingBuffer<CapturedImage> buffer_;
 };
 
 CaptureWindow::CaptureWindow(HWND hwnd, const Device& device) noexcept
