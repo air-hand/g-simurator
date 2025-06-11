@@ -140,12 +140,12 @@ MemoryTrackerSpan::~MemoryTrackerSpan()
 
 #endif // DEBUG
 
-#if DEBUG
-#define DEBUG_MEMORY_ALLOC(ptr, size) MemoryTracker::Alloc(ptr, size)
-#define DEBUG_MEMORY_FREE(ptr) MemoryTracker::Free(ptr)
+#ifdef DEBUG
+#define DEBUG_MEMORY_TRACKER_ALLOC(ptr, size) MemoryTracker::Alloc(ptr, size)
+#define DEBUG_MEMORY_TRACKER_FREE(ptr) MemoryTracker::Free(ptr)
 #else
-#define DEBUG_MEMORY_ALLOC(ptr, size) do {} while (0)
-#define DEBUG_MEMORY_FREE(ptr) do {} while (0)
+#define DEBUG_MEMORY_TRACKER_ALLOC(ptr, size) do {} while (0)
+#define DEBUG_MEMORY_TRACKER_FREE(ptr) do {} while (0)
 #endif
 
 
@@ -159,19 +159,19 @@ void* operator new(std::size_t size)
     {
         throw std::bad_alloc();
     }
-    DEBUG_MEMORY_ALLOC(ptr, size);
+    DEBUG_MEMORY_TRACKER_ALLOC(ptr, size);
     return ptr;
 }
 
 void operator delete(void* ptr) noexcept
 {
-    DEBUG_MEMORY_FREE(ptr);
+    DEBUG_MEMORY_TRACKER_FREE(ptr);
     SIM_FREE(ptr);
 }
 
 void operator delete(void* ptr, std::size_t) noexcept
 {
-    DEBUG_MEMORY_FREE(ptr);
+    DEBUG_MEMORY_TRACKER_FREE(ptr);
     SIM_FREE(ptr);
 }
 
@@ -182,19 +182,19 @@ void* operator new[](std::size_t size)
     {
         throw std::bad_alloc();
     }
-    DEBUG_MEMORY_ALLOC(ptr, size);
+    DEBUG_MEMORY_TRACKER_ALLOC(ptr, size);
     return ptr;
 }
 
 void operator delete[](void* ptr) noexcept
 {
-    DEBUG_MEMORY_FREE(ptr);
+    DEBUG_MEMORY_TRACKER_FREE(ptr);
     SIM_FREE(ptr);
 }
 
 void operator delete[](void* ptr, std::size_t) noexcept
 {
-    DEBUG_MEMORY_FREE(ptr);
+    DEBUG_MEMORY_TRACKER_FREE(ptr);
     SIM_FREE(ptr);
 }
 
@@ -203,7 +203,7 @@ void* operator new(std::size_t size, const std::nothrow_t&) noexcept
     void* ptr = SIM_MALLOC(size);
     if (ptr != nullptr)
     {
-        DEBUG_MEMORY_ALLOC(ptr, size);
+        DEBUG_MEMORY_TRACKER_ALLOC(ptr, size);
     }
     return ptr;
 }
@@ -215,13 +215,13 @@ void* operator new(std::size_t size, const std::align_val_t align)
     {
         throw std::bad_alloc();
     }
-    DEBUG_MEMORY_ALLOC(ptr, size);
+    DEBUG_MEMORY_TRACKER_ALLOC(ptr, size);
     return ptr;
 }
 
 void operator delete(void* ptr, [[maybe_unused]] const std::align_val_t align) noexcept
 {
-    DEBUG_MEMORY_FREE(ptr);
+    DEBUG_MEMORY_TRACKER_FREE(ptr);
     SIM_ALIGNED_FREE(ptr, align);
 }
 
