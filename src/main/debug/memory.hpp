@@ -2,10 +2,13 @@
 
 #define OVERRIDE_NEW_DELETE 1
 // override new and delete operators to track memory allocations (DEBUG build only)
-#ifdef DEBUG
 
+#if OVERRIDE_NEW_DELETE
 #include <cstdlib>
 #include <new>
+#endif
+
+#ifdef DEBUG
 
 #if !OVERRIDE_NEW_DELETE
 #define _CRTDBG_MAP_ALLOC

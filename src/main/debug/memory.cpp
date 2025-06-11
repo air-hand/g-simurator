@@ -13,6 +13,7 @@
 
 #else
 
+
 #define SIM_MALLOC(size) std::malloc(size)
 #define SIM_FREE(ptr) std::free(ptr)
 #define SIM_ALIGNED_ALLOC(size, align) ::_aligned_malloc(size, static_cast<std::size_t>(align))
@@ -139,6 +140,15 @@ MemoryTrackerSpan::~MemoryTrackerSpan()
 
 #endif // DEBUG
 
+#if DEBUG
+#define DEBUG_MEMORY_ALLOC(ptr, size) MemoryTracker::Alloc(ptr, size)
+#define DEBUG_MEMORY_FREE(ptr) MemoryTracker::Free(ptr)
+#else
+#define DEBUG_MEMORY_ALLOC(ptr, size) do {} while (0)
+#define DEBUG_MEMORY_FREE(ptr) do {} while (0)
+#endif
+
+
 #if OVERRIDE_NEW_DELETE
 #pragma warning(push)
 #pragma warning(disable: 28251) // Inconsistent annotation for 'new': this instance has no annotations.
@@ -149,19 +159,19 @@ void* operator new(std::size_t size)
     {
         throw std::bad_alloc();
     }
-    MemoryTracker::Alloc(ptr, size);
+    DEBUG_MEMORY_ALLOC(ptr, size);
     return ptr;
 }
 
 void operator delete(void* ptr) noexcept
 {
-    MemoryTracker::Free(ptr);
+    DEBUG_MEMORY_FREE(ptr);
     SIM_FREE(ptr);
 }
 
 void operator delete(void* ptr, std::size_t) noexcept
 {
-    MemoryTracker::Free(ptr);
+    DEBUG_MEMORY_FREE(ptr);
     SIM_FREE(ptr);
 }
 
@@ -172,19 +182,19 @@ void* operator new[](std::size_t size)
     {
         throw std::bad_alloc();
     }
-    MemoryTracker::Alloc(ptr, size);
+    DEBUG_MEMORY_ALLOC(ptr, size);
     return ptr;
 }
 
 void operator delete[](void* ptr) noexcept
 {
-    MemoryTracker::Free(ptr);
+    DEBUG_MEMORY_FREE(ptr);
     SIM_FREE(ptr);
 }
 
 void operator delete[](void* ptr, std::size_t) noexcept
 {
-    MemoryTracker::Free(ptr);
+    DEBUG_MEMORY_FREE(ptr);
     SIM_FREE(ptr);
 }
 
@@ -193,7 +203,7 @@ void* operator new(std::size_t size, const std::nothrow_t&) noexcept
     void* ptr = SIM_MALLOC(size);
     if (ptr != nullptr)
     {
-        MemoryTracker::Alloc(ptr, size);
+        DEBUG_MEMORY_ALLOC(ptr, size);
     }
     return ptr;
 }
@@ -205,13 +215,13 @@ void* operator new(std::size_t size, const std::align_val_t align)
     {
         throw std::bad_alloc();
     }
-    MemoryTracker::Alloc(ptr, size);
+    DEBUG_MEMORY_ALLOC(ptr, size);
     return ptr;
 }
 
 void operator delete(void* ptr, [[maybe_unused]] const std::align_val_t align) noexcept
 {
-    MemoryTracker::Free(ptr);
+    DEBUG_MEMORY_FREE(ptr);
     SIM_ALIGNED_FREE(ptr, align);
 }
 
