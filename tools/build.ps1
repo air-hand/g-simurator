@@ -1,11 +1,10 @@
 ﻿Param(
-    [string]$config="Debug",
+    [string]$build_type="Debug",
     [int]$clean=0
 )
 
 $ErrorActionPreference = "Stop"
 
-$release = $config -eq "Release"
 $clean = $clean -eq 1
 
 . $PSScriptRoot\envs.ps1
@@ -37,10 +36,7 @@ Get-ChildItem ./ -Exclude @(".git", "build", "tools", "vcpkg_installed") | ForEa
 }
 
 $Env:CMAKE_BUILD_PARALLEL_LEVEL = ([int]$Env:NUMBER_OF_PROCESSORS * 2)
-$CMAKE_BUILD_TYPE = "Debug"
-if ($release) {
-    $CMAKE_BUILD_TYPE = "Release"
-}
+$CMAKE_BUILD_TYPE = $build_type
 
 if ($clean) {
     Remove-Item -Recurse -Force ./build
