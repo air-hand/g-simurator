@@ -30,9 +30,15 @@ jobs:
     runs-on: ${{ matrix.runner }}
 
     steps:
-    - uses: actions/checkout@v4
+    - uses: actions/checkout@v5
+    - name: check winget installed
+      id: winget
+      run:
+        $winget = $(Get-Command winget -ErrorAction SilentlyContinue)
+        "found=$([bool]($winget) -as [string])" | Out-File -FilePath $Env:GITHUB_OUTPUT -Append -Encoding utf8
 
     - name: Install winget
+      if: ${{ steps.winget.outputs.found == 'false' }}
       uses: Cyberboss/install-winget@v1
       with:
         GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
