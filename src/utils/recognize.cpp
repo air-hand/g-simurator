@@ -129,8 +129,7 @@ public:
         tess.Get().SetImage(image.data, image.cols, image.rows, 1, image.step);
 
         {
-            const auto result = tess.Get().Recognize(nullptr);
-            DEBUG_ASSERT(result == 0);
+            DEBUG_ASSERT(tess.Get().Recognize(nullptr) == 0);
         }
 
         std::vector<RecognizeResults::Result> results;

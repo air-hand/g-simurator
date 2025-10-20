@@ -12,7 +12,7 @@ all: test
 
 build: phony
 	@echo "Building..."
-	@$(SHELL) .\tools\build.ps1 -config $(CONFIGURATION) -clean $(CLEAN) || exit 1
+	@$(SHELL) .\tools\build.ps1 -build_type $(CONFIGURATION) -clean $(CLEAN) || exit 1
 
 test: build phony
 	@echo "Testing..."

@@ -31,6 +31,7 @@ set(CMAKE_CXX_STANDARD_REQUIRED ON)
 #set(CMAKE_CXX_FLAGS_RELEASE "-DNDEBUG /MT")
 set(CMAKE_CXX_FLAGS_DEBUG "-DDEBUG")
 set(CMAKE_CXX_FLAGS_RELEASE "-DNDEBUG")
+set(CMAKE_CXX_FLAGS_RELWITHDEBINFO "-O2 -DNDEBUG /Zi /FAs")
 set(CXX_FLAGS_SHARED
     "/Zc:__cplusplus"
     "/utf-8"
@@ -42,6 +43,8 @@ set(CXX_FLAGS_SHARED
     "/wd4267"
     "/wd4365"
     "/wd4686"
+    "/wd4710"
+    "/wd4711"
     "/wd4820"
     "/wd5050"
     "/wd5244"
@@ -50,7 +53,7 @@ set(CXX_FLAGS_SHARED
     "/external:anglebrackets"
     "/external:W0"
     # $<$<CONFIG:Debug>:/fsanitize=address /GS>
-    "/FAs"
+    # "/FAs"
 )
 #set(CUDA_USE_STATIC_CUDA_RUNTIME OFF)
 #set(CMAKE_MSVC_RUNTIME_LIBRARY "MultiThreaded$<$<CONFIG:Debug>:Debug>")
@@ -190,6 +193,7 @@ target_link_options(${{PROJECT_NAME}}
     /WX
     /VERBOSE
     /NODEFAULTLIB:LIBCMT
+    $<$<CONFIG:RelWithDebInfo>:/DEBUG>
 )
 
 # tests

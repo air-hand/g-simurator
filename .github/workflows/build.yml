@@ -61,7 +61,7 @@ jobs:
 
     - name: Build (Release)
       run: |
-        .\tools\build.ps1 -config=Release -clean=1
+        .\tools\build.ps1 -build_type=Release -clean=1
 
     - name: Run tests (Release)
       run: |
