@@ -10,6 +10,10 @@ CLEAN=0
 
 all: test
 
+setup: phony
+	@echo "Setup"
+	@$(SHELL) .\tools\setup_devenv.ps1
+
 build: phony
 	@echo "Building..."
 	@$(SHELL) .\tools\build.ps1 -build_type $(CONFIGURATION) -clean $(CLEAN) || exit 1
