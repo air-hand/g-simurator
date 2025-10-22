@@ -25,9 +25,9 @@ jobs:
       run:
         shell: pwsh
     env:
-      USERNAME: ${{ github.repository_owner }}
-      VCPKG_EXE: ${{ github.workspace }}/vcpkg/vcpkg
-      FEED_URL: https://nuget.pkg.github.com/${{ github.repository_owner }}/index.json
+      NUGET_USERNAME: ${{ github.repository_owner }}
+      NUGET_FEED_URL: https://nuget.pkg.github.com/${{ github.repository_owner }}/index.json
+      NUGET_TOKEN: ${{ secrets.GITHUB_TOKEN }}
       VCPKG_BINARY_SOURCES: "clear;nuget,https://nuget.pkg.github.com/${{ github.repository_owner }}/index.json,readwrite"
     strategy:
       fail-fast: false
@@ -49,18 +49,6 @@ jobs:
       uses: Cyberboss/install-winget@v1
       with:
         GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
-
-    # https://learn.microsoft.com/en-us/vcpkg/consume/binary-caching-github-packages
-    - name: Add NuGet sources
-      env:
-        GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
-      run: |
-        & $($Env:VCPKG_EXE) fetch nuget `
-          | Out-String `
-          | ForEach-Object { Invoke-Expression "& $_ sources add -Source `"$Env:FEED_URL`" -StorePasswordInClearText -Name GitHubPackages -UserName `"$Env:USERNAME`" -Password `"$Env:GITHUB_TOKEN`"" }
-        & $($Env:VCPKG_EXE) fetch nuget `
-          | Out-String `
-          | ForEach-Object { Invoke-Expression "& $_ setapikey `"$Env:GITHUB_TOKEN`" -Source `"$Env:FEED_URL`"" }
 
     - name: Setup development environment
       run: |

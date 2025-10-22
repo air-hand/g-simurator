@@ -37,6 +37,27 @@ $Env:VCPKG_TARGET_TRIPLET = "x64-windows"
 if (-not($Env:VCPKG_BINARY_SOURCES)) {
     $Env:VCPKG_BINARY_SOURCES = "clear;"
 }
+
+# https://learn.microsoft.com/en-us/vcpkg/consume/binary-caching-github-packages
+# Configure NuGet for vcpkg binary caching if environment variables are set
+if ($Env:NUGET_FEED_URL -and $Env:NUGET_TOKEN) {
+    $nuget_exe = (vcpkg fetch nuget | Out-String).Trim()
+    if ($nuget_exe -and (Test-Path $nuget_exe)) {
+        Write-Host "Configuring NuGet source for vcpkg binary caching..."
+        & $nuget_exe sources add `
+          -Source "$Env:NUGET_FEED_URL" `
+          -StorePasswordInClearText `
+          -Name "GitHubPackages" `
+          -UserName "$Env:NUGET_USERNAME" `
+          -Password "$Env:NUGET_TOKEN" `
+          -NonInteractive 2>$null
+        & $nuget_exe setapikey "$Env:NUGET_TOKEN" `
+          -Source "$Env:NUGET_FEED_URL" `
+          -NonInteractive 2>$null
+        Write-Host "NuGet source configured successfully."
+    }
+}
+
 vcpkg install --triplet $Env:VCPKG_TARGET_TRIPLET
 
 $vcpkg_tools_path = (vcpkg env --tools "echo %PATH%")
