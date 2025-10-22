@@ -8,7 +8,7 @@
             "program": "${workspaceFolder}/build/simurator.exe",
             "args": [
                 "--route",
-//                "data/tkn/route.json",
+                //"data/tkn/route.json",
                 "data/sample/route.json",
             ],
             "stopAtEntry": false,
