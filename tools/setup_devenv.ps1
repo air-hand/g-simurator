@@ -85,4 +85,5 @@ Function Main([boolean]$clean) {
 }
 
 $ErrorActionPreference = "Stop"
+Set-PSDebug -Trace 1
 Main -clean $clean.IsPresent
