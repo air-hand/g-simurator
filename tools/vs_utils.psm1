@@ -72,9 +72,7 @@ Function ModifyVSWithConfig([string]$installed_path)
         "--config", "`"${vsconfig}`"",
         "--quiet", "--norestart", "--nocache", "--force", "--downloadThenInstall"
     ))
-    & $vs_installer $vs_installer_args
-    $exit_code = $LASTEXITCODE
-#    $exit_code = Invoke-ProcessStreamed $vs_installer.Path $vs_installer_args
+    $exit_code = Invoke-ProcessStreamed $vs_installer.Path $vs_installer_args
     switch ($exit_code) {
         0 { return }
         default {
