@@ -25,7 +25,10 @@ jobs:
       run:
         shell: pwsh
     env:
-      VCPKG_BINARY_SOURCES: "clear;nuget,GitHub,readwrite"
+      USERNAME: ${{ github.repository_owner }}
+      VCPKG_EXE: ${{ github.workspace }}/vcpkg/vcpkg
+      FEED_URL: https://nuget.pkg.github.com/${{ github.repository_owner }}/index.json
+      VCPKG_BINARY_SOURCES: "clear;nuget,https://nuget.pkg.github.com/${{ github.repository_owner }}/index.json,readwrite"
     strategy:
       fail-fast: false
       matrix:
@@ -48,15 +51,16 @@ jobs:
         GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
 
     # https://learn.microsoft.com/en-us/vcpkg/consume/binary-caching-github-packages
-    - name: Setup NuGet Credentials for vcpkg
+    - name: Add NuGet sources
+      env:
+        GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
       run: |
-        & $(Get-Command nuget).Path sources add `
-          -source "https://nuget.pkg.github.com/${{ github.repository_owner }}/index.json" `
-          -storepasswordincleartext `
-          -name "GitHub" `
-          -username "${{ github.repository_owner }}" `
-          -password "${{ secrets.GITHUB_TOKEN }}"
-        & $(Get-Command nuget).Path setapikey "${{ secrets.GITHUB_TOKEN }}" -source "https://nuget.pkg.github.com/${{ github.repository_owner }}/index.json"
+        & $($Env:VCPKG_EXE) fetch nuget `
+          | Out-String `
+          | ForEach-Object { Invoke-Expression "& $_ sources add -Source `"$Env:FEED_URL`" -StorePasswordInClearText -Name GitHubPackages -UserName `"$Env:USERNAME`" -Password `"$Env:GITHUB_TOKEN`"" }
+        & $($Env:VCPKG_EXE) fetch nuget `
+          | Out-String `
+          | ForEach-Object { Invoke-Expression "& $_ setapikey `"$Env:GITHUB_TOKEN`" -Source `"$Env:FEED_URL`"" }
 
     - name: Setup development environment
       run: |
