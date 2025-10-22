@@ -34,9 +34,11 @@ Function InstallVisualStudio([boolean]$clean) {
     throw "VisualStudio not found."
 }
 
-Function InstallOthers() {
+Function InstallOthers([boolean]$clean) {
     $cuda_version = "12.6"
-    winget uninstall -e --id Nvidia.CUDA -v $cuda_version --silent --disable-interactivity
+    if ($clean) {
+        winget uninstall -e --id Nvidia.CUDA -v $cuda_version --silent --disable-interactivity
+    }
     # https://docs.nvidia.com/cuda/cuda-installation-guide-microsoft-windows/#id3
     $sub_packages = @(
         "nvcc_${cuda_version}"
@@ -78,7 +80,7 @@ Function Main([boolean]$clean) {
 
     SetupPathToVSInstaller
     InstallVisualStudio $clean
-    InstallOthers
+    InstallOthers $clean
     popd > $null
 }
 

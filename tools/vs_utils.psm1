@@ -25,16 +25,17 @@ Function PathToVisualStudio([switch]$with_vsconfig)
 Function ModifyVSWithConfig([string]$installed_path)
 {
     $vsconfig = Join-Path $PSScriptRoot ".vsconfig"
-    $vs_installer = Get-Command "vs_installer.exe"
+    #$vs_installer = Get-Command "vs_installer.exe"
+    $vs_installer = Get-Command "setup.exe"
     $vs_installer_args = (@(
         "modify",
         "--installPath", "`"${installed_path}`"",
         "--config", "`"${vsconfig}`"",
-        "--quiet", "--norestart", "--nocache", "--force"
+        "--quiet", "--norestart", "--nocache", "--force", "--downloadThenInstall"
     ) -join " ")
     $isCI = $env:CI -eq 'true'
-    Write-Host $vs_installer_args
     if (-not($IsCI)) {
+        Write-Host $vs_installer_args
         $proc = Start-Process -FilePath $vs_installer.Path -ArgumentList $vs_installer_args -Verb RunAs -Wait -PassThru
     } else {
         $proc = Start-Process -FilePath $vs_installer.Path -ArgumentList $vs_installer_args -Wait -PassThru

@@ -11,8 +11,7 @@ CLEAN=0
 all: test
 
 setup: phony
-	@echo "Setup"
-	@$(SHELL) .\tools\setup_devenv.ps1
+	@echo "Please exec: [$(SHELL) $(MAKEDIR)\tools\setup_devenv.ps1] other terminal. nmake.exe depends on this script."
 
 build: phony
 	@echo "Building..."
