@@ -34,22 +34,5 @@
 //            "--grpc_out=${workspaceFolder}/src",
 //            "--plugin=protoc-gen-grpc=${workspaceFolder}/vcpkg_installed/x64-windows/tools/grpc/grpc_cpp_plugin.exe"
         ]
-    },
-    "files.associations": {
-        "Vagrantfile": "ruby",
-        "new": "cpp",
-        "xiosbase": "cpp",
-        "memory": "cpp",
-        "xstring": "cpp",
-        "ranges": "cpp",
-        "queue": "cpp",
-        "stack": "cpp",
-        "type_traits": "cpp",
-        "deque": "cpp",
-        "forward_list": "cpp",
-        "list": "cpp",
-        "vector": "cpp",
-        "xhash": "cpp",
-        "xtree": "cpp"
     }
 }
