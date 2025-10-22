@@ -1,3 +1,42 @@
+using namespace System.Diagnostics
+Function Invoke-ProcessStreamed(
+    [string]$FilePath,
+    [string[]]$ArgumentList=@()
+)
+{
+    try {
+      $psi = [ProcessStartInfo]::new()
+      $psi.FileName = $FilePath
+      $psi.Arguments = ($ArgumentList -join ' ')
+      $psi.RedirectStandardOutput = $true
+      $psi.RedirectStandardError  = $true
+      $psi.UseShellExecute = $false
+      $psi.CreateNoWindow  = $true
+      $p = [Process]::new();
+      $p.StartInfo = $psi
+      $p.EnableRaisingEvents = $true
+      $script = {
+        $data = $Event.SourceEventArgs.Data
+        if (-not [string]::IsNullOrEmpty($data)) {
+            [System.Console]::WriteLine($data)
+        }
+      }
+      $stdoutEvent = Register-ObjectEvent -InputObject $p -EventName OutputDataReceived -Action $script
+      $stderrEvent = Register-ObjectEvent -InputObject $p -EventName ErrorDataReceived -Action $script
+      [void]$p.Start()
+      $p.BeginOutputReadLine(); $p.BeginErrorReadLine();
+      $p.WaitForExit()
+      $p.CancelOutputRead(); $p.CancelErrorRead()
+      Unregister-Event -SourceIdentifier $stdoutEvent
+      Unregister-Event -SourceIdentifier $stderrEvent
+      return $p.ExitCode
+    } finally {
+        if ($p) {
+            $p.Dispose()
+        }
+    }
+}
+
 Function SetupPathToVSInstaller() {
     $vswhere = Join-Path "${Env:ProgramFiles(x86)}" "Microsoft Visual Studio\Installer\vswhere.exe"
 
@@ -32,18 +71,14 @@ Function ModifyVSWithConfig([string]$installed_path)
         "--installPath", "`"${installed_path}`"",
         "--config", "`"${vsconfig}`"",
         "--quiet", "--norestart", "--nocache", "--force", "--downloadThenInstall"
-    ) -join " ")
-    $isCI = $env:CI -eq 'true'
-    if (-not($IsCI)) {
-        Write-Host $vs_installer_args
-        $proc = Start-Process -FilePath $vs_installer.Path -ArgumentList $vs_installer_args -Verb RunAs -Wait -PassThru
-    } else {
-        $proc = Start-Process -FilePath $vs_installer.Path -ArgumentList $vs_installer_args -Wait -PassThru
-    }
-    switch ($proc.ExitCode) {
+    ))
+    & $vs_installer $vs_installer_args
+    $exit_code = $LASTEXITCODE
+#    $exit_code = Invoke-ProcessStreamed $vs_installer.Path $vs_installer_args
+    switch ($exit_code) {
         0 { return }
         default {
-            throw ("VS modify failed. exit={0}" -F $proc.ExitCode)
+            throw ("VS modify failed. exit={0}" -F $exit_code)
         }
     }
 }
