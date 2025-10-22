@@ -36,10 +36,9 @@ std::wstring to_utf16(const std::string& utf8)
 
 std::string to_utf8(const std::wstring& utf16)
 {
-    std::string utf8;
     if (utf16.empty())
     {
-        return utf8;
+        return {};
     }
     int result = ::WideCharToMultiByte(
         CP_UTF8,
@@ -53,9 +52,9 @@ std::string to_utf8(const std::wstring& utf16)
     );
     if (result == 0)
     {
-        return utf8;
+        return {};
     }
-    utf8.resize(result);
+    std::string utf8(result, '\0');
     ::WideCharToMultiByte(
         CP_UTF8,
         WC_ERR_INVALID_CHARS,

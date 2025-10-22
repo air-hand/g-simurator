@@ -31,7 +31,7 @@ public:
 
     DELETE_COPY_AND_ASSIGN(RingBuffer);
 
-    bool push(const T& value, std::function<bool(const decltype(container_)&)> condition)
+    bool push(T&& value, std::function<bool(const decltype(container_)&)> condition)
     {
         DEBUG_LOG_SPAN(_);
         {
@@ -40,18 +40,16 @@ public:
             {
                 return false;
             }
-            // TODO: ここで待つのもできるが、popも相応にできないといけないので一方を待つだけでもいいんじゃないだろうか
-            //condition_.wait(lock, [this] { return !container_.full(); });
-            container_.push_back(value);
+            container_.push_back(std::forward<T>(value));
         }
         is_not_empty_.notify_one();
         return true;
     }
 
-    void push(const T& value)
+    void push(T&& value)
     {
         DEBUG_LOG_SPAN(_);
-        push(value, []([[maybe_unused]] const auto&) { return true; });
+        push(std::forward<T>(value), []([[maybe_unused]] const auto&) { return true; });
     }
 
     T pop()
@@ -59,7 +57,7 @@ public:
         DEBUG_LOG_SPAN(_);
         auto lock = std::unique_lock<std::mutex>(mutex_);
         is_not_empty_.wait(lock, [this] { return !container_.empty(); });
-        auto result = container_.front();
+        auto result = std::move(container_.front());
         container_.pop_front();
         return result;
     }

@@ -50,7 +50,6 @@ LONG CALLBACK VectoredExceptionHandler(PEXCEPTION_POINTERS e) noexcept
     DEBUG_LOG_ARGS("Exception code: 0x{:X}", e->ExceptionRecord->ExceptionCode);
     DEBUG_LOG_ARGS("Stack trace:\n{}\n", boost::stacktrace::to_string(boost::stacktrace::stacktrace()));
     return EXCEPTION_CONTINUE_SEARCH;
-//    return EXCEPTION_EXECUTE_HANDLER;
 }
 
 LONG WINAPI UnhandledExceptionFilter(EXCEPTION_POINTERS* e) noexcept
@@ -60,6 +59,8 @@ LONG WINAPI UnhandledExceptionFilter(EXCEPTION_POINTERS* e) noexcept
     {
         DEBUG_LOG("Failed to write minidump.");
     }
+    DEBUG_LOG_ARGS("Exception code: 0x{:X}", e->ExceptionRecord->ExceptionCode);
+    DEBUG_LOG_ARGS("Stack trace:\n{}\n", boost::stacktrace::to_string(boost::stacktrace::stacktrace()));
     return EXCEPTION_EXECUTE_HANDLER;
 }
 

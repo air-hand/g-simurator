@@ -23,6 +23,7 @@ find_package(boost_program_options CONFIG REQUIRED)
 find_package(boost_stacktrace_windbg CONFIG REQUIRED)
 find_package(Tesseract CONFIG REQUIRED)
 find_package(CUDAToolkit REQUIRED)
+find_package(mimalloc CONFIG REQUIRED)
 
 set(CMAKE_CXX_STANDARD 23) # c++latest
 set(CMAKE_CXX_STANDARD_REQUIRED ON)
@@ -30,6 +31,7 @@ set(CMAKE_CXX_STANDARD_REQUIRED ON)
 #set(CMAKE_CXX_FLAGS_RELEASE "-DNDEBUG /MT")
 set(CMAKE_CXX_FLAGS_DEBUG "-DDEBUG")
 set(CMAKE_CXX_FLAGS_RELEASE "-DNDEBUG")
+set(CMAKE_CXX_FLAGS_RELWITHDEBINFO "-O2 -DNDEBUG /Zi /FAs")
 set(CXX_FLAGS_SHARED
     "/Zc:__cplusplus"
     "/utf-8"
@@ -41,6 +43,8 @@ set(CXX_FLAGS_SHARED
     "/wd4267"
     "/wd4365"
     "/wd4686"
+    "/wd4710"
+    "/wd4711"
     "/wd4820"
     "/wd5050"
     "/wd5244"
@@ -48,7 +52,8 @@ set(CXX_FLAGS_SHARED
     "/wd6326"
     "/external:anglebrackets"
     "/external:W0"
-#    "/fsanitize=address"
+    # $<$<CONFIG:Debug>:/fsanitize=address /GS>
+    # "/FAs"
 )
 #set(CUDA_USE_STATIC_CUDA_RUNTIME OFF)
 #set(CMAKE_MSVC_RUNTIME_LIBRARY "MultiThreaded$<$<CONFIG:Debug>:Debug>")
@@ -60,6 +65,10 @@ target_compile_options(${{PROJECT_NAME}}-std
     ${{CXX_FLAGS_SHARED}}
     /Wall
     /WX
+)
+
+target_link_libraries(${{PROJECT_NAME}}-std
+    PRIVATE
 )
 
 add_library(${{PROJECT_NAME}}-proto STATIC)
@@ -168,6 +177,7 @@ target_include_directories(${{PROJECT_NAME}}
 
 target_link_libraries(${{PROJECT_NAME}}
     PRIVATE
+    $<IF:$<TARGET_EXISTS:mimalloc-static>,mimalloc-static,mimalloc>
     Microsoft::DirectXTK
     Boost::program_options
     ${{OpenCV_LIBS}}
@@ -179,10 +189,11 @@ target_link_libraries(${{PROJECT_NAME}}
 )
 target_link_options(${{PROJECT_NAME}}
     PRIVATE
-#    /IGNORE:4300
+    /IGNORE:4300
     /WX
     /VERBOSE
     /NODEFAULTLIB:LIBCMT
+    $<$<CONFIG:RelWithDebInfo>:/DEBUG>
 )
 
 # tests

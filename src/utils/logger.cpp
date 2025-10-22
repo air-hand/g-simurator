@@ -3,6 +3,7 @@ module;
 #include <plog/Log.h>
 #include <plog/Init.h>
 #include <plog/Appenders/ConsoleAppender.h>
+#include <plog/Appenders/RollingFileAppender.h>
 #include <plog/Formatters/TxtFormatter.h>
 
 module utils;
@@ -10,6 +11,7 @@ module utils;
 namespace
 {
 plog::ConsoleAppender<plog::TxtFormatter> consoleAppender;
+plog::RollingFileAppender<plog::TxtFormatter> fileAppender("./logs/app.log", 1024 * 1024, 3);
 }
 
 namespace sim::utils::logging
@@ -17,7 +19,7 @@ namespace sim::utils::logging
 
 void init()
 {
-    plog::init(plog::debug, &consoleAppender);
+    plog::init(plog::debug, &consoleAppender).addAppender(&fileAppender);
 }
 
 void log(const std::string& message)

@@ -27,6 +27,23 @@ auto GetDXGIInterfaceFromObject(const winrt::Windows::Foundation::IInspectable& 
 
 using Device = winrt::Windows::Graphics::DirectX::Direct3D11::IDirect3DDevice;
 
+export class CapturedImage final
+{
+public:
+    explicit CapturedImage(const std::filesystem::path& path) noexcept;
+    ~CapturedImage();
+
+    DELETE_COPY_AND_ASSIGN(CapturedImage);
+
+    CapturedImage(CapturedImage&&) noexcept;
+    CapturedImage& operator=(CapturedImage&&) noexcept;
+
+    cv::Mat Read() const;
+private:
+    class Impl;
+    std::unique_ptr<Impl> impl_;
+};
+
 export class CaptureWindow final
 {
 public:

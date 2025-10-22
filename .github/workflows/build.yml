@@ -14,6 +14,10 @@ on:
 permissions:
   contents: read
 
+concurrency:
+  group: ${{ github.workflow }}
+  cancel-in-progress: true
+
 jobs:
   build:
     defaults:
@@ -21,19 +25,30 @@ jobs:
         shell: pwsh
     env:
       VCPKG_BINARY_SOURCES: "clear;x-gha,readwrite"
-    runs-on: windows-2022
+    strategy:
+      fail-fast: false
+      matrix:
+        runner:
+          - 'windows-2022'
+    runs-on: ${{ matrix.runner }}
 
     steps:
-    - uses: actions/checkout@v4
+    - uses: actions/checkout@v5
+    - name: check winget installed
+      id: winget
+      run: |
+        $winget = (Get-Command winget -ErrorAction SilentlyContinue)
+        "found=$([bool]($winget) -as [string])" | Out-File -FilePath $Env:GITHUB_OUTPUT -Append -Encoding utf8
 
     - name: Install winget
+      if: ${{ steps.winget.outputs.found == 'false' }}
       uses: Cyberboss/install-winget@v1
       with:
         GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
 
     # https://learn.microsoft.com/en-us/vcpkg/consume/binary-caching-github-actions-cache
     - name: Export env for cache vcpkg
-      uses: actions/github-script@v7
+      uses: actions/github-script@v8
       with:
         script: |
           core.exportVariable('ACTIONS_CACHE_URL', process.env.ACTIONS_CACHE_URL || '');
@@ -55,7 +70,7 @@ jobs:
 
     - name: Build (Release)
       run: |
-        .\tools\build.ps1 -config=Release -clean=1
+        .\tools\build.ps1 -build_type=Release -clean=1
 
     - name: Run tests (Release)
       run: |

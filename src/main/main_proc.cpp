@@ -43,16 +43,12 @@ public:
             return 1;
         }
 
-#ifdef DEBUG // test code
-        {
-            const auto desktop = window::Window(GetDesktopWindow());
-            desktop.Activate();
-//            desktop.Capture();
-        }
-#endif
-
         const auto reader = route::RouteReader();
         const auto route = reader.ReadJSONFile(route_path_);
+        if (route.routes().empty())
+        {
+            return 0;
+        }
 
         const auto windowName = route.window_name();
         const window::WindowInspector inspector {};
@@ -62,67 +58,69 @@ public:
             logging::log("Window not found: [{}]", windowName);
             return 1;
         }
-        window->Activate();
+        /*const auto& keyboard =*/ sim::controller::Keyboard::Get();
 
-        const auto& keyboard = sim::controller::Keyboard::Get();
+        auto capture = window->CreateCapture();
+        capture.Start();
+
+        auto& recognizer = utils::recognize::RecognizeText::Get();
         {
-            auto capture = window->CreateCapture();
-            capture.Start();
-            DEBUG_LOG("Capture started.");
-            auto& recognizer = utils::recognize::RecognizeText::Get();
-            if (route.routes().empty())
+            // Main Loop
+            do
             {
-                sim::utils::time::sleep(1000);
-                return 0;
-            }
-
-            std::size_t index = 0;
-            while (index < static_cast<std::size_t>(route.routes_size()))
-            {
-                const auto& r = route.routes(index);
-                const auto& roi = r.roi();
-                const auto& expected = r.expected();
-                while (true)
+                if (cancel_requested_)
                 {
-                    const auto mat = capture.Pop();
-                    // FIXME: expectedが含まれる場合、captureにROIを渡して適用させるとかどうか？
-                    /*const auto roiMat =*/ route::applyROI(mat, roi);
-//                    const auto results = recognizer.RecognizeImage(roiMat);
-                    const auto results = recognizer.RecognizeImage(mat);
-                    const auto text = results.ToString();
-                    logging::log("Recognized: [{}]", text);
-#if DEBUG
-                    const auto filename = sim::utils::strings::fmt(L"./tmp/roi_applied_{:%Y%m%d%H%M%S}.png", std::chrono::system_clock::now());
-                    sim::utils::image::saveImage(results.DrawRects(), sim::utils::unicode::to_utf8(filename));
-#endif
-                    if (text.contains(expected))
-                    {
-                        logging::log("Expected [{}] contained.", expected);
-                        break;
-                    }
+                    DEBUG_LOG("Canceled.");
+                    break;
                 }
-                const auto& keys = r.keys();
-                for (const auto key : keys)
-                {
-                    keyboard.KeyDown(key.at(0));
-                    sim::utils::time::sleep(1000);
-                }
-                ++index;
-            }
-#if 0
-            for (uint32_t i = 0; i < 100; ++i)
-            {
-                DEBUG_LOG_ARGS("Recognize captured image: {}", i);
+                window->Activate();
                 const auto mat = capture.Pop();
-                const auto text = recognizer.ImageToText(mat);
+                const auto results = recognizer.RecognizeImage(mat, 50.0f);
+                const auto text = results.ToString();
                 logging::log("Recognized: [{}]", text);
             }
-#endif
+            while (true);
+//
+//            std::size_t index = 0;
+//            while (index < static_cast<std::size_t>(route.routes_size()))
+//            {
+//                const auto& r = route.routes(index);
+//                const auto& roi = r.roi();
+//                const auto& expected = r.expected();
+//                while (true)
+//                {
+//                    const auto mat = capture.Pop();
+//                    // FIXME: expectedが含まれる場合、captureにROIを渡して適用させるとかどうか？
+//                    const auto roiMat = route::applyROI(mat, roi);
+//                    const auto results = recognizer.RecognizeImage(roiMat, 50.0f);
+//                    const auto text = results.ToString();
+//                    logging::log("Recognized: [{}]", text);
+//#if DEBUG
+//                    const auto filename = sim::utils::strings::fmt(L"./tmp/roi_applied_{:%Y%m%d%H%M%S}.png", std::chrono::system_clock::now());
+//                    sim::utils::image::saveImage(results.DrawRects(), sim::utils::unicode::to_utf8(filename));
+//#endif
+//                    if (text.contains(expected))
+//                    {
+//                        logging::log("Expected [{}] contained.", expected);
+//                        break;
+//                    }
+//                }
+//                const auto& keys = r.keys();
+//                for (const auto key : keys)
+//                {
+//                    keyboard.KeyDown(key.at(0));
+//                    sim::utils::time::sleep(1000);
+//                }
+//                ++index;
+//            }
         }
-
-        keyboard.KeyDown({'A', 'B', 'C', Keys::Enter});
-
         return 0;
+    }
+
+    void Cancel()
+    {
+        DEBUG_LOG("Cancel requested.");
+        cancel_requested_ = true;
     }
 
     void AddFinalizer(std::function<void()> finalizer)
@@ -133,21 +131,34 @@ public:
 private:
     std::vector<std::function<void()>> finalizers_;
     std::filesystem::path route_path_;
+    bool cancel_requested_ = false;
 
     void Init(uint32_t argc, char** argv)
     {
-        logging::init();
-        AddFinalizer([] {
-            logging::log("Good bye, World...");
-        });
-        AddFinalizer([] {
-            DEBUG_LOG("Shutting down protobuf library...");
-            google::protobuf::ShutdownProtobufLibrary();
-        });
-        utils::CaptureContext::Get().Init();
-        AddFinalizer([] {
-            utils::CaptureContext::Get().Finalize();
-        });
+//        logging::init();
+        {
+            AddFinalizer([] {
+                logging::log("Good bye, World...");
+            });
+        }
+        {
+            AddFinalizer([] {
+                DEBUG_LOG("Shutting down protobuf library...");
+                google::protobuf::ShutdownProtobufLibrary();
+            });
+        }
+        {
+            utils::CaptureContext::Get().Init();
+            AddFinalizer([] {
+                utils::CaptureContext::Get().Finalize();
+            });
+        }
+        {
+            utils::recognize::RecognizeText::Get().Init();
+            AddFinalizer([] {
+                utils::recognize::RecognizeText::Get().Finalize();
+            });
+        }
         options::options_description desc("Options");
         desc.add_options()
             ("route", options::value<std::filesystem::path>(&route_path_), "Route file")
@@ -170,7 +181,11 @@ MainProc::MainProc(uint32_t argc, char** argv) noexcept
 {
 }
 
-MainProc::~MainProc() = default;
+MainProc::~MainProc()
+{
+    DEBUG_LOG_SPAN(_);
+    impl_.reset();
+}
 
 MainProc::MainProc(MainProc&&) noexcept = default;
 MainProc& MainProc::operator=(MainProc&& rhs)
@@ -185,6 +200,11 @@ MainProc& MainProc::operator=(MainProc&& rhs)
 uint32_t MainProc::Run()
 {
     return impl_->Run();
+}
+
+void MainProc::Cancel()
+{
+    impl_->Cancel();
 }
 
 void MainProc::AddFinalizer(std::function<void()> finalizer)

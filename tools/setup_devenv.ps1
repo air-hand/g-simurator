@@ -6,21 +6,26 @@ Import-Module $PSScriptRoot\choco_utils.psm1
 Import-Module $PSScriptRoot\vs_utils.psm1
 
 Function InstallVisualStudio([boolean]$clean) {
-    if (-not($clean) -and (PathToVisualStudio)) {
+    if (-not($clean) -and (PathToVisualStudio -with_vsconfig)) {
         Write-Host "VisualStudio is already installed."
         return
     }
-    # The Community edition is compatible with The Enterprise edition. https://github.com/actions/runner-images/blob/main/images/windows/Windows2022-Readme.md#visual-studio-enterprise-2022
-    $winget_visualstudio_id = "Microsoft.VisualStudio.2022.Community"
-    $vsconfig = ".vsconfig"
-    if ($clean) {
-        winget uninstall --id $winget_visualstudio_id -e --silent --disable-interactivity
+    $installed_path = (PathToVisualStudio)
+    if ($installed_path -and -not($clean)) {
+        ModifyVSWithConfig $installed_path
+    } else {
+        # The Community edition is compatible with The Enterprise edition. https://github.com/actions/runner-images/blob/main/images/windows/Windows2022-Readme.md#visual-studio-enterprise-2022
+        $winget_visualstudio_id = "Microsoft.VisualStudio.2022.Community"
+        $vsconfig = ".vsconfig"
+        if ($clean) {
+            winget uninstall --id $winget_visualstudio_id -e --silent --disable-interactivity
+        }
+        winget install --id $winget_visualstudio_id -e --override "--quiet --config ${vsconfig}" --silent --disable-interactivity --accept-source-agreements
     }
-    winget install --id $winget_visualstudio_id -e --override "--quiet --config ${vsconfig}" --silent --disable-interactivity --accept-source-agreements
     foreach ($_ in 1..300) {
         Write-Host "Waiting for VS Installer... ${_}";
         Start-Sleep 3;
-        $exists = PathToVisualStudio
+        $exists = PathToVisualStudio -with_vsconfig
         if ($exists) {
             Write-Host "Installed VisualStudio at ${exists}"
             return
@@ -29,9 +34,11 @@ Function InstallVisualStudio([boolean]$clean) {
     throw "VisualStudio not found."
 }
 
-Function InstallOthers() {
+Function InstallOthers([boolean]$clean) {
     $cuda_version = "12.6"
-    winget uninstall -e --id Nvidia.CUDA -v $cuda_version --silent --disable-interactivity
+    if ($clean) {
+        winget uninstall -e --id Nvidia.CUDA -v $cuda_version --silent --disable-interactivity
+    }
     # https://docs.nvidia.com/cuda/cuda-installation-guide-microsoft-windows/#id3
     $sub_packages = @(
         "nvcc_${cuda_version}"
@@ -68,20 +75,15 @@ Function InstallOthers() {
     }
 }
 
-Function InstallByChocolatey() {
-    SetupChocolatey
-#    choco install -y make
-}
-
 Function Main([boolean]$clean) {
     pushd $PSScriptRoot > $null
 
     SetupPathToVSInstaller
     InstallVisualStudio $clean
-    InstallOthers
-    InstallByChocolatey
+    InstallOthers $clean
     popd > $null
 }
 
 $ErrorActionPreference = "Stop"
+Set-PSDebug -Trace 1
 Main -clean $clean.IsPresent

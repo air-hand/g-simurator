@@ -14,7 +14,7 @@ int OpenCVErrorHandler(int status, const char* func_name, const char* err_msg, c
 #define DEBUG_SET_EXCEPTION_HANDLER() \
     do \
     { \
-        AddVectoredExceptionHandler(1, sim::debug::VectoredExceptionHandler); \
+        /*AddVectoredExceptionHandler(1, sim::debug::VectoredExceptionHandler);*/ \
         SetUnhandledExceptionFilter(sim::debug::UnhandledExceptionFilter); \
         cv::redirectError(sim::debug::OpenCVErrorHandler); \
     } while (false)
