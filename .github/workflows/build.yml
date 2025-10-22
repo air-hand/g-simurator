@@ -14,6 +14,10 @@ on:
 permissions:
   contents: read
 
+concurrency:
+  group: ${{ github.workflow }}
+  cancel-in-progress: true
+
 jobs:
   build:
     defaults:
@@ -34,7 +38,7 @@ jobs:
     - name: check winget installed
       id: winget
       run: |
-        $winget = $(Get-Command winget -ErrorAction SilentlyContinue)
+        $winget = (Get-Command winget -ErrorAction SilentlyContinue)
         "found=$([bool]($winget) -as [string])" | Out-File -FilePath $Env:GITHUB_OUTPUT -Append -Encoding utf8
 
     - name: Install winget
