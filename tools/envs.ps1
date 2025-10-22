@@ -39,8 +39,8 @@ if (-not($Env:VCPKG_BINARY_SOURCES)) {
 }
 
 # https://learn.microsoft.com/en-us/vcpkg/consume/binary-caching-github-packages
-# Configure NuGet for vcpkg binary caching if environment variables are set
-if ($Env:NUGET_FEED_URL -and $Env:NUGET_TOKEN) {
+# Configure NuGet for vcpkg binary caching in CI environment only
+if ($Env:CI -and $Env:NUGET_FEED_URL -and $Env:NUGET_TOKEN) {
     $nuget_exe = (vcpkg fetch nuget | Out-String).Trim()
     if ($nuget_exe -and (Test-Path $nuget_exe)) {
         Write-Host "Configuring NuGet source for vcpkg binary caching..."
