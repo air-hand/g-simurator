@@ -5,7 +5,7 @@
             "name": "(vsdbg) build and debug active file on Windows",
             "type": "cppvsdbg",
             "request": "launch",
-            "program": "${workspaceFolder}/build/simurator.exe",
+            "program": "${workspaceFolder}/build/Debug/simurator.exe",
             "args": [
                 "--route",
                 //"data/tkn/route.json",
@@ -25,7 +25,7 @@
             "name": "Debug Minidump",
             "type": "cppvsdbg",
             "request": "launch",
-            "program": "${workspaceFolder}/build/simurator.exe",
+            "program": "${workspaceFolder}/build/Debug/simurator.exe",
             "dumpPath": "${workspaceFolder}/${input:dumpFileRelativePath}",
             "symbolSearchPath": "${workspaceFolder}",
             "sourceFileMap": {

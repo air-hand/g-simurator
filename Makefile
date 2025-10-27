@@ -17,9 +17,9 @@ build: phony
 	@echo "Building..."
 	@$(SHELL) .\tools\build.ps1 -build_type $(CONFIGURATION) -clean $(CLEAN) || exit 1
 
-test: build phony
+test: phony
 	@echo "Testing..."
-	@$(SHELL) .\tools\test.ps1 || exit 1
+	@$(SHELL) .\tools\test.ps1 -build_type $(CONFIGURATION) || exit 1
 
 # pesudotarget
 phony:
