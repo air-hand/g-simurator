@@ -1,11 +1,7 @@
 {
-  "$builtin-baseline": "5e5d0e1cd7785623065e77eff011afdeec1a3574",
-  "$overrides": [
-    {
-      "$comment": "This is a comment",
-      "name": "opencv4",
-      "version": "4.10.0#1"
-    }
+  "builtin-baseline": "ce0351b4bc62facd473f4209fbc011529b26d19c",
+  "overrides": [
+    { "name": "protobuf", "version": "5.28.3#0" }
   ],
   "dependencies": [
     "boost-circular-buffer",
