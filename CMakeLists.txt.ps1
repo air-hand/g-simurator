@@ -55,8 +55,7 @@ set(CXX_FLAGS_SHARED
     # $<$<CONFIG:Debug>:/fsanitize=address /GS>
     # "/FAs"
 )
-#set(CUDA_USE_STATIC_CUDA_RUNTIME OFF)
-#set(CMAKE_MSVC_RUNTIME_LIBRARY "MultiThreaded$<$<CONFIG:Debug>:Debug>")
+set(CMAKE_MSVC_RUNTIME_LIBRARY "MultiThreaded$<$<CONFIG:Debug>:Debug>DLL")
 
 add_library(${{PROJECT_NAME}}-std STATIC)
 {0}
@@ -144,7 +143,7 @@ target_link_options(${{PROJECT_NAME}}-utils
     PRIVATE
     /WX
     /VERBOSE
-#    /NODEFAULTLIB:LIBCMT
+    /NODEFAULTLIB:LIBCMT
 )
 #set_target_properties(${{PROJECT_NAME}}-utils
 #    PROPERTIES
@@ -189,7 +188,7 @@ target_link_libraries(${{PROJECT_NAME}}
 )
 target_link_options(${{PROJECT_NAME}}
     PRIVATE
-    /IGNORE:4300
+    /INCREMENTAL:NO
     /WX
     /VERBOSE
     /NODEFAULTLIB:LIBCMT
@@ -234,7 +233,7 @@ target_link_libraries(${{PROJECT_NAME}}-test
 )
 target_link_options(${{PROJECT_NAME}}-test
     PRIVATE
-#    /IGNORE:4300
+    /INCREMENTAL:NO
     /WX
     /VERBOSE
     /NODEFAULTLIB:LIBCMT
