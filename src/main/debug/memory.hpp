@@ -1,27 +1,15 @@
 #pragma once
 
-#define OVERRIDE_NEW_DELETE 1
+#define OVERRIDE_NEW_DELETE 0
 // override new and delete operators to track memory allocations (DEBUG build only)
 
+
 #if OVERRIDE_NEW_DELETE
-#include <cstdlib>
-#include <new>
-#endif
 
 #ifdef DEBUG
+#include <cstdlib>
+#include <new>
 
-#if !OVERRIDE_NEW_DELETE
-#define _CRTDBG_MAP_ALLOC
-#include <crtdbg.h>
-//#define new ::new(_NORMAL_BLOCK, __FILE__, __LINE__)
-#define DEBUG_REPORT_MEMORY_LEAKS(x) \
-    do { \
-        _CrtSetDbgFlag(_CRTDBG_ALLOC_MEM_DF | _CRTDBG_LEAK_CHECK_DF ); \
-        _CrtSetReportMode(_CRT_WARN, _CRTDBG_MODE_FILE); \
-        _CrtSetReportFile(_CRT_WARN, _CRTDBG_FILE_STDERR); \
-        /*_CrtDumpMemoryLeaks()*/; \
-    } while (false)
-#else
 #include "utils/macro.hpp"
 namespace sim::debug
 {
@@ -36,13 +24,14 @@ public:
 }
 
 #define DEBUG_MEMORY_LEAK_TRACKING(x) sim::debug::MemoryTrackerSpan x
-#endif // OVERRIDE_NEW_DELETE
+#endif // DEBUG
 
 #else
 
 #define DEBUG_MEMORY_LEAK_TRACKING(x) do {} while (0)
 
-#endif // DEBUG
+#endif // OVERRIDE_NEW_DELETE
+
 
 #if OVERRIDE_NEW_DELETE
 #pragma warning(push)
