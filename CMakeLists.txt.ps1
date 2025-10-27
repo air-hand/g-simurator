@@ -52,7 +52,7 @@ set(CXX_FLAGS_SHARED
     "/wd6326"
     "/external:anglebrackets"
     "/external:W0"
-    # $<$<CONFIG:Debug>:/fsanitize=address /GS>
+    "$<$<CONFIG:Debug>:/fsanitize=address>"
     # "/FAs"
 )
 set(CMAKE_MSVC_RUNTIME_LIBRARY "MultiThreaded$<$<CONFIG:Debug>:Debug>DLL")
