@@ -29,6 +29,12 @@ public:
         SetForegroundWindow(handle_);
     }
 
+    std::string Name() const
+    {
+        DEBUG_LOG_SPAN(_);
+        // TODO
+    }
+
     CaptureWindow CreateCapture() const 
     {
         DEBUG_LOG_SPAN(_);

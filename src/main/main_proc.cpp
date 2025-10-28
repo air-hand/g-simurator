@@ -58,7 +58,7 @@ public:
             logging::log("Window not found: [{}]", windowName);
             return 1;
         }
-        /*const auto& keyboard =*/ sim::controller::Keyboard::Get();
+        window->Activate();
 
         auto capture = window->CreateCapture();
         capture.Start();

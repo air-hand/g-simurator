@@ -15,7 +15,7 @@
         ); \
     } while (false)
 
-#define DEBUG_LOG_SPAN(x) const sim::utils::logging::LogSpan x(sim::utils::strings::fmt("DEBUG {}", __FUNCSIG__))
+#define DEBUG_LOG_SPAN(x) const sim::utils::logging::LogSpan x(sim::utils::strings::fmt("DEBUG {}({}): {}", __FILE__, __LINE__, __FUNCSIG__))
 
 #else
 

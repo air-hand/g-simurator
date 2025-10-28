@@ -156,6 +156,7 @@ public:
         std::filesystem::create_directory(L"./tmp");
 
         item_ = CreateCaptureItemForWindow();
+        DEBUG_LOG_ARGS("Display Name: {}", sim::utils::unicode::to_utf8(item_.DisplayName().c_str()));
         const auto size = item_.Size();
         DEBUG_LOG_ARGS("Capture window size: {}x{}", size.Width, size.Height);
 
