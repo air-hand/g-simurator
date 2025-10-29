@@ -25,14 +25,10 @@
     {
         "type": "cppbuild",
         "label": "C/C++: build project on Windows (debug)",
-        //"command": "pwsh.exe",
-        //"args": [
-        //    "-Command",
-        //    "tools\\build.ps1"
-        //],
-        "command": "nmake.exe",
+        "command": "pwsh.exe",
         "args": [
-            "build"
+            "-Command",
+            "tools\\build.ps1"
         ],
         "options": {
             "cwd": "${workspaceFolder}"
