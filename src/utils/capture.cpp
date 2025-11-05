@@ -182,6 +182,16 @@ public:
         const auto popped = buffer_.pop();
         return popped.Read();
     }
+
+    std::optional<cv::Mat> TryPop(std::chrono::milliseconds timeout)
+    {
+        const auto popped = buffer_.try_pop(timeout);
+        if (!popped.has_value())
+        {
+            return std::nullopt;
+        }
+        return popped.value().Read();
+    }
 private:
     auto CreateCaptureItemForWindow() const
     {
@@ -298,6 +308,11 @@ void CaptureWindow::Start() const
 cv::Mat CaptureWindow::Pop() const
 {
     return impl_->Pop();
+}
+
+std::optional<cv::Mat> CaptureWindow::TryPop(std::chrono::milliseconds timeout) const
+{
+    return impl_->TryPop(timeout);
 }
 
 }

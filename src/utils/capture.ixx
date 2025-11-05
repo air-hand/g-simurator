@@ -56,6 +56,7 @@ public:
 
     void Start() const;
     cv::Mat Pop() const;
+    std::optional<cv::Mat> TryPop(std::chrono::milliseconds timeout) const;
 
 private:
     class Impl;

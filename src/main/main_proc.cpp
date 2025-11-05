@@ -81,9 +81,12 @@ public:
                     break;
                 }
                 window->Activate();
-                // FIXME: capture結果が空だとPopで待ち続けるので、cancelできなくなる
-                const auto mat = capture.Pop();
-                const auto results = recognizer.RecognizeImage(mat, 50.0f);
+                const auto mat = capture.TryPop(std::chrono::milliseconds(100));
+                if (!mat.has_value())
+                {
+                    continue;
+                }
+                const auto results = recognizer.RecognizeImage(mat.value(), 50.0f);
                 const auto text = results.ToString();
                 logging::log("Recognized: [{}]", text);
 #ifdef DEBUG
