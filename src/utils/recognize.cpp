@@ -66,10 +66,11 @@ cv::Mat RecognizeResults::DrawRects() const
             text_with_confidence,
             cv::Point(r.rect.x, r.rect.y - 10),
             10,
-            cv::Scalar(0, 255, 0),
+            cv::Scalar(255, 0, 0),
             1,
             cv::LINE_AA,
-            true
+            //true
+            false
         );
     }
     return out;
@@ -127,7 +128,6 @@ public:
 //        tess_.Clear();
 //        tess_.SetImage(image.data, image.cols, image.rows, image.channels(), image.step);
         tess.Get().SetImage(image.data, image.cols, image.rows, 1, image.step);
-
         {
             DEBUG_ASSERT(tess.Get().Recognize(nullptr) == 0);
         }
@@ -146,7 +146,7 @@ public:
             result.confidence = it->Confidence(level);
             if (result.confidence < border)
             {
-                continue;
+//                continue;
             }
 
             std::unique_ptr<const char[]> output(it->GetUTF8Text(level));

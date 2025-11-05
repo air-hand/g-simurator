@@ -112,12 +112,6 @@ CaptureWindow CaptureContext::CaptureForWindowHandle(HWND handle) const
     return CaptureWindow(handle, device_);
 }
 
-//    // https://github.com/microsoft/Windows.UI.Composition-Win32-Samples/tree/master/cpp/ScreenCaptureforHWND
-//    winrt::Windows::Graphics::DirectX::Direct3D11::IDirect3DDevice device;
-//    auto _device = winrt::Windows::Graphics::DirectX::Direct3D11::Get
-//    winrt::Windows::Graphics::Capture::GraphicsCaptureItem item;
-//    DirectX::SaveWICTextureToFile(device);
-
 class CaptureWindow::Impl final
 {
 public:

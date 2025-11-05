@@ -130,6 +130,7 @@ target_link_libraries(${{PROJECT_NAME}}-utils
     PRIVATE
     d3d11
     dxgi
+    dwmapi
     uuid
     Microsoft::DirectXTK
     ${{OpenCV_LIBS}}

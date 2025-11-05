@@ -1,10 +1,13 @@
 module;
 
+#include <dwmapi.h>
+
 #include <opencv2/opencv.hpp>
 #include <opencv2/highgui.hpp>
 #include <opencv2/videoio.hpp>
 
 #include "logger.hpp"
+#include "debug.hpp"
 
 module utils;
 
@@ -25,27 +28,37 @@ public:
     void Activate() const
     {
         DEBUG_LOG_SPAN(_);
-        // https://learn.microsoft.com/ja-jp/windows/win32/api/winuser/nf-winuser-setforegroundwindow
         SetForegroundWindow(handle_);
     }
 
     std::string Name() const
     {
         DEBUG_LOG_SPAN(_);
-        // TODO
+
+        // Get the length of the window text first
+        const int length = GetWindowTextLengthW(handle_);
+        if (length == 0)
+        {
+            DEBUG_LOG_ARGS("Window has no title text OR GetWindowTextLengthW failed with error: {}", GetLastError());
+            return "";
+        }
+
+        // Allocate buffer with length + 1 for null terminator
+        std::vector<wchar_t> buffer(length + 1);
+        const int copied = GetWindowTextW(handle_, buffer.data(), static_cast<int>(buffer.size()));
+        if (copied == 0)
+        {
+            DEBUG_LOG_ARGS("GetWindowTextW failed with error: {}", GetLastError());
+            return "";
+        }
+
+        return unicode::to_utf8(buffer.data());
     }
 
-    CaptureWindow CreateCapture() const 
+    CaptureWindow CreateCapture() const
     {
         DEBUG_LOG_SPAN(_);
         return sim::utils::CaptureContext::Get().CaptureForWindowHandle(handle_);
-    }
-
-    void Capture() const
-    {
-        DEBUG_LOG_SPAN(_);
-        const auto c = sim::utils::CaptureContext::Get().CaptureForWindowHandle(handle_);
-        c.Start();
     }
 
 private:
@@ -74,6 +87,11 @@ Window& Window::operator=(Window&& rhs) noexcept
 void Window::Activate() const
 {
     impl_->Activate();
+}
+
+std::string Window::Name() const
+{
+    return impl_->Name();
 }
 
 CaptureWindow Window::CreateCapture() const
