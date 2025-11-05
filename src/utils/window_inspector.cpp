@@ -21,6 +21,7 @@ public:
 
     bool IsCapturable(HWND handle) const
     {
+#ifdef DEBUG
         const auto is_window = !!IsWindow(handle);
         const auto is_visible = !!IsWindowVisible(handle);
         const auto is_iconic = !!IsIconic(handle);
@@ -64,6 +65,7 @@ public:
             reinterpret_cast<uintptr_t>(owner),
             reinterpret_cast<uintptr_t>(root)
         );
+#endif
 
         if (!IsWindowVisible(handle))
         {

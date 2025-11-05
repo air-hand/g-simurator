@@ -27,8 +27,6 @@ find_package(mimalloc CONFIG REQUIRED)
 
 set(CMAKE_CXX_STANDARD 23) # c++latest
 set(CMAKE_CXX_STANDARD_REQUIRED ON)
-#set(CMAKE_CXX_FLAGS_DEBUG "-DDEBUG /MTd")
-#set(CMAKE_CXX_FLAGS_RELEASE "-DNDEBUG /MT")
 set(CMAKE_CXX_FLAGS_DEBUG "-DDEBUG")
 set(CMAKE_CXX_FLAGS_RELEASE "-DNDEBUG")
 set(CMAKE_CXX_FLAGS_RELWITHDEBINFO "-O2 -DNDEBUG /Zi /FAs")
@@ -53,7 +51,6 @@ set(CXX_FLAGS_SHARED
     "/external:anglebrackets"
     "/external:W0"
     "$<$<CONFIG:Debug>:/fsanitize=address>"
-    # "/FAs"
 )
 set(CMAKE_MSVC_RUNTIME_LIBRARY "MultiThreaded$<$<CONFIG:Debug>:Debug>DLL")
 
@@ -94,7 +91,6 @@ target_link_libraries(${{PROJECT_NAME}}-proto
     protobuf::libprotobuf
 )
 
-#add_library(${{PROJECT_NAME}}-utils SHARED)
 add_library(${{PROJECT_NAME}}-utils STATIC)
 {2}
 
@@ -146,11 +142,6 @@ target_link_options(${{PROJECT_NAME}}-utils
     /VERBOSE
     /NODEFAULTLIB:LIBCMT
 )
-#set_target_properties(${{PROJECT_NAME}}-utils
-#    PROPERTIES
-#    MSVC_RUNTIME_LIBRARY "MultiThreaded$<$<CONFIG:Debug>:Debug>DLL"
-#    OUTPUT_NAME "${{PROJECT_NAME}}-utils"
-#)
 
 add_executable(${{PROJECT_NAME}})
 {3}
@@ -177,7 +168,6 @@ target_include_directories(${{PROJECT_NAME}}
 
 target_link_libraries(${{PROJECT_NAME}}
     PRIVATE
-    $<IF:$<TARGET_EXISTS:mimalloc-static>,mimalloc-static,mimalloc>
     Microsoft::DirectXTK
     Boost::program_options
     ${{OpenCV_LIBS}}

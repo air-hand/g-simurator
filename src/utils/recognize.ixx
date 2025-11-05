@@ -43,7 +43,7 @@ public:
 
     static RecognizeText& Get();
 
-    void Init();
+    bool Init();
     void Finalize();
 
     RecognizeResults RecognizeImage(const cv::Mat& image, float border = -1.0f);

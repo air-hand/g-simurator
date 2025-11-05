@@ -106,7 +106,6 @@ class RecognizeText::Impl
 public:
     Impl() : tess_()
     {
-//        tess_.Init(nullptr, "jpn");
     }
     ~Impl()
     {
@@ -115,9 +114,16 @@ public:
         tesseract::TessBaseAPI::ClearPersistentCache();
     }
 
-    void Init()
+    bool Init()
     {
-        tess_.Init(nullptr, "jpn");
+        // returns 0:success
+        const auto result = tess_.Init(nullptr, "jpn");
+        if (result != 0) {
+            logging::log("Failed to init tesseract.");
+            DEBUG_ASSERT(false);
+            return false;
+        }
+        return true;
     }
 
     DELETE_COPY_AND_ASSIGN(Impl);
@@ -125,8 +131,6 @@ public:
     std::vector<RecognizeResults::Result> RecognizeImage(const cv::Mat& image, float border)
     {
         TessBaseAPIWrapper tess(tess_);
-//        tess_.Clear();
-//        tess_.SetImage(image.data, image.cols, image.rows, image.channels(), image.step);
         tess.Get().SetImage(image.data, image.cols, image.rows, 1, image.step);
         {
             DEBUG_ASSERT(tess.Get().Recognize(nullptr) == 0);
@@ -180,9 +184,9 @@ RecognizeText& RecognizeText::Get()
     return inst;
 }
 
-void RecognizeText::Init()
+bool RecognizeText::Init()
 {
-    impl_->Init();
+    return impl_->Init();
 }
 
 void RecognizeText::Finalize()

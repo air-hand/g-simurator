@@ -72,7 +72,7 @@ CaptureContext& CaptureContext::Get() noexcept
     return instance;
 }
 
-void CaptureContext::Init() /*const*/ noexcept
+void CaptureContext::Init() noexcept
 {
     DEBUG_LOG_SPAN(_);
     winrt::init_apartment();
