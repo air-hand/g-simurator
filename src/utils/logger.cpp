@@ -39,6 +39,7 @@ LogSpan::LogSpan(const std::string& message) noexcept : message_(message)
 
 LogSpan::~LogSpan()
 {
+    TODO ここで終了までにかかった経過時間を出力すること
     PLOG_DEBUG << message_ << " [END]";
 }
 
