@@ -43,7 +43,7 @@ LogSpan::~LogSpan()
 {
     const auto end = ch::steady_clock::now();
     const auto elapsed_ms = ch::duration_cast<ch::milliseconds>(end - start_);
-    PLOG_DEBUG << message_ << " [END] " << elapsed_ms.cpumt() << "(ms)";
+    PLOG_DEBUG << message_ << " [END] " << elapsed_ms.count() << "(ms)";
 }
 
 }
