@@ -8,7 +8,7 @@ module;
 
 module utils;
 
-using ch = std::chrono;
+namespace ch = std::chrono;
 
 namespace
 {
