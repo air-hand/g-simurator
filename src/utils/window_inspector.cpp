@@ -108,10 +108,6 @@ struct DescendantsWindowRange {
             return *this;
         }
 
-        bool operator==(const iterator& other) const noexcept {
-            return cur == other.cur;
-        }
-
         bool operator==(std::default_sentinel_t) const noexcept { return cur == nullptr; }
     };
 
