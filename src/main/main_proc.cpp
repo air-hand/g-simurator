@@ -81,11 +81,11 @@ public:
                     break;
                 }
                 const auto mat = capture.TryPop(std::chrono::milliseconds(100));
-                if (!mat.has_value())
+                if (!mat)
                 {
                     continue;
                 }
-                const auto results = recognizer.RecognizeImage(mat.value(), 50.0f);
+                const auto results = recognizer.RecognizeImage(*mat, 50.0f);
                 const auto text = results.ToString();
                 logging::log("Recognized: [{}]", text);
 #ifdef DEBUG
