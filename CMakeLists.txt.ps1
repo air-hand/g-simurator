@@ -24,12 +24,13 @@ find_package(boost_stacktrace_windbg CONFIG REQUIRED)
 find_package(Tesseract CONFIG REQUIRED)
 find_package(CUDAToolkit REQUIRED)
 
-set(CMAKE_CXX_STANDARD 23) # c++latest
+#set(CMAKE_CXX_STANDARD 23) # c++latest
 set(CMAKE_CXX_STANDARD_REQUIRED ON)
 set(CMAKE_CXX_FLAGS_DEBUG "-DDEBUG")
 set(CMAKE_CXX_FLAGS_RELEASE "-DNDEBUG")
 set(CMAKE_CXX_FLAGS_RELWITHDEBINFO "-O2 -DNDEBUG /Zi /FAs")
 set(CXX_FLAGS_SHARED
+    "/std:c++23preview"
     "/Zc:__cplusplus"
     "/utf-8"
     "/EHsc"
