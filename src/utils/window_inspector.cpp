@@ -90,13 +90,11 @@ struct DescendantsWindowRange {
         value_type operator*() const noexcept { return cur; }
 
         iterator& operator++() noexcept {
-            // 1) 子へ
             if (HWND child = FindWindowExW(cur, nullptr, nullptr, nullptr)) {
                 stack.push_back(cur);
                 cur = child;
                 return *this;
             }
-            // 2) 兄弟へ or 親に戻る
             while (!stack.empty()) {
                 HWND parent = stack.back();
                 if (HWND sibling = FindWindowExW(parent, cur, nullptr, nullptr)) {
@@ -106,15 +104,8 @@ struct DescendantsWindowRange {
                 cur = parent;
                 stack.pop_back();
             }
-            // 3) 終了
             cur = nullptr;
             return *this;
-        }
-
-        iterator operator++(int) noexcept {
-            iterator tmp = *this;
-            ++(*this);
-            return tmp;
         }
 
         bool operator==(const iterator& other) const noexcept {
