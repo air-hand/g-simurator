@@ -12,6 +12,9 @@ if ($Env:VCINSTALLDIR -eq $null) {
     Import-Module $PSScriptRoot\vs_utils.psm1
     SetupPathToVSInstaller
     $visual_studio = PathToVisualStudio
+    if (-not($visual_studio)) {
+        throw "Visual Studio not found."
+    }
     $vsdevcmd_script = (Join-Path "${visual_studio}" 'Common7\Tools\Launch-VsDevShell.ps1')
     if (-not(Test-Path $vsdevcmd_script)) {
         throw "Launch-VsDevShell.ps1 not found."
