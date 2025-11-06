@@ -8,6 +8,8 @@ module;
 
 module utils;
 
+using ch = std::chrono;
+
 namespace
 {
 plog::ConsoleAppender<plog::TxtFormatter> consoleAppender;
@@ -32,15 +34,16 @@ void log(const std::wstring& message)
     PLOG_DEBUG << message;
 }
 
-LogSpan::LogSpan(const std::string& message) noexcept : message_(message)
+LogSpan::LogSpan(const std::string& message) noexcept : message_(message), start_(ch::steady_clock::now())
 {
     PLOG_DEBUG << message_ << " [BEGIN]";
 }
 
 LogSpan::~LogSpan()
 {
-    TODO ここで終了までにかかった経過時間を出力すること
-    PLOG_DEBUG << message_ << " [END]";
+    const auto end = ch::steady_clock::now();
+    const auto elapsed_ms = ch::duration_cast<ch:: milliseconds>(end - start_);
+    PLOG_DEBUG << message_ << " [END] " << elapsed_ms << "(ms)";
 }
 
 }
