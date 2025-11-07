@@ -131,7 +131,7 @@ public:
     std::vector<RecognizeResults::Result> RecognizeImage(const cv::Mat& image, float border)
     {
         TessBaseAPIWrapper tess(tess_);
-        tess.Get().SetImage(image.data, image.cols, image.rows, 1, image.step);
+        tess.Get().SetImage(image.data, image.cols, image.rows, static_cast<int>(image.elemSize()), image.step);
         {
             DEBUG_ASSERT(tess.Get().Recognize(nullptr) == 0);
         }
