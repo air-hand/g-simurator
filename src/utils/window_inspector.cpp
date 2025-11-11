@@ -2,6 +2,7 @@ module;
 
 #include <dwmapi.h>
 
+#include "debug.hpp"
 #include "logger.hpp"
 
 module utils;
@@ -21,6 +22,7 @@ public:
 
     bool IsCapturable(HWND handle) const
     {
+        DEBUG_ASSERT(!!handle); // must not be NULL,nullptr
 #ifdef DEBUG
         const auto is_window = !!IsWindow(handle);
         const auto is_visible = !!IsWindowVisible(handle);
