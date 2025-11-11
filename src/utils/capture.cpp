@@ -258,20 +258,41 @@ private:
             d3dContext_->CopyResource(backBuffer.get(), frameSurface.get());
 
             cv::Mat out;
+            const auto now = std::chrono::system_clock::now();
             {
                 DEBUG_LOG_SPAN(__);
                 const auto gpuMat = gpu::d3D11Texture2DToGpuMat(backBuffer.get());
-                const std::vector<std::function<cv::cuda::GpuMat(const cv::cuda::GpuMat&)>> transforms = {
-                    &image::threshold,
-                    &image::grayScale,
+
+                // OCR高速化のための処理パイプライン
+                // 注: 二値化はTesseractに任せる（内部で適応的二値化を行うため、精度が高い）
+                const std::vector<std::pair<std::string, std::function<cv::cuda::GpuMat(const cv::cuda::GpuMat&)>>> transforms = {
+                    {"grayscale", &image::grayScale},
+                    {"resize", [](const cv::cuda::GpuMat& img) {
+                        DEBUG_LOG_ARGS("Image size: {}x{}", img.cols, img.rows);
+                        if (img.cols >= 1280) {
+                            DEBUG_LOG_ARGS("Resizing to 0.5x for faster OCR");
+                            return image::resize(img, 0.5, 0.5);
+                        }
+                        return img;
+                    }},
+                    // {"threshold", &image::threshold},  // 二値化を無効化（Tesseractに任せる）
                 };
-                const auto processed = std::accumulate(
-                    transforms.begin(), transforms.end(), gpuMat,
-                    [](const cv::cuda::GpuMat& acc, const auto& f) { return f(acc); }
-                );
+
+                cv::cuda::GpuMat processed = gpuMat;
+                for (size_t i = 0; i < transforms.size(); ++i) {
+                    const auto& [name, transform] = transforms[i];
+#ifdef DEBUG
+                    // 各ステップの前の状態を保存
+                    const auto filename = sim::utils::strings::fmt("./tmp/step{}_{}_before_{:%Y%m%d%H%M%S}.png",
+                        i, name, std::chrono::time_point_cast<std::chrono::milliseconds>(now));
+                    image::saveImage(image::fromGPU(processed), filename);
+#endif
+                    processed = transform(processed);
+                }
                 out = image::fromGPU(processed);
+                DEBUG_LOG_ARGS("Final processed image size: {}x{}", out.cols, out.rows);
             }
-            const auto now = std::chrono::system_clock::now();
+
             const auto filename = sim::utils::strings::fmt("./tmp/capture_{:%Y%m%d%H%M%S}.png", std::chrono::time_point_cast<std::chrono::milliseconds>(now));
             image::saveImage(out, filename);
 

@@ -80,7 +80,7 @@ public:
                     logging::log("Canceled.");
                     break;
                 }
-                const auto mat = capture.TryPop(std::chrono::milliseconds(100));
+                const auto mat = capture.TryPop(std::chrono::milliseconds(1000));
                 if (!mat)
                 {
                     continue;
