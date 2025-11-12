@@ -19,6 +19,7 @@ public:
         std::string text;
         cv::Rect rect;
         float confidence;
+        bool is_line_start;
     };
 
     RecognizeResults(const cv::Mat& input, const std::vector<Result>& results);

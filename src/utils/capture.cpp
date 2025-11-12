@@ -46,6 +46,11 @@ public:
         DEBUG_LOG_SPAN(_);
         return cv::imread(path_.string());
     }
+
+    std::filesystem::path Path() const
+    {
+        return path_;
+    }
 private:
     const std::filesystem::path path_;
 };
@@ -61,6 +66,11 @@ CapturedImage& CapturedImage::operator=(CapturedImage&&) noexcept = default;
 cv::Mat CapturedImage::Read() const
 {
     return impl_->Read();
+}
+
+std::filesystem::path CapturedImage::Path() const
+{
+    return impl_->Path();
 }
 
 CaptureContext::CaptureContext() noexcept : device_(nullptr) {}
@@ -116,7 +126,7 @@ class CaptureWindow::Impl final
 {
 public:
     Impl(HWND hwnd, const Device& device) noexcept
-        : hwnd_(hwnd), device_(device), buffer_(10000), out_dir_("./tmp")
+        : hwnd_(hwnd), device_(device), buffer_(10000), out_dir_("./tmp"), callback_running_count_(0)
     {
     }
     ~Impl()
@@ -125,6 +135,14 @@ public:
         {
             frameArrived_.revoke();
         }
+
+        // FIXME: テスト用にwaitを無効化
+        // while (callback_running_count_ > 0)
+        // {
+        //     DEBUG_LOG("Waiting for capture thread to finish...");
+        //     time::sleep(10);
+        // }
+
         if (framePool_)
         {
             framePool_.Close();
@@ -177,20 +195,14 @@ public:
         session_.StartCapture();
     }
 
-    cv::Mat Pop()
+    CapturedImage Pop()
     {
-        const auto popped = buffer_.pop();
-        return popped.Read();
+        return buffer_.pop();
     }
 
-    std::optional<cv::Mat> TryPop(std::chrono::milliseconds timeout)
+    std::optional<CapturedImage> TryPop(std::chrono::milliseconds timeout)
     {
-        const auto popped = buffer_.try_pop(timeout);
-        if (!popped.has_value())
-        {
-            return std::nullopt;
-        }
-        return popped.value().Read();
+        return buffer_.try_pop(timeout);
     }
 private:
     auto CreateCaptureItemForWindow() const
@@ -245,7 +257,15 @@ private:
         [[maybe_unused]] const winrt::Windows::Foundation::IInspectable& args
     ) /*const*/
     {
+        ++callback_running_count_;
+        auto guard = std::unique_ptr<void, std::function<void(void*)>>(
+            (void*)1, [this](void*) { --callback_running_count_; });
+
         DEBUG_LOG_SPAN(_);
+
+        // FIXME: テスト用sleep（use-after-free再現用）
+        DEBUG_LOG("Sleeping 40 seconds in callback...");
+        time::sleep(40000);
         {
             // FIXME: Fix when changed window size.
             const auto frame = sender.TryGetNextFrame();
@@ -316,6 +336,7 @@ private:
     winrt::Windows::Graphics::Capture::Direct3D11CaptureFramePool::FrameArrived_revoker frameArrived_;
     container::RingBuffer<CapturedImage> buffer_;
     const std::filesystem::path out_dir_;
+    std::atomic<int> callback_running_count_;
 };
 
 CaptureWindow::CaptureWindow(HWND hwnd, const Device& device) noexcept
@@ -331,12 +352,12 @@ void CaptureWindow::Start() const
     return impl_->Start();
 }
 
-cv::Mat CaptureWindow::Pop() const
+CapturedImage CaptureWindow::Pop() const
 {
     return impl_->Pop();
 }
 
-std::optional<cv::Mat> CaptureWindow::TryPop(std::chrono::milliseconds timeout) const
+std::optional<CapturedImage> CaptureWindow::TryPop(std::chrono::milliseconds timeout) const
 {
     return impl_->TryPop(timeout);
 }

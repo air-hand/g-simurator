@@ -38,6 +38,7 @@ public:
     CapturedImage& operator=(CapturedImage&&) noexcept;
 
     cv::Mat Read() const;
+    std::filesystem::path Path() const;
 private:
     class Impl;
     std::unique_ptr<Impl> impl_;
@@ -54,8 +55,8 @@ public:
     DELETE_COPY_AND_ASSIGN(CaptureWindow);
 
     void Start() const;
-    cv::Mat Pop() const;
-    std::optional<cv::Mat> TryPop(std::chrono::milliseconds timeout) const;
+    CapturedImage Pop() const;
+    std::optional<CapturedImage> TryPop(std::chrono::milliseconds timeout) const;
 
 private:
     class Impl;

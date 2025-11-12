@@ -45,7 +45,11 @@ std::string RecognizeResults::ToString() const
     for (const auto& r : results_)
     {
         DEBUG_LOG_ARGS("Text: {}, Confidence: {}", r.text, r.confidence);
-        out += " " + r.text;
+        if (r.is_line_start && !out.empty())
+        {
+            out += "\n";
+        }
+        out += r.text + " ";
     }
     return out;
 }
@@ -66,11 +70,10 @@ cv::Mat RecognizeResults::DrawRects() const
             out,
             text_with_confidence,
             cv::Point(r.rect.x, r.rect.y - 10),
-            10,
+            15,
             cv::Scalar(255, 0, 0),
             1,
             cv::LINE_AA,
-            //true
             false
         );
     }
@@ -190,7 +193,7 @@ public:
 
         std::vector<RecognizeResults::Result> results;
         std::unique_ptr<tesseract::ResultIterator> it(tess.Get().GetIterator());
-        const auto level = tesseract::RIL_SYMBOL; // Recognize level symbol
+        const auto level = tesseract::RIL_WORD;
         if (it == nullptr)
         {
             return results;
@@ -217,6 +220,8 @@ public:
                 int x1, y1, x2, y2;
                 it->BoundingBox(level, &x1, &y1, &x2, &y2);
                 result.rect = cv::Rect(x1, y1, x2 - x1, y2 - y1);
+
+                result.is_line_start = it->IsAtBeginningOf(tesseract::RIL_TEXTLINE);
 
                 results.emplace_back(result);
             } while (it->Next(level));
