@@ -264,9 +264,6 @@ private:
 
         DEBUG_LOG_SPAN(_);
 
-        // FIXME: テスト用sleep（use-after-free再現用）
-        DEBUG_LOG("Sleeping 40 seconds in callback...");
-        time::sleep(40000);
         {
             // FIXME: Fix when changed window size.
             const auto frame = sender.TryGetNextFrame();
