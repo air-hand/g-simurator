@@ -80,19 +80,30 @@ public:
                     logging::log("Canceled.");
                     break;
                 }
-                const auto mat = capture.TryPop(std::chrono::milliseconds(1000));
-                if (!mat)
+                const auto captured = capture.TryPop(std::chrono::milliseconds(1000));
+                if (!captured)
                 {
                     continue;
                 }
-                const auto results = recognizer.RecognizeImage(*mat, 50.0f);
+                const auto mat = captured->Read();
+                const auto results = recognizer.RecognizeImage(mat, 50.0f);
                 const auto text = results.ToString();
                 logging::log("Recognized: [{}]", text);
 #ifdef DEBUG
                 {
-                    // FIXME: output same directory
-                    const auto filename = sim::utils::strings::fmt(L"./tmp/recognized_{:%Y%m%d%H%M%S}.png", std::chrono::system_clock::now());
-                    sim::utils::image::saveImage(results.DrawRects(), sim::utils::unicode::to_utf8(filename));
+                    const auto base_path = captured->Path();
+                    const auto output_dir = base_path.parent_path();
+                    const auto stem = base_path.stem().string();
+
+                    const auto image_path = output_dir / (stem + "_recognized.png");
+                    sim::utils::image::saveImage(results.DrawRects(), image_path.string());
+
+                    const auto text_path = output_dir / (stem + "_recognized.txt");
+                    const auto fp = sim::utils::open_file(text_path, "w");
+                    if (fp)
+                    {
+                        fprintf(fp.get(), "%s\n", text.c_str());
+                    }
                 }
 #endif
             }

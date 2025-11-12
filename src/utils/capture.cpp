@@ -136,12 +136,14 @@ public:
             frameArrived_.revoke();
         }
 
-        // FIXME: テスト用にwaitを無効化
-        // while (callback_running_count_ > 0)
-        // {
-        //     DEBUG_LOG("Waiting for capture thread to finish...");
-        //     time::sleep(10);
-        // }
+        // revoke()は新しいコールバックを停止するが、実行中のコールバックは止まらない
+        // 実行中のコールバックがImplのメンバ変数にアクセス中にImplが破棄されるとuse-after-freeになるため、
+        // 全てのコールバックが終了するまで待機する
+        while (callback_running_count_ > 0)
+        {
+            DEBUG_LOG_ARGS("Waiting for capture thread to finish... (remaining: {})", callback_running_count_.load());
+            time::sleep(10);
+        }
 
         if (framePool_)
         {
@@ -163,7 +165,6 @@ public:
     {
         DEBUG_LOG_SPAN(_);
 
-        // FIXME: Recreate tmp directory.
         std::filesystem::remove_all(out_dir_);
         std::filesystem::create_directory(out_dir_);
 
@@ -287,7 +288,6 @@ private:
                 const auto gpuMat = gpu::d3D11Texture2DToGpuMat(backBuffer.get());
 
                 // OCR高速化のための処理パイプライン
-                // 注: 二値化はTesseractに任せる（内部で適応的二値化を行うため、精度が高い）
                 const std::vector<std::pair<std::string, std::function<cv::cuda::GpuMat(const cv::cuda::GpuMat&)>>> transforms = {
                     {"grayscale", &image::grayScale},
                     {"resize", [](const cv::cuda::GpuMat& img) {
@@ -305,9 +305,6 @@ private:
                 for (size_t i = 0; i < transforms.size(); ++i) {
                     const auto& [name, transform] = transforms[i];
 #ifdef DEBUG
-                    // 各ステップの前の状態を保存
-//                    const auto filename = sim::utils::strings::fmt("./tmp/step{}_{}_before_{:%Y%m%d%H%M%S}.png",
-//                        i, name, std::chrono::time_point_cast<std::chrono::milliseconds>(now));
                     const auto filename = (output_to / sim::utils::strings::fmt("{}_{}_before.png", i, name)).string();
                     image::saveImage(image::fromGPU(processed), filename);
 #endif
