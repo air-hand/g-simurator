@@ -90,7 +90,8 @@ public:
                 logging::log("Recognized: [{}]", text);
 #ifdef DEBUG
                 {
-                    const auto filename = sim::utils::strings::fmt(L"./tmp/roi_applied_{:%Y%m%d%H%M%S}.png", std::chrono::system_clock::now());
+                    // FIXME: output same directory
+                    const auto filename = sim::utils::strings::fmt(L"./tmp/recognized_{:%Y%m%d%H%M%S}.png", std::chrono::system_clock::now());
                     sim::utils::image::saveImage(results.DrawRects(), sim::utils::unicode::to_utf8(filename));
                 }
 #endif

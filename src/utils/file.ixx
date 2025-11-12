@@ -1,3 +1,7 @@
+module;
+
+#include <cstdio>
+
 export module utils:file;
 
 import std;
@@ -11,9 +15,20 @@ public:
     void operator()(std::fstream* stream) const;
 };
 
+export class FileDeleter final
+{
+public:
+    void operator()(FILE* fp) const;
+};
+
 export using FStreamPtr = std::unique_ptr<std::fstream, FStreamDeleter>;
+export using FilePtr = std::unique_ptr<FILE, FileDeleter>;
 
 export FStreamPtr open_file(const std::filesystem::path& path, std::ios_base::openmode mode);
+export FilePtr open_file(const std::filesystem::path& path, const char* mode);
+
+export bool is_open(const FStreamPtr& stream);
+export bool is_open(const FilePtr& fp);
 
 export template<typename StreamPointerT> concept stream_type = requires(StreamPointerT stream)
 {

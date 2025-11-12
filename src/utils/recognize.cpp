@@ -13,6 +13,7 @@ module utils;
 import std;
 import :logger;
 import :recognize;
+import :file;
 
 namespace
 {
@@ -118,7 +119,8 @@ public:
     {
         DEBUG_LOG_SPAN(_);
         // returns 0:success
-        const auto result = tess_.Init(nullptr, "jpn", tesseract::OEM_LSTM_ONLY);
+//        const auto result = tess_.Init(nullptr, "jpn", tesseract::OEM_LSTM_ONLY);
+        const auto result = tess_.Init(nullptr, "jpn");
         if (result != 0) {
             logging::log("Failed to init tesseract.");
             DEBUG_ASSERT(false);
@@ -128,23 +130,23 @@ public:
         // ========================================
         // 高速化のための設定
         // ========================================
-
+#if 0
         // OEM: LSTM only (デフォルトは3=両方、1=LSTM onlyで高速化)
-//        tess_.SetVariable("tessedit_ocr_engine_mode", "1");
-//
-//        // PSM: スパースな日本語テキストを想定（ゲームUI向け）
-//        tess_.SetPageSegMode(tesseract::PSM_SPARSE_TEXT);
-//
+        tess_.SetVariable("tessedit_ocr_engine_mode", "1");
+
+        // PSM: スパースな日本語テキストを想定（ゲームUI向け）
+        tess_.SetPageSegMode(tesseract::PSM_SPARSE_TEXT);
+
         // 並列化を有効化（マルチスレッド処理）
         tess_.SetVariable("tessedit_parallelize", "1");
-//
-//        // 不要な辞書の読み込みを無効化（日本語では英語の辞書は不要）
+
+        // 不要な辞書の読み込みを無効化（日本語では英語の辞書は不要）
         tess_.SetVariable("load_system_dawg", "0");
         tess_.SetVariable("load_freq_dawg", "0");
         tess_.SetVariable("load_punc_dawg", "0");
         tess_.SetVariable("load_number_dawg", "0");
         tess_.SetVariable("load_bigram_dawg", "0");
-//
+
         // 適応学習を無効化（高速化）
         tess_.SetVariable("classify_enable_learning", "0");
         tess_.SetVariable("classify_enable_adaptive_matcher", "0");
@@ -157,7 +159,14 @@ public:
         tess_.SetVariable("debug_file", "/dev/null");
         tess_.SetVariable("classify_debug_level", "0");
         tess_.SetVariable("matcher_debug_level", "0");
+#endif
 
+#ifdef DEBUG
+        {
+            const auto fp = sim::utils::open_file("tess_params.txt", "wb");
+            tess_.PrintVariables(fp.get());
+        }
+#endif
         return true;
     }
 
@@ -181,7 +190,7 @@ public:
 
         std::vector<RecognizeResults::Result> results;
         std::unique_ptr<tesseract::ResultIterator> it(tess.Get().GetIterator());
-        const auto level = tesseract::RIL_SYMBOL; // Recognize level word
+        const auto level = tesseract::RIL_SYMBOL; // Recognize level symbol
         if (it == nullptr)
         {
             return results;

@@ -116,7 +116,7 @@ class CaptureWindow::Impl final
 {
 public:
     Impl(HWND hwnd, const Device& device) noexcept
-        : hwnd_(hwnd), device_(device), buffer_(10000)
+        : hwnd_(hwnd), device_(device), buffer_(10000), out_dir_("./tmp")
     {
     }
     ~Impl()
@@ -146,8 +146,8 @@ public:
         DEBUG_LOG_SPAN(_);
 
         // FIXME: Recreate tmp directory.
-        std::filesystem::remove_all("./tmp");
-        std::filesystem::create_directory(L"./tmp");
+        std::filesystem::remove_all(out_dir_);
+        std::filesystem::create_directory(out_dir_);
 
         item_ = CreateCaptureItemForWindow();
         DEBUG_LOG_ARGS("Display Name: {}", sim::utils::unicode::to_utf8(item_.DisplayName().c_str()));
@@ -259,6 +259,9 @@ private:
 
             cv::Mat out;
             const auto now = std::chrono::system_clock::now();
+            const auto output_to = out_dir_ / sim::utils::strings::fmt("{:%Y%m%d%H%M%S}", std::chrono::time_point_cast<std::chrono::milliseconds>(now));
+            std::filesystem::create_directory(output_to);
+
             {
                 DEBUG_LOG_SPAN(__);
                 const auto gpuMat = gpu::d3D11Texture2DToGpuMat(backBuffer.get());
@@ -283,8 +286,9 @@ private:
                     const auto& [name, transform] = transforms[i];
 #ifdef DEBUG
                     // 各ステップの前の状態を保存
-                    const auto filename = sim::utils::strings::fmt("./tmp/step{}_{}_before_{:%Y%m%d%H%M%S}.png",
-                        i, name, std::chrono::time_point_cast<std::chrono::milliseconds>(now));
+//                    const auto filename = sim::utils::strings::fmt("./tmp/step{}_{}_before_{:%Y%m%d%H%M%S}.png",
+//                        i, name, std::chrono::time_point_cast<std::chrono::milliseconds>(now));
+                    const auto filename = (output_to / sim::utils::strings::fmt("{}_{}_before.png", i, name)).string();
                     image::saveImage(image::fromGPU(processed), filename);
 #endif
                     processed = transform(processed);
@@ -293,7 +297,7 @@ private:
                 DEBUG_LOG_ARGS("Final processed image size: {}x{}", out.cols, out.rows);
             }
 
-            const auto filename = sim::utils::strings::fmt("./tmp/capture_{:%Y%m%d%H%M%S}.png", std::chrono::time_point_cast<std::chrono::milliseconds>(now));
+            const auto filename = (output_to / "capture_target.png").string();
             image::saveImage(out, filename);
 
             buffer_.push(CapturedImage(filename));
@@ -311,6 +315,7 @@ private:
     winrt::Windows::Graphics::Capture::Direct3D11CaptureFramePool framePool_ { nullptr };
     winrt::Windows::Graphics::Capture::Direct3D11CaptureFramePool::FrameArrived_revoker frameArrived_;
     container::RingBuffer<CapturedImage> buffer_;
+    const std::filesystem::path out_dir_;
 };
 
 CaptureWindow::CaptureWindow(HWND hwnd, const Device& device) noexcept
