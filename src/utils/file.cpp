@@ -19,16 +19,15 @@ void FStreamDeleter::operator()(std::fstream* stream) const
 void FileDeleter::operator()(FILE* fp) const
 {
     DEBUG_LOG_SPAN(_);
-    std::fclose(fp);
+    if (fp)
+    {
+        std::fclose(fp);
+    }
 }
 
 FStreamPtr open_file(const std::filesystem::path& path, std::ios_base::openmode mode)
 {
     DEBUG_LOG_ARGS("open file: {}", path.string());
-//    if (!std::filesystem::exists(path))
-//    {
-//        return nullptr;
-//    }
     return FStreamPtr(new std::fstream(path, mode));
 }
 
