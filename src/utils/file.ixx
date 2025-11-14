@@ -9,19 +9,13 @@ import std;
 namespace sim::utils
 {
 
-export class FStreamDeleter final
-{
-public:
-    void operator()(std::fstream* stream) const;
-};
-
 export class FileDeleter final
 {
 public:
     void operator()(FILE* fp) const;
 };
 
-export using FStreamPtr = std::unique_ptr<std::fstream, FStreamDeleter>;
+export using FStreamPtr = std::unique_ptr<std::fstream>;
 export using FilePtr = std::unique_ptr<FILE, FileDeleter>;
 
 export FStreamPtr open_file(const std::filesystem::path& path, std::ios_base::openmode mode);
@@ -47,21 +41,20 @@ export template<
     stream_type StreamPointerT, 
     typename CharT = std::pointer_traits<StreamPointerT>::element_type::char_type
 >
-auto read_all(StreamPointerT stream)
+std::basic_string<CharT> read_all(StreamPointerT stream)
 {
-    std::basic_string<CharT> content;
     if (stream == nullptr)
     {
-        return content;
+        return {};
     }
     stream->seekg(0, std::ios::end);
     const auto size = stream->tellg();
     stream->seekg(0, std::ios::beg);
     if (size <= 0)
     {
-        return content;
+        return {};
     }
-    content.resize(size);
+    std::basic_string<CharT> content(size, {});
     stream->read(content.data(), size);
     return content;
 }
