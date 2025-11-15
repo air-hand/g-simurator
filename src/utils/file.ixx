@@ -35,6 +35,7 @@ export template<typename StreamPointerT> concept stream_type = requires(StreamPo
     { stream->tellg() } -> std::same_as<std::streampos>;
     { stream->seekg(0, std::ios::beg) };
     { stream->read(nullptr, 0) };
+    { stream->gcount() } -> std::same_as<std::streamsize>;
 };
 
 export template<
@@ -54,8 +55,11 @@ std::basic_string<CharT> read_all(StreamPointerT stream)
     {
         return {};
     }
-    std::basic_string<CharT> content(size, {});
-    stream->read(content.data(), size);
+    std::basic_string<CharT> content;
+    content.resize_and_overwrite(size, [&size, &stream](CharT* buf, [[maybe_unused]] std::size_t cap) {
+        stream->read(buf, size);
+        return static_cast<std::size_t>(stream->gcount());
+    });
     return content;
 }
 
