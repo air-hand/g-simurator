@@ -1,10 +1,10 @@
 $ErrorActionPreference = 'Stop'
 
+chcp 65001
+
 if ($Env:ENVS_PS1_LOADED -eq "1") {
     return
 }
-
-chcp 65001
 
 cd $PSScriptRoot
 

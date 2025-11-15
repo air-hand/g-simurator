@@ -15,11 +15,11 @@ setup: phony
 
 build: phony ## Build the project
 	@echo "Building..."
-	@$(SHELL) .\tools\build.ps1 -build_type $(CONFIGURATION) -clean $(CLEAN) || exit 1
+	@$(SHELL) -Command "& { .\tools\build.ps1 -build_type $(CONFIGURATION) -clean $(CLEAN) 2>&1 | Tee-Object -FilePath 'build_output.txt'; exit $$LASTEXITCODE }"
 
 test: phony ## Run tests (builds if needed / or requires prior build)
 	@echo "Testing..."
-	@$(SHELL) .\tools\test.ps1 -build_type $(CONFIGURATION) || exit 1
+	@$(SHELL) -Command "& { .\tools\test.ps1 -build_type $(CONFIGURATION); exit $$LASTEXITCODE }"
 
 # pesudotarget
 phony:

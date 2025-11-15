@@ -167,7 +167,9 @@ public:
 #ifdef DEBUG
         {
             const auto fp = sim::utils::open_file("tess_params.txt", "wb");
-            tess_.PrintVariables(fp.get());
+            if (fp) {
+                tess_.PrintVariables(fp.get());
+            }
         }
 #endif
         return true;
