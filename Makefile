@@ -15,7 +15,7 @@ setup: phony
 
 build: phony ## Build the project
 	@echo "Building..."
-	@$(SHELL) -Command "& { .\tools\build.ps1 -build_type $(CONFIGURATION) -clean $(CLEAN) 2>&1 | Tee-Object -FilePath 'build_output.txt'; exit $$LASTEXITCODE }"
+	@$(SHELL) -Command "& { .\tools\build.ps1 -build_type $(CONFIGURATION) -clean $(CLEAN) 2>&1 | Tee-Object -FilePath 'build_output.log'; exit $$LASTEXITCODE }"
 
 test: phony ## Run tests (builds if needed / or requires prior build)
 	@echo "Testing..."

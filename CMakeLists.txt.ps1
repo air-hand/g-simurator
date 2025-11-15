@@ -53,6 +53,12 @@ set(CXX_FLAGS_SHARED
     "$<$<CONFIG:Debug>:/fsanitize=address>"
 )
 set(CMAKE_MSVC_RUNTIME_LIBRARY "MultiThreaded$<$<CONFIG:Debug>:Debug>DLL")
+if(CMAKE_BUILD_TYPE STREQUAL "RelWithDebInfo")
+    set(ASSEMBLY_ENABLED ON)
+else()
+    set(ASSEMBLY_ENABLED OFF)
+endif()
+set(ASSEMBLY_FLAG "$<$<BOOL:${{ASSEMBLY_ENABLED}}>:/FAs>" CACHE STRING "Assembly output compile flag")
 
 add_library(${{PROJECT_NAME}}-std STATIC)
 {0}
@@ -99,6 +105,9 @@ set_target_properties(${{PROJECT_NAME}}-utils
     CXX_VISIBILITY_PRESET hidden
 )
 
+if(ASSEMBLY_ENABLED)
+    file(MAKE_DIRECTORY ${{CMAKE_CURRENT_BINARY_DIR}}/assembly/${{PROJECT_NAME}}-utils/)
+endif()
 target_compile_options(${{PROJECT_NAME}}-utils
     PRIVATE
     ${{CXX_FLAGS_SHARED}}
@@ -106,6 +115,8 @@ target_compile_options(${{PROJECT_NAME}}-utils
     /WX
     /Qspectre
     /wd5045
+    ${{ASSEMBLY_FLAG}}
+    $<$<BOOL:${{ASSEMBLY_ENABLED}}>:/Fa${{CMAKE_CURRENT_BINARY_DIR}}/assembly/${{PROJECT_NAME}}-utils/>
 )
 target_compile_definitions(${{PROJECT_NAME}}-utils
     PRIVATE
@@ -146,6 +157,9 @@ target_link_options(${{PROJECT_NAME}}-utils
 add_executable(${{PROJECT_NAME}})
 {3}
 
+if(ASSEMBLY_ENABLED)
+    file(MAKE_DIRECTORY ${{CMAKE_CURRENT_BINARY_DIR}}/assembly/${{PROJECT_NAME}}/)
+endif()
 target_compile_options(${{PROJECT_NAME}}
     PRIVATE
     /Wall
@@ -153,6 +167,8 @@ target_compile_options(${{PROJECT_NAME}}
     /Qspectre
     /wd5045
     ${{CXX_FLAGS_SHARED}}
+    ${{ASSEMBLY_FLAG}}
+    $<$<BOOL:${{ASSEMBLY_ENABLED}}>:/Fa${{CMAKE_CURRENT_BINARY_DIR}}/assembly/${{PROJECT_NAME}}/>
 )
 target_precompile_headers(${{PROJECT_NAME}}
     PRIVATE
