@@ -49,6 +49,7 @@ public:
     DELETE_MOVE_AND_ASSIGN(LogSpan);
 private:
     const std::string message_;
+    const std::chrono::steady_clock::time_point start_;
 };
 
 }

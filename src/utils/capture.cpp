@@ -46,6 +46,11 @@ public:
         DEBUG_LOG_SPAN(_);
         return cv::imread(path_.string());
     }
+
+    std::filesystem::path Path() const
+    {
+        return path_;
+    }
 private:
     const std::filesystem::path path_;
 };
@@ -63,6 +68,11 @@ cv::Mat CapturedImage::Read() const
     return impl_->Read();
 }
 
+std::filesystem::path CapturedImage::Path() const
+{
+    return impl_->Path();
+}
+
 CaptureContext::CaptureContext() noexcept : device_(nullptr) {}
 CaptureContext::~CaptureContext() = default;
 
@@ -72,7 +82,7 @@ CaptureContext& CaptureContext::Get() noexcept
     return instance;
 }
 
-void CaptureContext::Init() /*const*/ noexcept
+void CaptureContext::Init() noexcept
 {
     DEBUG_LOG_SPAN(_);
     winrt::init_apartment();
@@ -112,17 +122,11 @@ CaptureWindow CaptureContext::CaptureForWindowHandle(HWND handle) const
     return CaptureWindow(handle, device_);
 }
 
-//    // https://github.com/microsoft/Windows.UI.Composition-Win32-Samples/tree/master/cpp/ScreenCaptureforHWND
-//    winrt::Windows::Graphics::DirectX::Direct3D11::IDirect3DDevice device;
-//    auto _device = winrt::Windows::Graphics::DirectX::Direct3D11::Get
-//    winrt::Windows::Graphics::Capture::GraphicsCaptureItem item;
-//    DirectX::SaveWICTextureToFile(device);
-
 class CaptureWindow::Impl final
 {
 public:
     Impl(HWND hwnd, const Device& device) noexcept
-        : hwnd_(hwnd), device_(device), buffer_(10000)
+        : hwnd_(hwnd), device_(device), buffer_(10000), out_dir_("./tmp"), callback_running_count_(0)
     {
     }
     ~Impl()
@@ -131,6 +135,16 @@ public:
         {
             frameArrived_.revoke();
         }
+
+        // revoke()は新しいコールバックを停止するが、実行中のコールバックは止まらない
+        // 実行中のコールバックがImplのメンバ変数にアクセス中にImplが破棄されるとuse-after-freeになるため、
+        // 全てのコールバックが終了するまで待機する
+        while (callback_running_count_ > 0)
+        {
+            DEBUG_LOG_ARGS("Waiting for capture thread to finish... (remaining: {})", callback_running_count_.load());
+            time::sleep(10);
+        }
+
         if (framePool_)
         {
             framePool_.Close();
@@ -151,11 +165,11 @@ public:
     {
         DEBUG_LOG_SPAN(_);
 
-        // FIXME: Recreate tmp directory.
-        std::filesystem::remove_all("./tmp");
-        std::filesystem::create_directory(L"./tmp");
+        std::filesystem::remove_all(out_dir_);
+        std::filesystem::create_directory(out_dir_);
 
         item_ = CreateCaptureItemForWindow();
+        DEBUG_LOG_ARGS("Display Name: {}", sim::utils::unicode::to_utf8(item_.DisplayName().c_str()));
         const auto size = item_.Size();
         DEBUG_LOG_ARGS("Capture window size: {}x{}", size.Width, size.Height);
 
@@ -182,10 +196,14 @@ public:
         session_.StartCapture();
     }
 
-    cv::Mat Pop()
+    CapturedImage Pop()
     {
-        const auto popped = buffer_.pop();
-        return popped.Read();
+        return buffer_.pop();
+    }
+
+    std::optional<CapturedImage> TryPop(std::chrono::milliseconds timeout)
+    {
+        return buffer_.try_pop(timeout);
     }
 private:
     auto CreateCaptureItemForWindow() const
@@ -240,7 +258,12 @@ private:
         [[maybe_unused]] const winrt::Windows::Foundation::IInspectable& args
     ) /*const*/
     {
+        ++callback_running_count_;
+        auto guard = std::unique_ptr<void, std::function<void(void*)>>(
+            (void*)1, [this](void*) { --callback_running_count_; });
+
         DEBUG_LOG_SPAN(_);
+
         {
             // FIXME: Fix when changed window size.
             const auto frame = sender.TryGetNextFrame();
@@ -253,21 +276,42 @@ private:
             d3dContext_->CopyResource(backBuffer.get(), frameSurface.get());
 
             cv::Mat out;
+            const auto now = std::chrono::system_clock::now();
+            const auto output_to = out_dir_ / sim::utils::strings::fmt("{:%Y%m%d%H%M%S}", std::chrono::time_point_cast<std::chrono::milliseconds>(now));
+            std::filesystem::create_directory(output_to);
+
             {
                 DEBUG_LOG_SPAN(__);
                 const auto gpuMat = gpu::d3D11Texture2DToGpuMat(backBuffer.get());
-                const std::vector<std::function<cv::cuda::GpuMat(const cv::cuda::GpuMat&)>> transforms = {
-                    &image::threshold,
-                    &image::grayScale,
+
+                // OCR高速化のための処理パイプライン
+                const std::vector<std::pair<std::string, std::function<cv::cuda::GpuMat(const cv::cuda::GpuMat&)>>> transforms = {
+                    {"grayscale", &image::grayScale},
+                    {"resize", [](const cv::cuda::GpuMat& img) {
+                        DEBUG_LOG_ARGS("Image size: {}x{}", img.cols, img.rows);
+                        if (img.cols >= 1280) {
+                            DEBUG_LOG_ARGS("Resizing to 0.5x for faster OCR");
+                            return image::resize(img, 0.5, 0.5);
+                        }
+                        return img;
+                    }},
+                    // {"threshold", &image::threshold},  // 二値化を無効化（Tesseractに任せる）
                 };
-                const auto processed = std::accumulate(
-                    transforms.begin(), transforms.end(), gpuMat,
-                    [](const cv::cuda::GpuMat& acc, const auto& f) { return f(acc); }
-                );
+
+                cv::cuda::GpuMat processed = gpuMat;
+                for (size_t i = 0; i < transforms.size(); ++i) {
+                    const auto& [name, transform] = transforms[i];
+#ifdef DEBUG
+                    const auto filename = (output_to / sim::utils::strings::fmt("{}_{}_before.png", i, name)).string();
+                    image::saveImage(image::fromGPU(processed), filename);
+#endif
+                    processed = transform(processed);
+                }
                 out = image::fromGPU(processed);
+                DEBUG_LOG_ARGS("Final processed image size: {}x{}", out.cols, out.rows);
             }
-            const auto now = std::chrono::system_clock::now();
-            const auto filename = sim::utils::strings::fmt("./tmp/capture_{:%Y%m%d%H%M%S}.png", std::chrono::time_point_cast<std::chrono::milliseconds>(now));
+
+            const auto filename = (output_to / "capture_target.png").string();
             image::saveImage(out, filename);
 
             buffer_.push(CapturedImage(filename));
@@ -285,6 +329,8 @@ private:
     winrt::Windows::Graphics::Capture::Direct3D11CaptureFramePool framePool_ { nullptr };
     winrt::Windows::Graphics::Capture::Direct3D11CaptureFramePool::FrameArrived_revoker frameArrived_;
     container::RingBuffer<CapturedImage> buffer_;
+    const std::filesystem::path out_dir_;
+    std::atomic<int> callback_running_count_;
 };
 
 CaptureWindow::CaptureWindow(HWND hwnd, const Device& device) noexcept
@@ -300,9 +346,14 @@ void CaptureWindow::Start() const
     return impl_->Start();
 }
 
-cv::Mat CaptureWindow::Pop() const
+CapturedImage CaptureWindow::Pop() const
 {
     return impl_->Pop();
+}
+
+std::optional<CapturedImage> CaptureWindow::TryPop(std::chrono::milliseconds timeout) const
+{
+    return impl_->TryPop(timeout);
 }
 
 }

@@ -21,7 +21,6 @@ auto GetDXGIInterfaceFromObject(const winrt::Windows::Foundation::IInspectable& 
     auto access = object.as<::Windows::Graphics::DirectX::Direct3D11::IDirect3DDxgiInterfaceAccess>();
     winrt::com_ptr<T> result;
     winrt::check_hresult(access->GetInterface(winrt::guid_of<T>(), result.put_void()));
-//    WINRT_ASSERT(0 <= access->GetInterface(winrt::guid_of<T>(), result.put_void()));
     return result;
 }
 
@@ -39,6 +38,7 @@ public:
     CapturedImage& operator=(CapturedImage&&) noexcept;
 
     cv::Mat Read() const;
+    std::filesystem::path Path() const;
 private:
     class Impl;
     std::unique_ptr<Impl> impl_;
@@ -55,7 +55,8 @@ public:
     DELETE_COPY_AND_ASSIGN(CaptureWindow);
 
     void Start() const;
-    cv::Mat Pop() const;
+    CapturedImage Pop() const;
+    std::optional<CapturedImage> TryPop(std::chrono::milliseconds timeout) const;
 
 private:
     class Impl;

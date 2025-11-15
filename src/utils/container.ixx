@@ -62,6 +62,19 @@ public:
         return result;
     }
 
+    std::optional<T> try_pop(std::chrono::milliseconds timeout)
+    {
+        DEBUG_LOG_SPAN(_);
+        auto lock = std::unique_lock<std::mutex>(mutex_);
+        if (!is_not_empty_.wait_for(lock, timeout, [this] { return !container_.empty(); }))
+        {
+            return std::nullopt;
+        }
+        auto result = std::move(container_.front());
+        container_.pop_front();
+        return result;
+    }
+
     auto size() noexcept
     {
         DEBUG_LOG_SPAN(_);

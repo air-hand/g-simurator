@@ -31,7 +31,6 @@
     },
     "plog",
     "protobuf",
-    "tesseract",
-    "mimalloc"
+    "tesseract"
   ]
 }

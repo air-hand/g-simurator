@@ -27,7 +27,7 @@ class MainProc::Impl
 public:
     Impl(uint32_t argc, char** argv)
     {
-        Init(argc, argv);
+        initialized_ = Init(argc, argv);
     }
     ~Impl()
     {
@@ -37,6 +37,12 @@ public:
     uint32_t Run()
     {
         DEBUG_LOG_SPAN(_);
+        if (!initialized_)
+        {
+            logging::log("Failed to initialize.");
+            return 1;
+        }
+
         if (!std::filesystem::exists(route_path_))
         {
             logging::log("Route file not found. {}", route_path_.string());
@@ -58,7 +64,8 @@ public:
             logging::log("Window not found: [{}]", windowName);
             return 1;
         }
-        /*const auto& keyboard =*/ sim::controller::Keyboard::Get();
+        DEBUG_LOG_ARGS("Window name: [{}]", window->Name());
+        window->Activate();
 
         auto capture = window->CreateCapture();
         capture.Start();
@@ -70,14 +77,35 @@ public:
             {
                 if (cancel_requested_)
                 {
-                    DEBUG_LOG("Canceled.");
+                    logging::log("Canceled.");
                     break;
                 }
-                window->Activate();
-                const auto mat = capture.Pop();
+                const auto captured = capture.TryPop(std::chrono::milliseconds(1000));
+                if (!captured)
+                {
+                    continue;
+                }
+                const auto mat = captured->Read();
                 const auto results = recognizer.RecognizeImage(mat, 50.0f);
                 const auto text = results.ToString();
                 logging::log("Recognized: [{}]", text);
+#ifdef DEBUG
+                {
+                    const auto base_path = captured->Path();
+                    const auto output_dir = base_path.parent_path();
+                    const auto stem = base_path.stem().string();
+
+                    const auto image_path = output_dir / (stem + "_recognized.png");
+                    sim::utils::image::saveImage(results.DrawRects(), image_path.string());
+
+                    const auto text_path = output_dir / (stem + "_recognized.txt");
+                    const auto fp = sim::utils::open_file(text_path, "w");
+                    if (fp)
+                    {
+                        fprintf(fp.get(), "%s\n", text.c_str());
+                    }
+                }
+#endif
             }
             while (true);
 //
@@ -95,7 +123,7 @@ public:
 //                    const auto results = recognizer.RecognizeImage(roiMat, 50.0f);
 //                    const auto text = results.ToString();
 //                    logging::log("Recognized: [{}]", text);
-//#if DEBUG
+//#ifdef DEBUG
 //                    const auto filename = sim::utils::strings::fmt(L"./tmp/roi_applied_{:%Y%m%d%H%M%S}.png", std::chrono::system_clock::now());
 //                    sim::utils::image::saveImage(results.DrawRects(), sim::utils::unicode::to_utf8(filename));
 //#endif
@@ -119,7 +147,7 @@ public:
 
     void Cancel()
     {
-        DEBUG_LOG("Cancel requested.");
+        logging::log("Cancel requested.");
         cancel_requested_ = true;
     }
 
@@ -132,10 +160,10 @@ private:
     std::vector<std::function<void()>> finalizers_;
     std::filesystem::path route_path_;
     bool cancel_requested_ = false;
+    bool initialized_ = false;
 
-    void Init(uint32_t argc, char** argv)
+    bool Init(uint32_t argc, char** argv)
     {
-//        logging::init();
         {
             AddFinalizer([] {
                 logging::log("Good bye, World...");
@@ -154,7 +182,10 @@ private:
             });
         }
         {
-            utils::recognize::RecognizeText::Get().Init();
+            if (!utils::recognize::RecognizeText::Get().Init())
+            {
+                return false;
+            }
             AddFinalizer([] {
                 utils::recognize::RecognizeText::Get().Finalize();
             });
@@ -166,6 +197,7 @@ private:
         options::variables_map vm;
         options::store(options::parse_command_line(argc, argv, desc), vm);
         notify(vm);
+        return true;
     }
 
     void Finalize() const
