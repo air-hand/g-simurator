@@ -11,9 +11,8 @@
           "height_percent": 50
         },
         "keys": [
-          // https://learn.microsoft.com/ja-jp/windows/win32/inputdev/virtual-key-codes
           "A",
-          "0x74" // F5 key to reload Kindle
+          "F5" // F5 key to reload Kindle
         ]
       }
     ]
