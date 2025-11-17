@@ -22,7 +22,10 @@ public:
 
     bool IsCapturable(HWND handle) const
     {
-        DEBUG_ASSERT(!!handle); // must not be NULL,nullptr
+        if (!handle) {
+            return false;
+        }
+        //DEBUG_ASSERT(!!handle); // must not be NULL,nullptr
 #ifdef DEBUG
         const auto is_window = !!IsWindow(handle);
         const auto is_visible = !!IsWindowVisible(handle);

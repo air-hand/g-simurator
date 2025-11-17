@@ -31,6 +31,12 @@ public:
         SetForegroundWindow(handle_);
     }
 
+    void Focus() const
+    {
+        DEBUG_LOG_SPAN(_);
+        SetFocus(handle_);
+    }
+
     std::string Name() const
     {
         DEBUG_LOG_SPAN(_);
@@ -87,6 +93,11 @@ Window& Window::operator=(Window&& rhs) noexcept
 void Window::Activate() const
 {
     impl_->Activate();
+}
+
+void Window::Focus() const
+{
+    impl_->Focus();
 }
 
 std::string Window::Name() const

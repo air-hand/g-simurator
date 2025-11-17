@@ -25,5 +25,9 @@ export cv::cuda::GpuMat resize(const cv::cuda::GpuMat& input, double scale_width
 export cv::Mat fromGPU(const cv::cuda::GpuMat& input);
 
 export void saveImage(const cv::Mat& image, const std::string& filename);
+export inline void saveImage(const cv::Mat& image, const std::filesystem::path& filename)
+{
+    saveImage(image, filename.string());
+}
 
 }

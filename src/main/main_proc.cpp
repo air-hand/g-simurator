@@ -70,44 +70,67 @@ public:
         auto capture = window->CreateCapture();
         capture.Start();
 
+        const auto& keyboard = sim::controller::Keyboard::Get();
+
         auto& recognizer = utils::recognize::RecognizeText::Get();
         {
-            // Main Loop
-            do
+            for (const sim::route::Route& r : route.routes())
             {
-                if (cancel_requested_)
+                const auto& roi = r.roi();
+                const auto& expected = r.expected();
+                // Main Loop
+                do
                 {
-                    logging::log("Canceled.");
-                    break;
-                }
-                const auto captured = capture.TryPop(std::chrono::milliseconds(1000));
-                if (!captured)
-                {
-                    continue;
-                }
-                const auto mat = captured->Read();
-                const auto results = recognizer.RecognizeImage(mat, 50.0f);
-                const auto text = results.ToString();
-                logging::log("Recognized: [{}]", text);
-#ifdef DEBUG
-                {
-                    const auto base_path = captured->Path();
-                    const auto output_dir = base_path.parent_path();
-                    const auto stem = base_path.stem().string();
-
-                    const auto image_path = output_dir / (stem + "_recognized.png");
-                    sim::utils::image::saveImage(results.DrawRects(), image_path.string());
-
-                    const auto text_path = output_dir / (stem + "_recognized.txt");
-                    const auto fp = sim::utils::open_file(text_path, "w");
-                    if (fp)
+                    if (cancel_requested_)
                     {
-                        fprintf(fp.get(), "%s\n", text.c_str());
+                        logging::log("Canceled.");
+                        break;
+                    }
+                    const auto captured = capture.TryPop(std::chrono::milliseconds(1000));
+                    if (!captured)
+                    {
+                        continue;
+                    }
+                    const auto mat = route::applyROI(captured->Read(), roi);
+                    const auto results = recognizer.RecognizeImage(mat, 50.0f);
+                    const auto text = results.ToString();
+                    logging::log("Recognized: [{}]", text);
+#ifdef DEBUG
+                    {
+                        const auto base_path = captured->Path();
+                        const auto output_dir = base_path.parent_path();
+                        const auto stem = base_path.stem().string();
+
+                        sim::utils::image::saveImage(mat, output_dir / (stem + "_roi.png"));
+
+                        const auto image_path = output_dir / (stem + "_recognized.png");
+                        sim::utils::image::saveImage(results.DrawRects(), image_path.string());
+
+                        const auto text_path = output_dir / (stem + "_recognized.txt");
+                        const auto fp = sim::utils::open_file(text_path, "w");
+                        if (fp)
+                        {
+                            fprintf(fp.get(), "%s\n", text.c_str());
+                        }
+                    }
+#endif
+                    if (text.contains(expected))
+                    {
+                        DEBUG_LOG_ARGS("Expected found: [{}]", expected);
+                        break;
                     }
                 }
-#endif
+                while (true);
+
+                window->Activate();
+                window->Focus();
+                const auto keys = sim::route::keys(r);
+                for (const auto key : keys)
+                {
+                    keyboard.KeyDown(key);
+                    sim::utils::time::sleep(1000);
+                }
             }
-            while (true);
 //
 //            std::size_t index = 0;
 //            while (index < static_cast<std::size_t>(route.routes_size()))

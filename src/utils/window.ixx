@@ -21,6 +21,7 @@ public:
     DELETE_COPY_AND_ASSIGN(Window);
 
     void Activate() const;
+    void Focus() const;
     std::string Name() const;
     CaptureWindow CreateCapture() const;
 private:
