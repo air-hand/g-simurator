@@ -7,7 +7,7 @@ import :keyboard;
 
 namespace
 {
-
+// https://learn.microsoft.com/ja-jp/windows/win32/inputdev/virtual-key-codes
 WORD key_name_to_vk(const std::string& name)
 {
     static const std::unordered_map<std::string, WORD> table{
