@@ -11,9 +11,9 @@ import utils;
 namespace
 {
 // https://learn.microsoft.com/ja-jp/windows/win32/inputdev/virtual-key-codes
-std::optional<WORD> key_name_to_vk(const std::string& name)
+std::optional<UINT> key_name_to_vk(const std::string& name)
 {
-    static const std::unordered_map<std::string, WORD> table{
+    static const std::unordered_map<std::string, UINT> table{
         {"CTRL",   VK_CONTROL},
         {"SHIFT",  VK_SHIFT},
         {"ALT",    VK_MENU},
