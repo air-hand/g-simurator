@@ -1,5 +1,8 @@
 module;
 
+#include "utils/debug.hpp"
+#include "utils/logger.hpp"
+
 module sim;
 
 import std.compat;
@@ -8,7 +11,7 @@ import :keyboard;
 namespace
 {
 // https://learn.microsoft.com/ja-jp/windows/win32/inputdev/virtual-key-codes
-WORD key_name_to_vk(const std::string& name)
+std::optional<WORD> key_name_to_vk(const std::string& name)
 {
     static const std::unordered_map<std::string, WORD> table{
         {"CTRL",   VK_CONTROL},
