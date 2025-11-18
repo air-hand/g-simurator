@@ -29,7 +29,7 @@ private:
     {
         return !route.expected().empty() &&
                route.has_roi() && validateROI(route.roi()) &&
-               !route.keys().empty();
+               !route.keys().empty() && std::ranges::all_of(route.keys(), [](const auto& k) { return !k.empty(); });
     }
 
     bool validateRouteList(const route::RouteList& list) const

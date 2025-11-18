@@ -11,7 +11,20 @@
           "height_percent": 50
         },
         "keys": [
-            "A"
+          "A",
+          "F5"
+        ]
+      },
+      {
+        "expected": "フィルタ",
+        "roi": {
+          "top_percent": 0,
+          "left_percent": 50,
+          "width_percent": 100,
+          "height_percent": 100
+        },
+        "keys": [
+          "F1"
         ]
       }
     ]

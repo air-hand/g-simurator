@@ -64,21 +64,17 @@ Function PathToVisualStudio([switch]$with_vsconfig)
 Function ModifyVSWithConfig([string]$installed_path)
 {
     $vsconfig = Join-Path $PSScriptRoot ".vsconfig"
-    #$vs_installer = Get-Command "vs_installer.exe"
-    $vs_installer = Get-Command "setup.exe"
+    $vs_installer = Get-Command "vs_installer.exe"
     $vs_installer_args = (@(
         "modify",
         "--installPath", "`"${installed_path}`"",
         "--config", "`"${vsconfig}`"",
         "--quiet", "--norestart", "--force", "--downloadThenInstall"
     ))
-    $exit_code = Invoke-ProcessStreamed $vs_installer.Path $vs_installer_args
-    switch ($exit_code) {
-        0 { return }
-        default {
-            throw ("VS modify failed. exit={0}" -F $exit_code)
-        }
-    }
+
+    $cmd = ("{0} {1}" -F $vs_installer.Name, ($vs_installer_args -join " "))
+
+    ($cmd | Invoke-Expression)
 }
 
 Export-ModuleMember -Function *

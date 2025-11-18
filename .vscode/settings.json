@@ -23,6 +23,7 @@
     "terminal.integrated.defaultProfile.windows": "vs2022dev_pwsh",
     "cmake.generator": "Ninja",
     "C_Cpp.default.cppStandard": "c++23",
+    "C_Cpp.autoAddFileAssociations": false,
     "protoc": {
 //        "path": "${workspaceFolder}/vcpkg_installed/x64-windows/tools/protobuf/protoc.exe",
         "path": "./vcpkg_installed/x64-windows/tools/protobuf/protoc.exe",
@@ -34,5 +35,5 @@
 //            "--grpc_out=${workspaceFolder}/src",
 //            "--plugin=protoc-gen-grpc=${workspaceFolder}/vcpkg_installed/x64-windows/tools/grpc/grpc_cpp_plugin.exe"
         ]
-    }
+    },
 }

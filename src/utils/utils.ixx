@@ -1,5 +1,6 @@
 export module utils;
 
+export import :algorithm;
 export import :capture;
 export import :container;
 export import :file;

@@ -28,5 +28,6 @@ private:
 };
 
 cv::Mat applyROI(const cv::Mat& input, const ROI& roi);
+std::vector<WORD> keys(const route::Route& r);
 
 }

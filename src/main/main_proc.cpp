@@ -27,7 +27,7 @@ class MainProc::Impl
 public:
     Impl(uint32_t argc, char** argv)
     {
-        Init(argc, argv);
+        initialized_ = Init(argc, argv);
     }
     ~Impl()
     {
@@ -37,6 +37,12 @@ public:
     uint32_t Run()
     {
         DEBUG_LOG_SPAN(_);
+        if (!initialized_)
+        {
+            logging::log("Failed to initialize.");
+            return 1;
+        }
+
         if (!std::filesystem::exists(route_path_))
         {
             logging::log("Route file not found. {}", route_path_.string());
@@ -58,28 +64,73 @@ public:
             logging::log("Window not found: [{}]", windowName);
             return 1;
         }
-        /*const auto& keyboard =*/ sim::controller::Keyboard::Get();
+        DEBUG_LOG_ARGS("Window name: [{}]", window->Name());
+        window->Activate();
 
         auto capture = window->CreateCapture();
         capture.Start();
 
+        const auto& keyboard = sim::controller::Keyboard::Get();
+
         auto& recognizer = utils::recognize::RecognizeText::Get();
         {
-            // Main Loop
-            do
+            for (const sim::route::Route& r : route.routes())
             {
-                if (cancel_requested_)
+                const auto& roi = r.roi();
+                const auto& expected = r.expected();
+                // Main Loop
+                do
                 {
-                    DEBUG_LOG("Canceled.");
-                    break;
+                    if (cancel_requested_)
+                    {
+                        logging::log("Canceled.");
+                        break;
+                    }
+                    const auto captured = capture.TryPop(std::chrono::milliseconds(1000));
+                    if (!captured)
+                    {
+                        continue;
+                    }
+                    const auto mat = route::applyROI(captured->Read(), roi);
+                    const auto results = recognizer.RecognizeImage(mat, 50.0f);
+                    const auto text = results.ToString();
+                    logging::log("Recognized: [{}]", text);
+                    {
+                        const auto base_path = captured->Path();
+                        const auto output_dir = base_path.parent_path();
+                        const auto stem = base_path.stem().string();
+
+                        sim::utils::image::saveImage(mat, output_dir / (stem + "_roi.png"));
+
+                        const auto image_path = output_dir / (stem + "_recognized.png");
+                        sim::utils::image::saveImage(results.DrawRects(), image_path.string());
+
+                        const auto text_path = output_dir / (stem + "_recognized.txt");
+                        const auto fp = sim::utils::open_file(text_path, "w");
+                        if (fp)
+                        {
+                            fprintf(fp.get(), "%s\n", text.c_str());
+                        }
+                    }
+                    const auto remove_whitespaces = sim::utils::strings::remove_all_whitespaces(text);
+                    if (remove_whitespaces.contains(expected))
+                    {
+                        DEBUG_LOG_ARGS("Expected found: [{}]", expected);
+                        break;
+                    }
                 }
+                while (true);
+
                 window->Activate();
-                const auto mat = capture.Pop();
-                const auto results = recognizer.RecognizeImage(mat, 50.0f);
-                const auto text = results.ToString();
-                logging::log("Recognized: [{}]", text);
+                window->Focus();
+                const auto keys = sim::route::keys(r);
+                for (const auto key : keys)
+                {
+                    keyboard.KeyDown(key);
+                    sim::utils::time::sleep(500);
+                    keyboard.KeyUp(key);
+                }
             }
-            while (true);
 //
 //            std::size_t index = 0;
 //            while (index < static_cast<std::size_t>(route.routes_size()))
@@ -95,7 +146,7 @@ public:
 //                    const auto results = recognizer.RecognizeImage(roiMat, 50.0f);
 //                    const auto text = results.ToString();
 //                    logging::log("Recognized: [{}]", text);
-//#if DEBUG
+//#ifdef DEBUG
 //                    const auto filename = sim::utils::strings::fmt(L"./tmp/roi_applied_{:%Y%m%d%H%M%S}.png", std::chrono::system_clock::now());
 //                    sim::utils::image::saveImage(results.DrawRects(), sim::utils::unicode::to_utf8(filename));
 //#endif
@@ -119,7 +170,7 @@ public:
 
     void Cancel()
     {
-        DEBUG_LOG("Cancel requested.");
+        logging::log("Cancel requested.");
         cancel_requested_ = true;
     }
 
@@ -132,10 +183,10 @@ private:
     std::vector<std::function<void()>> finalizers_;
     std::filesystem::path route_path_;
     bool cancel_requested_ = false;
+    bool initialized_ = false;
 
-    void Init(uint32_t argc, char** argv)
+    bool Init(uint32_t argc, char** argv)
     {
-//        logging::init();
         {
             AddFinalizer([] {
                 logging::log("Good bye, World...");
@@ -154,7 +205,10 @@ private:
             });
         }
         {
-            utils::recognize::RecognizeText::Get().Init();
+            if (!utils::recognize::RecognizeText::Get().Init())
+            {
+                return false;
+            }
             AddFinalizer([] {
                 utils::recognize::RecognizeText::Get().Finalize();
             });
@@ -166,6 +220,7 @@ private:
         options::variables_map vm;
         options::store(options::parse_command_line(argc, argv, desc), vm);
         notify(vm);
+        return true;
     }
 
     void Finalize() const

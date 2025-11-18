@@ -34,6 +34,7 @@ jobs:
       matrix:
         runner:
           - 'windows-2022'
+          - 'windows-2025'
     runs-on: ${{ matrix.runner }}
 
     steps:
@@ -71,3 +72,19 @@ jobs:
     - name: Run tests (Release)
       run: |
         .\tools\test.ps1 -build_type=Release
+
+    - name: Build (RelWithDebInfo)
+      run: |
+        .\tools\build.ps1 -build_type=RelWithDebInfo
+
+    - name: Run tests (RelWithDebInfo)
+      run: |
+        .\tools\test.ps1 -build_type=RelWithDebInfo
+
+  check-result:
+    runs-on: ubuntu-slim
+    needs: build
+    if: failure() || cancelled()
+    steps:
+      - name: fail
+        run: exit 1

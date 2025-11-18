@@ -13,6 +13,7 @@ module utils;
 import std;
 import :logger;
 import :recognize;
+import :file;
 
 namespace
 {
@@ -44,7 +45,11 @@ std::string RecognizeResults::ToString() const
     for (const auto& r : results_)
     {
         DEBUG_LOG_ARGS("Text: {}, Confidence: {}", r.text, r.confidence);
-        out += " " + r.text;
+        if (r.is_line_start && !out.empty())
+        {
+            out += "\n";
+        }
+        out += r.text + " ";
     }
     return out;
 }
@@ -65,11 +70,11 @@ cv::Mat RecognizeResults::DrawRects() const
             out,
             text_with_confidence,
             cv::Point(r.rect.x, r.rect.y - 10),
-            10,
-            cv::Scalar(0, 255, 0),
+            15,
+            cv::Scalar(255, 0, 0),
             1,
             cv::LINE_AA,
-            true
+            false
         );
     }
     return out;
@@ -105,7 +110,6 @@ class RecognizeText::Impl
 public:
     Impl() : tess_()
     {
-//        tess_.Init(nullptr, "jpn");
     }
     ~Impl()
     {
@@ -114,9 +118,61 @@ public:
         tesseract::TessBaseAPI::ClearPersistentCache();
     }
 
-    void Init()
+    bool Init()
     {
-        tess_.Init(nullptr, "jpn");
+        DEBUG_LOG_SPAN(_);
+        // returns 0:success
+//        const auto result = tess_.Init(nullptr, "jpn", tesseract::OEM_LSTM_ONLY);
+        const auto result = tess_.Init(nullptr, "jpn");
+        if (result != 0) {
+            logging::log("Failed to init tesseract.");
+            DEBUG_ASSERT(false);
+            return false;
+        }
+
+        // ========================================
+        // 高速化のための設定
+        // ========================================
+#if 0
+        // OEM: LSTM only (デフォルトは3=両方、1=LSTM onlyで高速化)
+        tess_.SetVariable("tessedit_ocr_engine_mode", "1");
+
+        // PSM: スパースな日本語テキストを想定（ゲームUI向け）
+        tess_.SetPageSegMode(tesseract::PSM_SPARSE_TEXT);
+
+        // 並列化を有効化（マルチスレッド処理）
+        tess_.SetVariable("tessedit_parallelize", "1");
+
+        // 不要な辞書の読み込みを無効化（日本語では英語の辞書は不要）
+        tess_.SetVariable("load_system_dawg", "0");
+        tess_.SetVariable("load_freq_dawg", "0");
+        tess_.SetVariable("load_punc_dawg", "0");
+        tess_.SetVariable("load_number_dawg", "0");
+        tess_.SetVariable("load_bigram_dawg", "0");
+
+        // 適応学習を無効化（高速化）
+        tess_.SetVariable("classify_enable_learning", "0");
+        tess_.SetVariable("classify_enable_adaptive_matcher", "0");
+
+        // ビーム探索の制限（速度優先）
+        tess_.SetVariable("lstm_use_matrix", "1"); // 1のままでOK
+        tess_.SetVariable("lstm_choice_iterations", "1"); // デフォルトは5、1に削減
+
+        // デバッグ出力を完全無効化
+        tess_.SetVariable("debug_file", "/dev/null");
+        tess_.SetVariable("classify_debug_level", "0");
+        tess_.SetVariable("matcher_debug_level", "0");
+#endif
+
+#ifdef DEBUG
+        {
+            const auto fp = sim::utils::open_file("tess_params.txt", "wb");
+            if (fp) {
+                tess_.PrintVariables(fp.get());
+            }
+        }
+#endif
+        return true;
     }
 
     DELETE_COPY_AND_ASSIGN(Impl);
@@ -124,44 +180,54 @@ public:
     std::vector<RecognizeResults::Result> RecognizeImage(const cv::Mat& image, float border)
     {
         TessBaseAPIWrapper tess(tess_);
-//        tess_.Clear();
-//        tess_.SetImage(image.data, image.cols, image.rows, image.channels(), image.step);
-        tess.Get().SetImage(image.data, image.cols, image.rows, 1, image.step);
-
         {
-            DEBUG_ASSERT(tess.Get().Recognize(nullptr) == 0);
+            DEBUG_LOG_SPAN(set_image);
+            tess.Get().SetImage(image.data, image.cols, image.rows, image.elemSize(), image.step);
+        }
+        {
+            DEBUG_LOG_SPAN(recognize);
+            if (tess.Get().Recognize(nullptr) != 0)
+            {
+                DEBUG_ASSERT(false);
+                return {};
+            }
         }
 
         std::vector<RecognizeResults::Result> results;
         std::unique_ptr<tesseract::ResultIterator> it(tess.Get().GetIterator());
-        const auto level = tesseract::RIL_WORD; // Recognize level word
+        const auto level = tesseract::RIL_WORD;
         if (it == nullptr)
         {
             return results;
         }
-        do
         {
-            decltype(results)::value_type result;
-
-            result.confidence = it->Confidence(level);
-            if (result.confidence < border)
+            DEBUG_LOG_SPAN(get_texts);
+            do
             {
-                continue;
-            }
+                decltype(results)::value_type result;
 
-            std::unique_ptr<const char[]> output(it->GetUTF8Text(level));
-            if (output == nullptr)
-            {
-                continue;
-            }
-            result.text = output.get();
+                result.confidence = it->Confidence(level);
+                if (result.confidence < border)
+                {
+                    continue;
+                }
 
-            int x1, y1, x2, y2;
-            it->BoundingBox(level, &x1, &y1, &x2, &y2);
-            result.rect = cv::Rect(x1, y1, x2 - x1, y2 - y1);
+                std::unique_ptr<const char[]> output(it->GetUTF8Text(level));
+                if (output == nullptr)
+                {
+                    continue;
+                }
+                result.text = output.get();
 
-            results.emplace_back(result);
-        } while (it->Next(level));
+                int x1, y1, x2, y2;
+                it->BoundingBox(level, &x1, &y1, &x2, &y2);
+                result.rect = cv::Rect(x1, y1, x2 - x1, y2 - y1);
+
+                result.is_line_start = it->IsAtBeginningOf(tesseract::RIL_TEXTLINE);
+
+                results.emplace_back(result);
+            } while (it->Next(level));
+        }
         return results;
     }
 private:
@@ -180,9 +246,9 @@ RecognizeText& RecognizeText::Get()
     return inst;
 }
 
-void RecognizeText::Init()
+bool RecognizeText::Init()
 {
-    impl_->Init();
+    return impl_->Init();
 }
 
 void RecognizeText::Finalize()

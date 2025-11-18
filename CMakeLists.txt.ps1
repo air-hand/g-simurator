@@ -23,15 +23,13 @@ find_package(boost_program_options CONFIG REQUIRED)
 find_package(boost_stacktrace_windbg CONFIG REQUIRED)
 find_package(Tesseract CONFIG REQUIRED)
 find_package(CUDAToolkit REQUIRED)
-find_package(mimalloc CONFIG REQUIRED)
 
-set(CMAKE_CXX_STANDARD 23) # c++latest
+set(CMAKE_CXX_STANDARD 23) # c++latest or c++23(preview)
 set(CMAKE_CXX_STANDARD_REQUIRED ON)
-#set(CMAKE_CXX_FLAGS_DEBUG "-DDEBUG /MTd")
-#set(CMAKE_CXX_FLAGS_RELEASE "-DNDEBUG /MT")
+set(CMAKE_CXX_EXTENSIONS OFF)
 set(CMAKE_CXX_FLAGS_DEBUG "-DDEBUG")
 set(CMAKE_CXX_FLAGS_RELEASE "-DNDEBUG")
-set(CMAKE_CXX_FLAGS_RELWITHDEBINFO "-O2 -DNDEBUG /Zi /FAs")
+set(CMAKE_CXX_FLAGS_RELWITHDEBINFO "-O2 -DNDEBUG /Zi")
 set(CXX_FLAGS_SHARED
     "/Zc:__cplusplus"
     "/utf-8"
@@ -53,9 +51,14 @@ set(CXX_FLAGS_SHARED
     "/external:anglebrackets"
     "/external:W0"
     "$<$<CONFIG:Debug>:/fsanitize=address>"
-    # "/FAs"
 )
 set(CMAKE_MSVC_RUNTIME_LIBRARY "MultiThreaded$<$<CONFIG:Debug>:Debug>DLL")
+if(CMAKE_BUILD_TYPE STREQUAL "RelWithDebInfo")
+    set(ASSEMBLY_ENABLED ON)
+else()
+    set(ASSEMBLY_ENABLED OFF)
+endif()
+set(ASSEMBLY_FLAG "$<$<BOOL:${{ASSEMBLY_ENABLED}}>:/FAs>" CACHE STRING "Assembly output compile flag")
 
 add_library(${{PROJECT_NAME}}-std STATIC)
 {0}
@@ -94,7 +97,6 @@ target_link_libraries(${{PROJECT_NAME}}-proto
     protobuf::libprotobuf
 )
 
-#add_library(${{PROJECT_NAME}}-utils SHARED)
 add_library(${{PROJECT_NAME}}-utils STATIC)
 {2}
 
@@ -103,6 +105,9 @@ set_target_properties(${{PROJECT_NAME}}-utils
     CXX_VISIBILITY_PRESET hidden
 )
 
+if(ASSEMBLY_ENABLED)
+    file(MAKE_DIRECTORY ${{CMAKE_CURRENT_BINARY_DIR}}/assembly/${{PROJECT_NAME}}-utils/)
+endif()
 target_compile_options(${{PROJECT_NAME}}-utils
     PRIVATE
     ${{CXX_FLAGS_SHARED}}
@@ -110,6 +115,8 @@ target_compile_options(${{PROJECT_NAME}}-utils
     /WX
     /Qspectre
     /wd5045
+    ${{ASSEMBLY_FLAG}}
+    $<$<BOOL:${{ASSEMBLY_ENABLED}}>:/Fa${{CMAKE_CURRENT_BINARY_DIR}}/assembly/${{PROJECT_NAME}}-utils/>
 )
 target_compile_definitions(${{PROJECT_NAME}}-utils
     PRIVATE
@@ -130,6 +137,7 @@ target_link_libraries(${{PROJECT_NAME}}-utils
     PRIVATE
     d3d11
     dxgi
+    dwmapi
     uuid
     Microsoft::DirectXTK
     ${{OpenCV_LIBS}}
@@ -145,15 +153,13 @@ target_link_options(${{PROJECT_NAME}}-utils
     /VERBOSE
     /NODEFAULTLIB:LIBCMT
 )
-#set_target_properties(${{PROJECT_NAME}}-utils
-#    PROPERTIES
-#    MSVC_RUNTIME_LIBRARY "MultiThreaded$<$<CONFIG:Debug>:Debug>DLL"
-#    OUTPUT_NAME "${{PROJECT_NAME}}-utils"
-#)
 
 add_executable(${{PROJECT_NAME}})
 {3}
 
+if(ASSEMBLY_ENABLED)
+    file(MAKE_DIRECTORY ${{CMAKE_CURRENT_BINARY_DIR}}/assembly/${{PROJECT_NAME}}/)
+endif()
 target_compile_options(${{PROJECT_NAME}}
     PRIVATE
     /Wall
@@ -161,6 +167,8 @@ target_compile_options(${{PROJECT_NAME}}
     /Qspectre
     /wd5045
     ${{CXX_FLAGS_SHARED}}
+    ${{ASSEMBLY_FLAG}}
+    $<$<BOOL:${{ASSEMBLY_ENABLED}}>:/Fa${{CMAKE_CURRENT_BINARY_DIR}}/assembly/${{PROJECT_NAME}}/>
 )
 target_precompile_headers(${{PROJECT_NAME}}
     PRIVATE
@@ -176,7 +184,6 @@ target_include_directories(${{PROJECT_NAME}}
 
 target_link_libraries(${{PROJECT_NAME}}
     PRIVATE
-    $<IF:$<TARGET_EXISTS:mimalloc-static>,mimalloc-static,mimalloc>
     Microsoft::DirectXTK
     Boost::program_options
     ${{OpenCV_LIBS}}

@@ -39,4 +39,34 @@ TEST(test_ring_buffer, push_condition)
     EXPECT_EQ(buffer.pop(), 42);
 }
 
+TEST(test_ring_buffer, try_pop_timeout)
+{
+    container::RingBuffer<int> buffer(3);
+
+    EXPECT_EQ(buffer.size(), 0);
+
+    // Empty buffer should timeout
+    const auto result = buffer.try_pop(std::chrono::milliseconds(50));
+    EXPECT_FALSE(result.has_value());
+
+    // Size should remain unchanged
+    EXPECT_EQ(buffer.size(), 0);
+}
+
+TEST(test_ring_buffer, try_pop_success)
+{
+    container::RingBuffer<int> buffer(3);
+    buffer.push(42);
+
+    EXPECT_EQ(buffer.size(), 1);
+
+    // Should get value immediately when buffer is not empty
+    const auto result = buffer.try_pop(std::chrono::milliseconds(100));
+    ASSERT_TRUE(result.has_value());
+    EXPECT_EQ(result.value(), 42);
+
+    // Size should decrease after successful pop
+    EXPECT_EQ(buffer.size(), 0);
+}
+
 }
