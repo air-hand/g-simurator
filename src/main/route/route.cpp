@@ -142,7 +142,7 @@ std::vector<WORD> keys(const route::Route& r)
     {
         const auto k = key_name_to_vk(key);
         if (k) {
-            result.emplace_back(*k);
+            result.emplace_back(static_cast<WORD>(*k));
         }
     }
 
