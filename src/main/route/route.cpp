@@ -52,7 +52,7 @@ std::optional<WORD> key_name_to_vk(const std::string& name)
 
         SHORT r = VkKeyScanA(ch);
         if (r == -1) {
-            DEBUG_LOG_ARGS("VkKeyScanA failed for char: {}" + name);
+            DEBUG_LOG_ARGS("VkKeyScanA failed for char: {}", name);
             DEBUG_ASSERT(false);
             return std::nullopt;
         }
