@@ -1,64 +1,9 @@
 module;
 
-#include "utils/debug.hpp"
-#include "utils/logger.hpp"
-
 module sim;
 
 import std.compat;
 import :keyboard;
-
-namespace
-{
-// https://learn.microsoft.com/ja-jp/windows/win32/inputdev/virtual-key-codes
-std::optional<WORD> key_name_to_vk(const std::string& name)
-{
-    static const std::unordered_map<std::string, WORD> table{
-        {"CTRL",   VK_CONTROL},
-        {"SHIFT",  VK_SHIFT},
-        {"ALT",    VK_MENU},
-        {"LCTRL",  VK_LCONTROL},
-        {"RCTRL",  VK_RCONTROL},
-        {"LSHIFT", VK_LSHIFT},
-        {"RSHIFT", VK_RSHIFT},
-        {"LALT",   VK_LMENU},
-        {"RALT",   VK_RMENU},
-
-        {"ENTER",  VK_RETURN},
-        {"ESC",    VK_ESCAPE},
-        {"TAB",    VK_TAB},
-        {"SPACE",  VK_SPACE},
-        {"LEFT",   VK_LEFT},
-        {"RIGHT",  VK_RIGHT},
-        {"UP",     VK_UP},
-        {"DOWN",   VK_DOWN},
-
-        {"F1",  VK_F1},  {"F2",  VK_F2},  {"F3",  VK_F3},  {"F4",  VK_F4},
-        {"F5",  VK_F5},  {"F6",  VK_F6},  {"F7",  VK_F7},  {"F8",  VK_F8},
-        {"F9",  VK_F9},  {"F10", VK_F10}, {"F11", VK_F11}, {"F12", VK_F12},
-    };
-
-    auto it = table.find(name);
-    if (it != table.end()) {
-        return it->second;
-    }
-
-    if (name.size() != 1) {
-        DEBUG_ASSERT(false);
-        return std::nullopt;
-    }
-
-        const auto ch = static_cast<unsigned char>(name.at(0));
-
-        SHORT r = VkKeyScanA(ch);
-        if (r == -1) {
-            DEBUG_LOG_ARGS("VkKeyScanA failed for char: {}" + name);
-            DEBUG_ASSERT(false);
-            return std::nullopt;
-        }
-        return LOBYTE(r);
-}
-}
 
 namespace sim::controller
 {
