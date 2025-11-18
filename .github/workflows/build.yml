@@ -80,3 +80,11 @@ jobs:
     - name: Run tests (RelWithDebInfo)
       run: |
         .\tools\test.ps1 -build_type=RelWithDebInfo
+
+  check-result:
+    runs-on: ubuntu-slim
+    needs: build
+    if: failure() || cancelled()
+    steps:
+      - name: fail
+        run: exit 1
