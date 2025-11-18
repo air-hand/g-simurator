@@ -40,7 +40,7 @@ std::optional<WORD> key_name_to_vk(const std::string& name)
 
     auto it = table.find(name);
     if (it != table.end()) {
-        return it->second;
+        return std::make_optional(it->second);
     }
 
     if (name.size() != 1) {
@@ -56,7 +56,7 @@ std::optional<WORD> key_name_to_vk(const std::string& name)
             DEBUG_ASSERT(false);
             return std::nullopt;
         }
-        return LOBYTE(r);
+        return std::make_optional(LOBYTE(r));
 }
 }
 
