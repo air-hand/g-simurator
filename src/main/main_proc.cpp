@@ -128,7 +128,8 @@ public:
                 for (const auto key : keys)
                 {
                     keyboard.KeyDown(key);
-                    sim::utils::time::sleep(1000);
+                    sim::utils::time::sleep(500);
+                    keyboard.KeyUp(key);
                 }
             }
 //
