@@ -8,8 +8,11 @@
 import std.compat;
 import utils;
 
+namespace algo = sim::utils::algorithm;
+
 namespace
 {
+
 // https://learn.microsoft.com/ja-jp/windows/win32/inputdev/virtual-key-codes
 std::optional<UINT> key_name_to_vk(const std::string& name)
 {
@@ -48,15 +51,15 @@ std::optional<UINT> key_name_to_vk(const std::string& name)
         return std::nullopt;
     }
 
-        const auto ch = static_cast<unsigned char>(name.at(0));
+    const auto ch = static_cast<unsigned char>(name.at(0));
 
-        SHORT r = VkKeyScanA(ch);
-        if (r == -1) {
-            DEBUG_LOG_ARGS("VkKeyScanA failed for char: {}", name);
-            DEBUG_ASSERT(false);
-            return std::nullopt;
-        }
-        return std::make_optional(LOBYTE(r));
+    const SHORT r = VkKeyScanA(ch);
+    if (r == -1) {
+        DEBUG_LOG_ARGS("VkKeyScanA failed for char: {}", name);
+        DEBUG_ASSERT(false);
+        return std::nullopt;
+    }
+    return std::make_optional(r & 0xFF);
 }
 }
 
@@ -74,7 +77,7 @@ public:
     RouteList ReadJSONFile(const std::filesystem::path& path) const
     {
         DEBUG_LOG_SPAN(_);
-        const auto json = utils::json::remove_json_comments(utils::read_all(utils::open_file(path, std::ios::in | std::ios::binary)));
+        const auto json = utils::read_all(utils::open_file(path, std::ios::in | std::ios::binary));
         DEBUG_LOG_ARGS("Read JSON file: [{}]", json);
         RouteList route;
         if (const auto result = google::protobuf::util::JsonStringToMessage(json, &route); !result.ok())
@@ -120,10 +123,10 @@ cv::Mat applyROI(const cv::Mat& input, const ROI& roi)
     const auto width = input.cols;
     const auto height = input.rows;
 
-    const auto roi_left = static_cast<int32_t>(std::floor(width * roi.left_percent() / 100));
-    const auto roi_top = static_cast<int32_t>(std::floor(height * roi.top_percent() / 100));
-    const auto roi_width = static_cast<int32_t>(std::floor(width * roi.width_percent() / 100));
-    const auto roi_height = static_cast<int32_t>(std::floor(height * roi.height_percent() / 100));
+    const auto roi_left = algo::safe_clamp(static_cast<int32_t>(std::floor(width * roi.left_percent() / 100)), 0, width-1);
+    const auto roi_top = algo::safe_clamp(static_cast<int32_t>(std::floor(height * roi.top_percent() / 100)), 0, height-1);
+    const auto roi_width = algo::safe_clamp(static_cast<int32_t>(std::floor(width * roi.width_percent() / 100)), 1, width - roi_left);
+    const auto roi_height = algo::safe_clamp(static_cast<int32_t>(std::floor(height * roi.height_percent() / 100)), 1, height - roi_top);
 
     const auto rect = cv::Rect(roi_left, roi_top, roi_width, roi_height);
     DEBUG_LOG_ARGS("ROI: {} {} {} {}", rect.x, rect.y, rect.width, rect.height);

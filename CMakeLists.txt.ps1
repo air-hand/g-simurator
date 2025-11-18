@@ -23,7 +23,6 @@ find_package(boost_program_options CONFIG REQUIRED)
 find_package(boost_stacktrace_windbg CONFIG REQUIRED)
 find_package(Tesseract CONFIG REQUIRED)
 find_package(CUDAToolkit REQUIRED)
-find_package(nlohmann_json CONFIG REQUIRED)
 
 set(CMAKE_CXX_STANDARD 23) # c++latest or c++23(preview)
 set(CMAKE_CXX_STANDARD_REQUIRED ON)
@@ -146,7 +145,6 @@ target_link_libraries(${{PROJECT_NAME}}-utils
     Boost::container
     plog::plog
     Tesseract::libtesseract
-    nlohmann_json::nlohmann_json
     ${{PROJECT_NAME}}-std
 )
 target_link_options(${{PROJECT_NAME}}-utils

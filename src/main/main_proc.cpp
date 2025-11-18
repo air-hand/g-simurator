@@ -95,7 +95,6 @@ public:
                     const auto results = recognizer.RecognizeImage(mat, 50.0f);
                     const auto text = results.ToString();
                     logging::log("Recognized: [{}]", text);
-#ifdef DEBUG
                     {
                         const auto base_path = captured->Path();
                         const auto output_dir = base_path.parent_path();
@@ -113,8 +112,8 @@ public:
                             fprintf(fp.get(), "%s\n", text.c_str());
                         }
                     }
-#endif
-                    if (text.contains(expected))
+                    const auto remove_whitespaces = sim::utils::strings::remove_all_whitespaces(text);
+                    if (remove_whitespaces.contains(expected))
                     {
                         DEBUG_LOG_ARGS("Expected found: [{}]", expected);
                         break;
