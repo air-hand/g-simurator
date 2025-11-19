@@ -122,6 +122,7 @@ public:
                 auto windowKeyboard = window->Keyboard();
                 for (const auto key : keys)
                 {
+                    window->Activate();
                     windowKeyboard.KeyDown(key);
                     sim::utils::time::sleep(500);
                     windowKeyboard.KeyUp(key);

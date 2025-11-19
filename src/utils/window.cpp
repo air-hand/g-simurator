@@ -30,6 +30,15 @@ public:
     {
         DEBUG_LOG_SPAN(_);
         SetForegroundWindow(handle_);
+        time::sleep(100); // Wait for activation to complete
+
+        const auto foreground = GetForegroundWindow();
+        const bool activated = (foreground == handle_);
+
+        DEBUG_LOG_ARGS("Activation result - Target: {:p}, Foreground: {:p}, Success: {}",
+            (void*)handle_, (void*)foreground, activated);
+
+        DEBUG_ASSERT(activated, "Failed to activate window");
     }
 
     void Focus() const

@@ -18,20 +18,40 @@ public:
 
     void KeyDown(const std::vector<WORD>& keys) const
     {
+        std::vector<INPUT> inputs;
+        inputs.reserve(keys.size());
+
         // 全てのキーをDownする（同時押し対応）
         for (const auto key : keys)
         {
-            PostMessageW(hwnd_, WM_KEYDOWN, key, 0);
+            INPUT input = {};
+            input.type = INPUT_KEYBOARD;
+            input.ki.wVk = key;
+            input.ki.wScan = static_cast<WORD>(MapVirtualKeyW(key, MAPVK_VK_TO_VSC));
+            input.ki.dwFlags = KEYEVENTF_SCANCODE;
+            inputs.emplace_back(input);
         }
+
+        SendInput(static_cast<UINT>(inputs.size()), inputs.data(), sizeof(INPUT));
     }
 
     void KeyUp(const std::vector<WORD>& keys) const
     {
+        std::vector<INPUT> inputs;
+        inputs.reserve(keys.size());
+
         // 全てのキーをUpする（逆順）
         for (const auto key : keys | std::views::reverse)
         {
-            PostMessageW(hwnd_, WM_KEYUP, key, 0);
+            INPUT input = {};
+            input.type = INPUT_KEYBOARD;
+            input.ki.wVk = key;
+            input.ki.wScan = static_cast<WORD>(MapVirtualKeyW(key, MAPVK_VK_TO_VSC));
+            input.ki.dwFlags = KEYEVENTF_SCANCODE | KEYEVENTF_KEYUP;
+            inputs.emplace_back(input);
         }
+
+        SendInput(static_cast<UINT>(inputs.size()), inputs.data(), sizeof(INPUT));
     }
 
 private:
