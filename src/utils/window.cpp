@@ -15,6 +15,7 @@ import std;
 import :logger;
 import :capture;
 import :time;
+import :window_keyboard;
 
 namespace sim::utils::window
 {
@@ -61,6 +62,11 @@ public:
         return unicode::to_utf8(buffer.data());
     }
 
+    WindowKeyboard Keyboard() const
+    {
+        return WindowKeyboard(handle_);
+    }
+
     CaptureWindow CreateCapture() const
     {
         DEBUG_LOG_SPAN(_);
@@ -98,6 +104,11 @@ void Window::Activate() const
 void Window::Focus() const
 {
     impl_->Focus();
+}
+
+WindowKeyboard Window::Keyboard() const
+{
+    return impl_->Keyboard();
 }
 
 std::string Window::Name() const

@@ -13,7 +13,6 @@ module sim;
 
 import utils;
 import :main;
-import :keyboard;
 
 namespace options = boost::program_options;
 namespace logging = sim::utils::logging;
@@ -70,8 +69,6 @@ public:
         auto capture = window->CreateCapture();
         capture.Start();
 
-        const auto& keyboard = sim::controller::Keyboard::Get();
-
         auto& recognizer = utils::recognize::RecognizeText::Get();
         {
             for (const sim::route::Route& r : route.routes())
@@ -121,14 +118,13 @@ public:
                 }
                 while (true);
 
-                window->Activate();
-                window->Focus();
                 const auto keys = sim::route::keys(r);
+                auto windowKeyboard = window->Keyboard();
                 for (const auto key : keys)
                 {
-                    keyboard.KeyDown(key);
+                    windowKeyboard.KeyDown(key);
                     sim::utils::time::sleep(500);
-                    keyboard.KeyUp(key);
+                    windowKeyboard.KeyUp(key);
                 }
             }
 //

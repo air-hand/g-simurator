@@ -6,6 +6,7 @@ export module utils:window;
 
 import std;
 import :capture;
+import :window_keyboard;
 
 namespace sim::utils::window
 {
@@ -22,6 +23,7 @@ public:
 
     void Activate() const;
     void Focus() const;
+    WindowKeyboard Keyboard() const;
     std::string Name() const;
     CaptureWindow CreateCapture() const;
 private:
