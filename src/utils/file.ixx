@@ -21,9 +21,6 @@ export using FilePtr = std::unique_ptr<FILE, FileDeleter>;
 export FStreamPtr open_file(const std::filesystem::path& path, std::ios_base::openmode mode);
 export FilePtr open_file(const std::filesystem::path& path, const char* mode);
 
-export bool is_open(const FStreamPtr& stream);
-export bool is_open(const FilePtr& fp);
-
 export template<typename StreamPointerT> concept stream_type = requires(StreamPointerT stream)
 {
     {
