@@ -118,14 +118,15 @@ public:
                 }
                 while (true);
 
+                const auto duration_ms = r.keypress_duration_ms();
                 const auto keys = sim::route::keys(r);
                 auto windowKeyboard = window->Keyboard();
                 for (const auto key : keys)
                 {
-                    window->Activate();
                     windowKeyboard.KeyDown(key);
-                    sim::utils::time::sleep(500);
+                    sim::utils::time::sleep(duration_ms);
                     windowKeyboard.KeyUp(key);
+                    sim::utils::time::sleep(duration_ms);
                 }
             }
 //

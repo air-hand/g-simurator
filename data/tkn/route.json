@@ -14,7 +14,8 @@
             "P", "P", "P", "P", "O", "O",
             "S", "S", "S", "S",
             "ENTER"
-        ]
+        ],
+        "keypress_duration_ms": 50
       }
     ]
 }
