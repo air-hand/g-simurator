@@ -29,6 +29,12 @@ public:
     void Activate() const
     {
         DEBUG_LOG_SPAN(_);
+
+        if (GetForegroundWindow() == handle_) {
+            DEBUG_LOG_ARGS("Already active {:p}, skip", (void*)handle_);
+            return;
+        }
+
         SetForegroundWindow(handle_);
         time::sleep(100); // Wait for activation to complete
 
@@ -39,12 +45,6 @@ public:
             (void*)handle_, (void*)foreground, activated);
 
         DEBUG_ASSERT(activated);
-    }
-
-    void Focus() const
-    {
-        DEBUG_LOG_SPAN(_);
-        SetFocus(handle_);
     }
 
     std::string Name() const
@@ -73,7 +73,9 @@ public:
 
     WindowKeyboard Keyboard() const
     {
-        return WindowKeyboard(handle_);
+        return WindowKeyboard([this]{
+            this->Activate();
+        });
     }
 
     CaptureWindow CreateCapture() const
@@ -108,11 +110,6 @@ Window& Window::operator=(Window&& rhs) noexcept
 void Window::Activate() const
 {
     impl_->Activate();
-}
-
-void Window::Focus() const
-{
-    impl_->Focus();
 }
 
 WindowKeyboard Window::Keyboard() const

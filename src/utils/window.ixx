@@ -21,10 +21,11 @@ public:
 
     DELETE_COPY_AND_ASSIGN(Window);
 
-    void Activate() const;
-    void Focus() const;
-    WindowKeyboard Keyboard() const;
     std::string Name() const;
+
+    void Activate() const;
+
+    WindowKeyboard Keyboard() const;
     CaptureWindow CreateCapture() const;
 private:
     class Impl;
