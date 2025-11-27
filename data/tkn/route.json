@@ -3,19 +3,7 @@
     "windowName": "TEKKEN™8  ",
     "routes": [
       {
-        "expected": "TEKKEN™8",
-        "roi": {
-          "top_percent": 50,
-          "left_percent": 50,
-          "width_percent": 50,
-          "height_percent": 50
-        },
-        "keys": [
-            "A"
-        ]
-      },
-      {
-        "expected": "MAIN MENU",
+        "expected": "MAINMENU",
         "roi": {
           "top_percent": 0,
           "left_percent": 0,
@@ -23,7 +11,7 @@
           "height_percent": 50
         },
         "keys": [
-            "P", "P",
+            "P", "P", "P", "P", "O", "O",
             "S", "S", "S", "S",
             "ENTER"
         ]
