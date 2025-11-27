@@ -16,6 +16,19 @@
             "ENTER"
         ],
         "keypress_duration_ms": 50
+      },
+      {
+        "expected": "CHOOSEPLAYSIDE",
+        "roi": {
+          "top_percent": 70,
+          "left_percent": 35,
+          "width_percent": 30,
+          "height_percent": 30
+        },
+        "keys": [
+            "K"
+        ],
+        "keypress_duration_ms": 50
       }
     ]
 }
