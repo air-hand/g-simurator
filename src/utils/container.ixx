@@ -75,6 +75,13 @@ public:
         return result;
     }
 
+    void clear()
+    {
+        DEBUG_LOG_SPAN(_);
+        auto lock = std::unique_lock<std::mutex>(mutex_);
+        container_.clear();
+    }
+
     auto size() noexcept
     {
         DEBUG_LOG_SPAN(_);
