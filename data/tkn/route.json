@@ -3,19 +3,7 @@
     "windowName": "TEKKEN™8  ",
     "routes": [
       {
-        "expected": "TEKKEN™8",
-        "roi": {
-          "top_percent": 50,
-          "left_percent": 50,
-          "width_percent": 50,
-          "height_percent": 50
-        },
-        "keys": [
-            "A"
-        ]
-      },
-      {
-        "expected": "MAIN MENU",
+        "expected": "MAINMENU",
         "roi": {
           "top_percent": 0,
           "left_percent": 0,
@@ -23,10 +11,24 @@
           "height_percent": 50
         },
         "keys": [
-            "P", "P",
+            "P", "P", "P", "P", "O", "O",
             "S", "S", "S", "S",
             "ENTER"
-        ]
+        ],
+        "keypress_duration_ms": 50
+      },
+      {
+        "expected": "CHOOSEPLAYSIDE",
+        "roi": {
+          "top_percent": 70,
+          "left_percent": 35,
+          "width_percent": 30,
+          "height_percent": 30
+        },
+        "keys": [
+            "K"
+        ],
+        "keypress_duration_ms": 50
       }
     ]
 }

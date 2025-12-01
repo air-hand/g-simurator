@@ -15,6 +15,7 @@ import std;
 import :logger;
 import :capture;
 import :time;
+import :window_keyboard;
 
 namespace sim::utils::window
 {
@@ -28,13 +29,22 @@ public:
     void Activate() const
     {
         DEBUG_LOG_SPAN(_);
-        SetForegroundWindow(handle_);
-    }
 
-    void Focus() const
-    {
-        DEBUG_LOG_SPAN(_);
-        SetFocus(handle_);
+        if (GetForegroundWindow() == handle_) {
+            DEBUG_LOG_ARGS("Already active {:p}, skip", (void*)handle_);
+            return;
+        }
+
+        SetForegroundWindow(handle_);
+        time::sleep(100); // Wait for activation to complete
+
+        const auto foreground = GetForegroundWindow();
+        [[maybe_unused]] const bool activated = (foreground == handle_);
+
+        DEBUG_LOG_ARGS("Activation result - Target: {:p}, Foreground: {:p}, Success: {}",
+            (void*)handle_, (void*)foreground, activated);
+
+        DEBUG_ASSERT(activated);
     }
 
     std::string Name() const
@@ -59,6 +69,13 @@ public:
         }
 
         return unicode::to_utf8(buffer.data());
+    }
+
+    WindowKeyboard Keyboard() const
+    {
+        return WindowKeyboard([this]{
+            this->Activate();
+        });
     }
 
     CaptureWindow CreateCapture() const
@@ -95,9 +112,9 @@ void Window::Activate() const
     impl_->Activate();
 }
 
-void Window::Focus() const
+WindowKeyboard Window::Keyboard() const
 {
-    impl_->Focus();
+    return impl_->Keyboard();
 }
 
 std::string Window::Name() const

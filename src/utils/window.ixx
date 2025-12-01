@@ -6,6 +6,7 @@ export module utils:window;
 
 import std;
 import :capture;
+import :window_keyboard;
 
 namespace sim::utils::window
 {
@@ -20,9 +21,11 @@ public:
 
     DELETE_COPY_AND_ASSIGN(Window);
 
-    void Activate() const;
-    void Focus() const;
     std::string Name() const;
+
+    void Activate() const;
+
+    WindowKeyboard Keyboard() const;
     CaptureWindow CreateCapture() const;
 private:
     class Impl;

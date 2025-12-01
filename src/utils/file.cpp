@@ -31,14 +31,4 @@ FilePtr open_file(const std::filesystem::path& path, const char* mode)
     return FilePtr(std::fopen(path.string().c_str(), mode));
 }
 
-bool is_open(const FStreamPtr& stream)
-{
-    return stream != nullptr && stream->is_open();
-}
-
-bool is_open(const FilePtr& fp)
-{
-    return fp != nullptr;
-}
-
 }

@@ -27,9 +27,11 @@ private:
 
     bool validateRoute(const route::Route& route) const
     {
-        return !route.expected().empty() &&
-               route.has_roi() && validateROI(route.roi()) &&
-               !route.keys().empty() && std::ranges::all_of(route.keys(), [](const auto& k) { return !k.empty(); });
+        return !route.expected().empty()
+                && route.has_roi() && validateROI(route.roi())
+                && !route.keys().empty() && std::ranges::all_of(route.keys(), [](const auto& k) { return !k.empty(); })
+                && route.keypress_duration_ms() >= 0
+                ;
     }
 
     bool validateRouteList(const route::RouteList& list) const
