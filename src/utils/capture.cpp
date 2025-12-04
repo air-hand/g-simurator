@@ -205,6 +205,11 @@ public:
     {
         return buffer_.try_pop(timeout);
     }
+
+    void ClearBuffer()
+    {
+        buffer_.clear();
+    }
 private:
     auto CreateCaptureItemForWindow() const
     {
@@ -354,6 +359,11 @@ CapturedImage CaptureWindow::Pop() const
 std::optional<CapturedImage> CaptureWindow::TryPop(std::chrono::milliseconds timeout) const
 {
     return impl_->TryPop(timeout);
+}
+
+void CaptureWindow::ClearBuffer() const
+{
+    impl_->ClearBuffer();
 }
 
 }
