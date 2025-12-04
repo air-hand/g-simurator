@@ -57,6 +57,7 @@ public:
     void Start() const;
     CapturedImage Pop() const;
     std::optional<CapturedImage> TryPop(std::chrono::milliseconds timeout) const;
+    void ClearBuffer() const;
 
 private:
     class Impl;

@@ -69,4 +69,17 @@ TEST(test_ring_buffer, try_pop_success)
     EXPECT_EQ(buffer.size(), 0);
 }
 
+TEST(test_ring_buffer, clear)
+{
+    container::RingBuffer<int> buffer(3);
+    buffer.push(42);
+    buffer.push(42);
+    buffer.push(42);
+
+    EXPECT_EQ(buffer.size(), 3);
+
+    buffer.clear();
+    EXPECT_EQ(buffer.size(), 0);
+}
+
 }

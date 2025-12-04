@@ -20,7 +20,7 @@ class RingBuffer final
 {
 private:
     boost::circular_buffer<T> container_;
-    std::mutex mutex_;
+    mutable std::mutex mutex_; // lock in const methods
     std::condition_variable is_not_empty_;
 public:
     explicit RingBuffer(std::size_t capacity) noexcept : container_(capacity), mutex_()
@@ -52,7 +52,7 @@ public:
         push(std::forward<T>(value), []([[maybe_unused]] const auto&) { return true; });
     }
 
-    T pop()
+    [[nodiscard]] T pop()
     {
         DEBUG_LOG_SPAN(_);
         auto lock = std::unique_lock<std::mutex>(mutex_);
@@ -62,7 +62,7 @@ public:
         return result;
     }
 
-    std::optional<T> try_pop(std::chrono::milliseconds timeout)
+    [[nodiscard]] std::optional<T> try_pop(std::chrono::milliseconds timeout)
     {
         DEBUG_LOG_SPAN(_);
         auto lock = std::unique_lock<std::mutex>(mutex_);
@@ -75,7 +75,14 @@ public:
         return result;
     }
 
-    auto size() noexcept
+    void clear()
+    {
+        DEBUG_LOG_SPAN(_);
+        auto lock = std::unique_lock<std::mutex>(mutex_);
+        container_.clear();
+    }
+
+    auto size() const noexcept
     {
         DEBUG_LOG_SPAN(_);
         auto lock = std::unique_lock<std::mutex>(mutex_);
