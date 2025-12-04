@@ -118,6 +118,8 @@ public:
                 }
                 while (true);
 
+                capture.ClearBuffer();
+
                 const auto duration_ms = r.keypress_duration_ms();
                 const auto keys = sim::route::keys(r);
                 auto windowKeyboard = window->Keyboard();
