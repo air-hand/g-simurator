@@ -7,6 +7,7 @@ export import :file;
 export import :gpu;
 export import :image;
 export import :logger;
+export import :notification;
 export import :recognize;
 export import :route_validator;
 export import :strings;

@@ -16,6 +16,7 @@ import :main;
 
 namespace options = boost::program_options;
 namespace logging = sim::utils::logging;
+namespace notification = sim::utils::notification;
 namespace window = sim::utils::window;
 using Keys = DirectX::Keyboard::Keys;
 
@@ -254,7 +255,9 @@ MainProc& MainProc::operator=(MainProc&& rhs)
 
 uint32_t MainProc::Run()
 {
-    return impl_->Run();
+    const auto result = impl_->Run();
+    (result == 0) ? notification::beep_success() : notification::beep_error();
+    return result;
 }
 
 void MainProc::Cancel()
