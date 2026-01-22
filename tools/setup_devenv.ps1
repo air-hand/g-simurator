@@ -61,7 +61,7 @@ Function InstallOthers([boolean]$clean) {
         , "cusparse_${cuda_version}"
         , "cusparse_dev_${cuda_version}"
     )
-    winget install -e --id Nvidia.CUDA -v $cuda_version --silent --disable-interactivity --accept-source-agreements `
+    winget install -e --id Nvidia.CUDA -v $cuda_version --source winget --silent --disable-interactivity --accept-source-agreements `
         --override ("-s {0} -n" -F ($sub_packages -join " "))
     $installed_path = "${Env:ProgramFiles}\NVIDIA GPU Computing Toolkit\CUDA\v${cuda_version}"
     if (-not(Test-Path $installed_path)) {
