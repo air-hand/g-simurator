@@ -31,7 +31,7 @@ public:
 
     DELETE_COPY_AND_ASSIGN(RingBuffer);
 
-    template<F>
+    template<typename F>
     requires std::invocable<F&, const decltype(container_)&> &&
          std::same_as<std::invoke_result_t<F&, const decltype(container_)&>, bool>
     bool push(T&& value, F&& condition)
