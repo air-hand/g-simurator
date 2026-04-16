@@ -31,12 +31,15 @@ public:
 
     DELETE_COPY_AND_ASSIGN(RingBuffer);
 
-    bool push(T&& value, std::function<bool(const decltype(container_)&)> condition)
+    template<F>
+    requires std::invocable<F&, const decltype(container_)&> &&
+         std::same_as<std::invoke_result_t<F&, const decltype(container_)&>, bool>
+    bool push(T&& value, F&& condition)
     {
         DEBUG_LOG_SPAN(_);
         {
             auto lock = std::unique_lock<std::mutex>(mutex_);
-            if (!condition(container_))
+            if (!std::invoke(std::forward<F>(condition), container_))
             {
                 return false;
             }
