@@ -16,7 +16,8 @@
     "Microsoft.VisualStudio.Component.VC.ASAN",
     "Microsoft.VisualStudio.Component.VC.Llvm.ClangToolset",
     "Microsoft.VisualStudio.Component.VC.Llvm.Clang",
-    "Microsoft.VisualStudio.Workload.NativeDesktop"
+    "Microsoft.VisualStudio.Workload.NativeDesktop",
+    "Microsoft.VisualStudio.Component.VC.Runtimes.x86.x64.Spectre"
   ],
   "extensions": []
 }
