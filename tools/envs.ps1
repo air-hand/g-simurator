@@ -29,9 +29,9 @@ if (-not(Test-Path "${Env:VCPKG_ROOT}\.git")) {
     git clone https://github.com/air-hand/vcpkg.git $Env:VCPKG_ROOT
 }
 pushd $Env:VCPKG_ROOT > $null
-git switch opencv-cuda
+git switch feat/opencv4-cuda-arch
 git fetch
-git reset --hard origin/opencv-cuda
+git reset --hard origin/feat/opencv4-cuda-arch
 .\bootstrap-vcpkg.bat
 popd > $null
 
