@@ -1,4 +1,5 @@
-﻿Function SourceSubDirectories([string]$dir) {
+﻿Function SourceSubDirectories([string]$dir)
+{
     Get-ChildItem ".\src\${dir}" -Include "CMakeLists.txt.ps1" -Recurse | Sort-Object | % {
         return ((Resolve-Path (Split-Path -Parent $_) -Relative) -replace '\\', '/')
     } | % {
@@ -9,7 +10,7 @@
 cd $PSScriptRoot
 
 $content = (@'
-cmake_minimum_required(VERSION 3.29)
+cmake_minimum_required(VERSION 4.0)
 cmake_policy(SET CMP0155 NEW)
 
 
