@@ -8,6 +8,29 @@ if ($Env:ENVS_PS1_LOADED -eq "1") {
 
 cd $PSScriptRoot
 
+# https://devblogs.microsoft.com/cppblog/microsoft-c-msvc-build-tools-v14-51-preview-released-how-to-opt-in/#command-line-builds-using-powershell
+function Import-VcVars64Preview([string]$visual_studio) {
+    $vcvars64 = Join-Path $visual_studio 'VC\Auxiliary\Build\vcvars64.bat'
+    if (-not(Test-Path $vcvars64)) {
+        throw "vcvars64.bat not found."
+    }
+
+    $env_lines = & cmd.exe /c "`"$vcvars64`" -vcvars_ver=Preview && set"
+    if ($LASTEXITCODE -ne 0) {
+        throw "vcvars64.bat failed."
+    }
+
+    foreach ($line in $env_lines) {
+        $index = $line.IndexOf('=')
+        if ($index -le 0) {
+            continue
+        }
+        $name = $line.Substring(0, $index)
+        $value = $line.Substring($index + 1)
+        [System.Environment]::SetEnvironmentVariable($name, $value, [System.EnvironmentVariableTarget]::Process)
+    }
+}
+
 Import-Module $PSScriptRoot\vs_utils.psm1 -Force
 SetupPathToVSInstaller
 $visual_studio = PathToVisualStudio
@@ -22,6 +45,7 @@ if ($Env:VCINSTALLDIR -eq $null) {
     }
     . $vsdevcmd_script -Arch amd64 -VsInstallationPath $visual_studio
 }
+Import-VcVars64Preview $visual_studio
 $Env:VCPKG_VISUAL_STUDIO_PATH = $visual_studio
 
 $Env:VCPKG_ROOT = $PSScriptRoot + '\vendor\vcpkg'
@@ -67,6 +91,7 @@ vcpkg install --triplet $Env:VCPKG_TARGET_TRIPLET
 
 $vcpkg_tools_path = (vcpkg env --tools "echo %PATH%")
 $Env:PATH = "${vcpkg_tools_path};${Env:PATH}"
+Import-VcVars64Preview $visual_studio
 
 # CUDA
 $cuda_bin_path = "${Env:CUDA_PATH}\bin"
