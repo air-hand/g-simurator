@@ -36,11 +36,13 @@ set(CXX_FLAGS_SHARED
     "/utf-8"
     "/EHsc"
     "/permissive-"
-    "/analyze" # https://learn.microsoft.com/en-us/cpp/code-quality/code-analysis-for-c-cpp-overview?view=msvc-170#command-line-support
+    # "/analyze" # https://learn.microsoft.com/en-us/cpp/code-quality/code-analysis-for-c-cpp-overview?view=msvc-170#command-line-support
     "/analyze:external-"
     # disable warnings
     "/wd4267"
     "/wd4365"
+    "/wd4371"
+    "/wd4514"
     "/wd4686"
     "/wd4710"
     "/wd4711"
@@ -51,7 +53,7 @@ set(CXX_FLAGS_SHARED
     "/wd6326"
     "/external:anglebrackets"
     "/external:W0"
-    "$<$<CONFIG:Debug>:/fsanitize=address>"
+#    "$<$<CONFIG:Debug>:/fsanitize=address>"
 )
 set(CMAKE_MSVC_RUNTIME_LIBRARY "MultiThreaded$<$<CONFIG:Debug>:Debug>DLL")
 if(CMAKE_BUILD_TYPE STREQUAL "RelWithDebInfo")
@@ -122,10 +124,10 @@ target_compile_options(${{PROJECT_NAME}}-utils
 target_compile_definitions(${{PROJECT_NAME}}-utils
     PRIVATE
 )
-target_precompile_headers(${{PROJECT_NAME}}-utils
-    PRIVATE
-    ${{CMAKE_CURRENT_SOURCE_DIR}}/src/std/pch.hpp
-)
+#target_precompile_headers(${{PROJECT_NAME}}-utils
+#    PRIVATE
+#    ${{CMAKE_CURRENT_SOURCE_DIR}}/src/std/pch.hpp
+#)
 
 target_include_directories(${{PROJECT_NAME}}-utils
     PRIVATE
@@ -171,10 +173,10 @@ target_compile_options(${{PROJECT_NAME}}
     ${{ASSEMBLY_FLAG}}
     $<$<BOOL:${{ASSEMBLY_ENABLED}}>:/Fa${{CMAKE_CURRENT_BINARY_DIR}}/assembly/${{PROJECT_NAME}}/>
 )
-target_precompile_headers(${{PROJECT_NAME}}
-    PRIVATE
-    ${{CMAKE_CURRENT_SOURCE_DIR}}/src/std/pch.hpp
-)
+#target_precompile_headers(${{PROJECT_NAME}}
+#    PRIVATE
+#    ${{CMAKE_CURRENT_SOURCE_DIR}}/src/std/pch.hpp
+#)
 
 target_include_directories(${{PROJECT_NAME}}
     PRIVATE
@@ -219,10 +221,10 @@ target_compile_options(${{PROJECT_NAME}}-test
     /Qspectre
     /wd5045
 )
-target_precompile_headers(${{PROJECT_NAME}}-test
-    PRIVATE
-    ${{CMAKE_CURRENT_SOURCE_DIR}}/src/std/pch.hpp
-)
+#target_precompile_headers(${{PROJECT_NAME}}-test
+#    PRIVATE
+#    ${{CMAKE_CURRENT_SOURCE_DIR}}/src/std/pch.hpp
+#)
 
 target_include_directories(${{PROJECT_NAME}}-test
     PRIVATE

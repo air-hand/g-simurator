@@ -4,7 +4,6 @@ module;
 #include <opencv2/core/cuda.hpp>
 #include <opencv2/cudaimgproc.hpp>
 #include <opencv2/cudaarithm.hpp>
-//#include <opencv2/cudawarping.hpp>
 
 #include <d3d11.h>
 #include <winrt/Windows.Foundation.Collections.h>

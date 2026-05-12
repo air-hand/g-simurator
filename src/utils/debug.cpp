@@ -1,6 +1,7 @@
 #include "debug.hpp"
 
 #ifdef DEBUG
+#include "std/windows.hpp"
 #include "logger.hpp"
 
 #include <dbghelp.h>

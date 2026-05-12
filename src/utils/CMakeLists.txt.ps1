@@ -17,6 +17,11 @@ target_sources(${{PROJECT_NAME}}-utils
     PRIVATE
 {1}
 )
+
+set_source_files_properties("time.cpp"
+    PROPERTIES
+    SKIP_PRECOMPILE_HEADERS ON
+)
 '@ -F (SourceFiles "ixx"), (SourceFiles "cpp"))
 
 Set-Content -Path CMakeLists.txt -Value $content

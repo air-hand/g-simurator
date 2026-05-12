@@ -1,10 +1,14 @@
 module;
 
+#include <string>
+#include <memory>
+
+#include "std/windows.hpp"
 #include "macro.hpp"
 
 export module utils:window;
 
-import std;
+//import std;
 import :capture;
 import :window_keyboard;
 
