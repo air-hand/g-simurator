@@ -31,6 +31,22 @@ function Import-VcVars64Preview([string]$visual_studio) {
     }
 }
 
+function Use-VcToolsPath() {
+    if (-not($Env:VCToolsInstallDir)) {
+        throw "VCToolsInstallDir is not set."
+    }
+
+    $vc_tools_bin = Join-Path $Env:VCToolsInstallDir 'bin\Hostx64\x64'
+    if (-not(Test-Path $vc_tools_bin)) {
+        throw "MSVC tool bin path not found."
+    }
+
+    $paths = @($vc_tools_bin) + (($Env:PATH -split ';') | Where-Object {
+        $_ -and ($_ -ne $vc_tools_bin)
+    })
+    #$Env:PATH = ($paths -join ';')
+}
+
 Import-Module $PSScriptRoot\vs_utils.psm1 -Force
 SetupPathToVSInstaller
 $visual_studio = PathToVisualStudio
@@ -46,6 +62,7 @@ if ($Env:VCINSTALLDIR -eq $null) {
     . $vsdevcmd_script -Arch amd64 -VsInstallationPath $visual_studio
 }
 Import-VcVars64Preview $visual_studio
+Use-VcToolsPath
 $Env:VCPKG_VISUAL_STUDIO_PATH = $visual_studio
 
 $Env:VCPKG_ROOT = $PSScriptRoot + '\vendor\vcpkg'
@@ -91,7 +108,7 @@ vcpkg install --triplet $Env:VCPKG_TARGET_TRIPLET
 
 $vcpkg_tools_path = (vcpkg env --tools "echo %PATH%")
 $Env:PATH = "${vcpkg_tools_path};${Env:PATH}"
-Import-VcVars64Preview $visual_studio
+Use-VcToolsPath
 
 # CUDA
 $cuda_bin_path = "${Env:CUDA_PATH}\bin"
