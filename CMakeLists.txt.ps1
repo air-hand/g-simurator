@@ -40,6 +40,7 @@ set(CXX_FLAGS_SHARED
     # disable warnings
     "/wd4267"
     "/wd4365"
+    "/wd4371"
     "/wd4686"
     "/wd4710"
     "/wd4711"
@@ -138,6 +139,7 @@ target_link_libraries(${{PROJECT_NAME}}-utils
     d3d11
     dxgi
     dwmapi
+    runtimeobject
     uuid
     Microsoft::DirectXTK
     ${{OpenCV_LIBS}}

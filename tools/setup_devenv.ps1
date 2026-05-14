@@ -34,13 +34,14 @@ Function InstallVisualStudio([boolean]$clean) {
 }
 
 Function InstallOthers([boolean]$clean) {
-    $cuda_version = "12.6"
+    $cuda_version = "13.2"
     if ($clean) {
         winget uninstall -e --id Nvidia.CUDA -v $cuda_version --silent --disable-interactivity
     }
     # https://docs.nvidia.com/cuda/cuda-installation-guide-microsoft-windows/#id3
     $sub_packages = @(
         "nvcc_${cuda_version}"
+        , "nvvm_${cuda_version}"
         , "nvml_dev_${cuda_version}"
         , "nvrtc_${cuda_version}"
         , "nvrtc_dev_${cuda_version}"
@@ -59,6 +60,7 @@ Function InstallOthers([boolean]$clean) {
         , "cusolver_dev_${cuda_version}"
         , "cusparse_${cuda_version}"
         , "cusparse_dev_${cuda_version}"
+        , "crt_${cuda_version}"
     )
     winget install -e --id Nvidia.CUDA -v $cuda_version --source winget --silent --disable-interactivity --accept-source-agreements `
         --override ("-s {0} -n" -F ($sub_packages -join " "))
