@@ -55,11 +55,6 @@ if ($clean) {
     $CMAKE_PRESET_COMMAND += "--fresh"
 }
 Invoke-Expression -Command ($CMAKE_PRESET_COMMAND -join " ")
-#Invoke-Expression -Command (@(
-#    "cmake"
-#    , "-DCMAKE_EXPORT_COMPILE_COMMANDS=ON"
-#    , "-B .\build"
-#    ) -join " ")
 $CMAKE_BUILD_COMMAND = @(
     "cmake"
     , "--build"
@@ -68,10 +63,9 @@ $CMAKE_BUILD_COMMAND = @(
 if ($clean) {
     $CMAKE_BUILD_COMMAND += "--clean-first"
 }
+# continue ninja build if some failures
+$CMAKE_BUILD_COMMAND += "-- -k 0"
 Invoke-Expression -Command ($CMAKE_BUILD_COMMAND -join " ")
 if ($? -ne $true) {
     throw "Build failed."
 }
-
-# https://discourse.cmake.org/t/ctest-scripting-cmake-presets/9610/2
-#ctest --build .\build --preset=test -C Debug

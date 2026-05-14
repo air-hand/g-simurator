@@ -8,19 +8,22 @@ if ($Env:ENVS_PS1_LOADED -eq "1") {
 
 cd $PSScriptRoot
 
+
+Import-Module $PSScriptRoot\vs_utils.psm1
+SetupPathToVSInstaller
+$visual_studio = PathToVisualStudio
+if (-not($visual_studio)) {
+    throw "Visual Studio not found."
+}
 if ($Env:VCINSTALLDIR -eq $null) {
-    Import-Module $PSScriptRoot\vs_utils.psm1
-    SetupPathToVSInstaller
-    $visual_studio = PathToVisualStudio
-    if (-not($visual_studio)) {
-        throw "Visual Studio not found."
-    }
     $vsdevcmd_script = (Join-Path "${visual_studio}" 'Common7\Tools\Launch-VsDevShell.ps1')
     if (-not(Test-Path $vsdevcmd_script)) {
         throw "Launch-VsDevShell.ps1 not found."
     }
-    . $vsdevcmd_script -Arch amd64
+    . $vsdevcmd_script -Arch amd64 -VsInstallationPath $visual_studio
 }
+
+$Env:VCPKG_VISUAL_STUDIO_PATH = $visual_studio
 
 $Env:VCPKG_ROOT = $PSScriptRoot + '\vendor\vcpkg'
 $Env:PATH = "${Env:VCPKG_ROOT};${Env:PATH}"
@@ -29,9 +32,9 @@ if (-not(Test-Path "${Env:VCPKG_ROOT}\.git")) {
     git clone https://github.com/air-hand/vcpkg.git $Env:VCPKG_ROOT
 }
 pushd $Env:VCPKG_ROOT > $null
-git switch opencv-cuda
+git switch feat/opencv4-cuda-arch
 git fetch
-git reset --hard origin/opencv-cuda
+git reset --hard origin/feat/opencv4-cuda-arch
 .\bootstrap-vcpkg.bat
 popd > $null
 
