@@ -2,7 +2,6 @@
     [switch]$clean
 )
 
-Import-Module $PSScriptRoot\choco_utils.psm1
 Import-Module $PSScriptRoot\vs_utils.psm1
 
 Function InstallVisualStudio([boolean]$clean) {
