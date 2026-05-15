@@ -13,7 +13,9 @@ include("${VCPKG_ROOT_DIR}/triplets/x64-windows.cmake")
 # GeForce RTX 40 Series (Ada Lovelace): 8.9
 #set(VCPKG_CUDA_ARCHITECTURES "86;89")
 #set(CMAKE_CUDA_ARCHITECTURES "86;89" CACHE STRING "") # FIXME
-set(CUDA_ARCHITECTURES "86")
+#set(CUDA_ARCHITECTURES "86")
 #set(CUDA_ARCHITECTURES "80")
 
 #set(CMAKE_CUDA_STANDARD 20) # c++20
+
+set(VCPKG_CHAINLOAD_TOOLCHAIN_FILE "${CMAKE_CURRENT_LIST_DIR}/../custom-toolchain.cmake")
