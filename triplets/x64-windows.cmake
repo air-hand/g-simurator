@@ -19,3 +19,4 @@ include("${VCPKG_ROOT_DIR}/triplets/x64-windows.cmake")
 #set(CMAKE_CUDA_STANDARD 20) # c++20
 
 set(VCPKG_CHAINLOAD_TOOLCHAIN_FILE "${CMAKE_CURRENT_LIST_DIR}/../custom-toolchain.cmake")
+set(VCPKG_ENV_PASSTHROUGH_UNTRACKED "VCPKG_ROOT")
