@@ -26,6 +26,7 @@ if ($Env:VCINSTALLDIR -eq $null) {
 $Env:VCPKG_VISUAL_STUDIO_PATH = $visual_studio
 
 $Env:VCPKG_ROOT = $PSScriptRoot + '\vendor\vcpkg'
+$Env:VCPKG_KEEP_ENV_VARS = "VCPKG_ROOT"
 $Env:PATH = "${Env:VCPKG_ROOT};${Env:PATH}"
 if (-not(Test-Path "${Env:VCPKG_ROOT}\.git")) {
 #    git clone https://github.com/microsoft/vcpkg.git $Env:VCPKG_ROOT
