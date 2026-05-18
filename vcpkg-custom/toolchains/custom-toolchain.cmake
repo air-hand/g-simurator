@@ -1,3 +1,4 @@
+# need VCPKG_KEEP_ENV_VARS and VCPKG_ENV_PASSTHROUGH_UNTRACKED to use ENV{VCPKG_ROOT} on Windows
 include("$ENV{VCPKG_ROOT}/scripts/toolchains/windows.cmake")
 
 set(CMAKE_CXX_STANDARD 23 CACHE STRING "")
