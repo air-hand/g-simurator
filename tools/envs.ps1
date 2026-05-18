@@ -36,7 +36,9 @@ pushd $Env:VCPKG_ROOT > $null
 #git remote set-url origin https://github.com/air-hand/vcpkg.git
 #git remote set-url origin https://github.com/microsoft/vcpkg.git
 git fetch --all --tags
-git checkout 2026.04.27
+#git checkout 2026.04.27
+# CUDA 13.2 fixed, not releases tag yet
+git checkout 940f58770cee8e2011bfb4847fb2bd70057301a8
 .\bootstrap-vcpkg.bat
 popd > $null
 
