@@ -22,9 +22,29 @@
         "png"
       ]
     },
+    {
+      "name": "freetype",
+      "default-features": false
+    },
+    {
+      "name": "libwebp",
+      "default-features": false
+    },
+    {
+      "name": "tiff",
+      "default-features": false
+    },
     "plog",
     "protobuf",
-    "tesseract"
+    "tesseract",
+    {
+      "name": "libarchive",
+      "default-features": false
+    },
+    {
+      "name": "curl",
+      "default-features": false
+    }
   ],
   "overrides": []
 }
