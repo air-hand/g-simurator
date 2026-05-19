@@ -6,6 +6,8 @@ module;
 #include <opencv2/highgui.hpp>
 #include <opencv2/videoio.hpp>
 
+#include "std/windows.hpp"
+
 #include "logger.hpp"
 #include "debug.hpp"
 

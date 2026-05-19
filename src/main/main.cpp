@@ -1,3 +1,4 @@
+#include "std/windows.hpp"
 #include "debug/memory.hpp"
 #include "debug/exception.hpp"
 
@@ -5,7 +6,7 @@ import std;
 import sim;
 import utils;
 
-namespace 
+namespace
 {
 std::unique_ptr<sim::MainProc> main_proc = nullptr;
 

@@ -1,5 +1,7 @@
 module;
 
+#include "std/windows.hpp"
+
 #include "logger.hpp"
 
 module utils;

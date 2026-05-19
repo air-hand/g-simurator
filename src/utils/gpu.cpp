@@ -4,7 +4,6 @@ module;
 #include <opencv2/core/cuda.hpp>
 #include <opencv2/cudaimgproc.hpp>
 #include <opencv2/cudaarithm.hpp>
-//#include <opencv2/cudawarping.hpp>
 
 #include <d3d11.h>
 #include <winrt/Windows.Foundation.Collections.h>
@@ -33,7 +32,6 @@ public:
     explicit D3D11Texture2DToGpuMatFunctor(::ID3D11Texture2D* d3dTexture) : cudaResource_(nullptr), width_(0), height_(0)
     {
         DEBUG_LOG_SPAN(_);
-
         {
             ::D3D11_TEXTURE2D_DESC desc;
             d3dTexture->GetDesc(&desc);

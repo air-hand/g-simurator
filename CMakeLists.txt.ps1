@@ -41,6 +41,7 @@ set(CXX_FLAGS_SHARED
     "/wd4267"
     "/wd4365"
     "/wd4371"
+    "/wd4514"
     "/wd4686"
     "/wd4710"
     "/wd4711"
@@ -122,18 +123,12 @@ target_compile_options(${{PROJECT_NAME}}-utils
 target_compile_definitions(${{PROJECT_NAME}}-utils
     PRIVATE
 )
-target_precompile_headers(${{PROJECT_NAME}}-utils
-    PRIVATE
-    ${{CMAKE_CURRENT_SOURCE_DIR}}/src/std/pch.hpp
-)
-
 target_include_directories(${{PROJECT_NAME}}-utils
     PRIVATE
     ${{OpenCV_INCLUDE_DIRS}}
     ${{CUDAToolkit_INCLUDE_DIRS}}
     ${{CMAKE_CURRENT_SOURCE_DIR}}/src
 )
-
 target_link_libraries(${{PROJECT_NAME}}-utils
     PRIVATE
     d3d11
@@ -172,18 +167,12 @@ target_compile_options(${{PROJECT_NAME}}
     ${{ASSEMBLY_FLAG}}
     $<$<BOOL:${{ASSEMBLY_ENABLED}}>:/Fa${{CMAKE_CURRENT_BINARY_DIR}}/assembly/${{PROJECT_NAME}}/>
 )
-target_precompile_headers(${{PROJECT_NAME}}
-    PRIVATE
-    ${{CMAKE_CURRENT_SOURCE_DIR}}/src/std/pch.hpp
-)
-
 target_include_directories(${{PROJECT_NAME}}
     PRIVATE
     ${{OpenCV_INCLUDE_DIRS}}
     ${{CMAKE_CURRENT_SOURCE_DIR}}/src
     ${{CMAKE_CURRENT_SOURCE_DIR}}/src/main
 )
-
 target_link_libraries(${{PROJECT_NAME}}
     PRIVATE
     Microsoft::DirectXTK
@@ -220,11 +209,6 @@ target_compile_options(${{PROJECT_NAME}}-test
     /Qspectre
     /wd5045
 )
-target_precompile_headers(${{PROJECT_NAME}}-test
-    PRIVATE
-    ${{CMAKE_CURRENT_SOURCE_DIR}}/src/std/pch.hpp
-)
-
 target_include_directories(${{PROJECT_NAME}}-test
     PRIVATE
     # test
@@ -232,7 +216,6 @@ target_include_directories(${{PROJECT_NAME}}-test
     ${{CMAKE_CURRENT_SOURCE_DIR}}/src
     ${{CMAKE_CURRENT_SOURCE_DIR}}/src/tests
 )
-
 target_link_libraries(${{PROJECT_NAME}}-test
     PRIVATE
     GTest::gtest GTest::gtest_main GTest::gmock GTest::gmock_main

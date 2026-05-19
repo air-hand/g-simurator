@@ -2,6 +2,7 @@
 
 #include <google/protobuf/util/json_util.h>
 
+#include "std/windows.hpp"
 #include "utils/debug.hpp"
 #include "utils/logger.hpp"
 

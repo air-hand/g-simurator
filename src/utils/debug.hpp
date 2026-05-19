@@ -2,8 +2,6 @@
 
 #ifdef DEBUG
 
-//#include <opencv2/opencv.hpp>
-
 namespace sim::utils::debug
 {
 void AssertHandler(const char* expr, const char* file, const int line);

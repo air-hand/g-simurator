@@ -3,6 +3,7 @@
 #ifdef DEBUG
 
 #include <opencv2/opencv.hpp>
+#include "std/windows.hpp"
 
 namespace sim::debug
 {

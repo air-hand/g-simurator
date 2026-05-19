@@ -6,6 +6,8 @@ module;
 #include <Windows.Graphics.DirectX.Direct3D11.Interop.h>
 #include <directxtk/ScreenGrab.h>
 
+#include "std/windows.hpp"
+
 #include "macro.hpp"
 
 export module utils:capture;
