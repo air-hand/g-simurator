@@ -18,7 +18,6 @@ namespace options = boost::program_options;
 namespace logging = sim::utils::logging;
 namespace notification = sim::utils::notification;
 namespace window = sim::utils::window;
-using Keys = DirectX::Keyboard::Keys;
 
 namespace sim
 {

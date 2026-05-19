@@ -31,29 +31,12 @@ function Import-VcVars64Preview([string]$visual_studio) {
     }
 }
 
-function Use-VcToolsPath() {
-    if (-not($Env:VCToolsInstallDir)) {
-        throw "VCToolsInstallDir is not set."
-    }
-
-    $vc_tools_bin = Join-Path $Env:VCToolsInstallDir 'bin\Hostx64\x64'
-    if (-not(Test-Path $vc_tools_bin)) {
-        throw "MSVC tool bin path not found."
-    }
-
-    $paths = @($vc_tools_bin) + (($Env:PATH -split ';') | Where-Object {
-        $_ -and ($_ -ne $vc_tools_bin)
-    })
-    #$Env:PATH = ($paths -join ';')
-}
-
 Import-Module $PSScriptRoot\vs_utils.psm1 -Force
 SetupPathToVSInstaller
 $visual_studio = PathToVisualStudio
 if (-not($visual_studio)) {
     throw "Visual Studio not found."
 }
-
 if ($Env:VCINSTALLDIR -eq $null) {
     $vsdevcmd_script = (Join-Path "${visual_studio}" 'Common7\Tools\Launch-VsDevShell.ps1')
     if (-not(Test-Path $vsdevcmd_script)) {
@@ -62,19 +45,22 @@ if ($Env:VCINSTALLDIR -eq $null) {
     . $vsdevcmd_script -Arch amd64 -VsInstallationPath $visual_studio
 }
 Import-VcVars64Preview $visual_studio
-Use-VcToolsPath
 $Env:VCPKG_VISUAL_STUDIO_PATH = $visual_studio
+# need to ENV{VCPKG_ROOT} be used by vcpkg custom toolchain and so on
+$Env:VCPKG_KEEP_ENV_VARS = "VCPKG_ROOT"
 
 $Env:VCPKG_ROOT = $PSScriptRoot + '\vendor\vcpkg'
 $Env:PATH = "${Env:VCPKG_ROOT};${Env:PATH}"
 if (-not(Test-Path "${Env:VCPKG_ROOT}\.git")) {
-#    git clone https://github.com/microsoft/vcpkg.git $Env:VCPKG_ROOT
-    git clone https://github.com/air-hand/vcpkg.git $Env:VCPKG_ROOT
+    git clone https://github.com/microsoft/vcpkg.git $Env:VCPKG_ROOT
 }
 pushd $Env:VCPKG_ROOT > $null
-git switch feat/opencv4-cuda-arch
-git fetch
-git reset --hard origin/feat/opencv4-cuda-arch
+#git remote set-url origin https://github.com/air-hand/vcpkg.git
+#git remote set-url origin https://github.com/microsoft/vcpkg.git
+git fetch --all --tags
+#git checkout 2026.04.27
+# CUDA 13.2 fixed, not releases tag yet
+git checkout 940f58770cee8e2011bfb4847fb2bd70057301a8
 .\bootstrap-vcpkg.bat
 popd > $null
 

@@ -63,12 +63,9 @@ $CMAKE_BUILD_COMMAND = @(
 if ($clean) {
     $CMAKE_BUILD_COMMAND += "--clean-first"
 }
-# keep compile by ninja
+# continue ninja build if some failures
 $CMAKE_BUILD_COMMAND += "-- -k 0"
 Invoke-Expression -Command ($CMAKE_BUILD_COMMAND -join " ")
 if ($? -ne $true) {
     throw "Build failed."
 }
-
-# https://discourse.cmake.org/t/ctest-scripting-cmake-presets/9610/2
-#ctest --build .\build --preset=test -C Debug

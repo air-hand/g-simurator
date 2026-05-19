@@ -13,11 +13,11 @@ TEST(test_file, read_all_string)
     EXPECT_EQ(content, "Hello, world!™");
 }
 
-TEST(test_file, read_all_u8string)
+TEST(test_file, read_all_multibyte_string)
 {
-    std::basic_istringstream<char8_t> ss(u8"Hello, world!™あいうえお");
+    std::basic_istringstream<char> ss("Hello, world!™あいうえお");
     const auto content = sim::utils::read_all(&ss);
-    EXPECT_EQ(content, u8"Hello, world!™あいうえお");
+    EXPECT_EQ(content, "Hello, world!™あいうえお");
 }
 
 TEST(test_file, read_all_unique_ptr)

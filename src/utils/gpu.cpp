@@ -32,7 +32,6 @@ public:
     explicit D3D11Texture2DToGpuMatFunctor(::ID3D11Texture2D* d3dTexture) : cudaResource_(nullptr), width_(0), height_(0)
     {
         DEBUG_LOG_SPAN(_);
-
         {
             ::D3D11_TEXTURE2D_DESC desc;
             d3dTexture->GetDesc(&desc);

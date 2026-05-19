@@ -2,9 +2,10 @@
 
 #ifdef DEBUG
 #include "std/windows.hpp"
-#include "logger.hpp"
 
 #include <dbghelp.h>
+
+#include "logger.hpp"
 
 import std.compat;
 import utils;

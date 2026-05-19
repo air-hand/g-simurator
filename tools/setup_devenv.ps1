@@ -2,8 +2,7 @@
     [switch]$clean
 )
 
-Import-Module $PSScriptRoot\choco_utils.psm1
-Import-Module $PSScriptRoot\vs_utils.psm1 -Force
+Import-Module $PSScriptRoot\vs_utils.psm1
 
 Function InstallVisualStudio([boolean]$clean)
 {
@@ -21,7 +20,6 @@ Function InstallVisualStudio([boolean]$clean)
         # The Community edition is compatible with The Enterprise edition. https://github.com/actions/runner-images/blob/main/images/windows/Windows2022-Readme.md#visual-studio-enterprise-2022
         # VS 2026 -> VisualStudio.Community
         $winget_visualstudio_id = "Microsoft.VisualStudio.Community"
-        $winget_visualstudio_id = "Microsoft.VisualStudio.Community.Insiders"
         $vsconfig = ".vsconfig"
         if ($clean)
         {
@@ -43,11 +41,9 @@ Function InstallVisualStudio([boolean]$clean)
     throw "VisualStudio not found."
 }
 
-Function InstallOthers([boolean]$clean)
-{
+Function InstallOthers([boolean]$clean) {
     $cuda_version = "13.2"
-    if ($clean)
-    {
+    if ($clean) {
         winget uninstall -e --id Nvidia.CUDA -v $cuda_version --silent --disable-interactivity
     }
     # https://docs.nvidia.com/cuda/cuda-installation-guide-microsoft-windows/#id3

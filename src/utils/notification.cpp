@@ -10,7 +10,7 @@ import :logger;
 namespace sim::utils::notification
 {
 namespace {
-void beep_impl(UINT type, const char* name)
+void beep_impl(UINT type, [[maybe_unused]] const char* name)
 {
     DEBUG_LOG_SPAN(_);
     if (!MessageBeep(type))

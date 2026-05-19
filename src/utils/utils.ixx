@@ -11,7 +11,6 @@ export import :notification;
 export import :recognize;
 export import :route_validator;
 export import :strings;
-export import :task;
 export import :time;
 export import :unicode;
 export import :window;
