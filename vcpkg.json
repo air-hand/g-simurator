@@ -24,7 +24,15 @@
     },
     "plog",
     "protobuf",
-    "tesseract"
+    "tesseract",
+    {
+      "name": "libarchive",
+      "default-features": false
+    },
+    {
+      "name": "curl",
+      "default-features": false
+    }
   ],
   "overrides": []
 }
