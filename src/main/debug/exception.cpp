@@ -1,11 +1,13 @@
 #include "exception.hpp"
 
 #ifdef DEBUG
-#include "utils/debug.hpp"
-#include "utils/logger.hpp"
-
 #include <boost/stacktrace.hpp>
 #include <dbghelp.h>
+
+#include "std/windows.hpp"
+
+#include "utils/debug.hpp"
+#include "utils/logger.hpp"
 
 import std.compat;
 import utils;

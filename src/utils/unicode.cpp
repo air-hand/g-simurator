@@ -1,3 +1,7 @@
+module;
+
+#include "std/windows.hpp"
+
 module utils;
 
 namespace sim::utils::unicode

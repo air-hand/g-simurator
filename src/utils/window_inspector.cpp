@@ -2,6 +2,7 @@ module;
 
 #include <dwmapi.h>
 
+#include "std/windows.hpp"
 #include "debug.hpp"
 #include "logger.hpp"
 

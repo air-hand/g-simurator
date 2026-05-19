@@ -34,7 +34,6 @@ private:
     std::vector<Result> results_;
 };
 
-// image.ixx に統合してもよさそう
 export class RecognizeText final
 {
 public:
