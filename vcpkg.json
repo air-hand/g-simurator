@@ -22,19 +22,6 @@
         "png"
       ]
     },
-    {
-      "name": "freetype",
-      "default-features": false
-    },
-    {
-      "name": "libwebp",
-      "default-features": false
-    },
-    {
-      "name": "tiff",
-      "default-features": false
-    },
-    "plog",
     "protobuf",
     "tesseract",
     {
