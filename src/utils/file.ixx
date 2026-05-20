@@ -36,7 +36,7 @@ export template<typename StreamPointerT> concept stream_type = requires(StreamPo
 };
 
 export template<
-    stream_type StreamPointerT, 
+    stream_type StreamPointerT,
     typename CharT = std::pointer_traits<StreamPointerT>::element_type::char_type
 >
 std::basic_string<CharT> read_all(StreamPointerT stream)

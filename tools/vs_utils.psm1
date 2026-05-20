@@ -55,7 +55,11 @@ Function SetupPathToVSInstaller()
 
 Function PathToVisualStudio([switch]$with_vsconfig)
 {
-    $version = "-version 18.0,19.0 -prerelease"
+    $insiders = $false
+    $version = "-version 18.0,19.0"
+    if ($insiders) {
+        $version = "${version} -prerelease"
+    }
     $vswhere_cmd = (
         "vswhere.exe -products * ${version} -format json -utf8"
     )
@@ -68,7 +72,7 @@ Function PathToVisualStudio([switch]$with_vsconfig)
     }
     $result = ($vswhere_cmd | Invoke-Expression | ConvertFrom-Json)
 #    $result = (($vswhere_cmd | Invoke-Expression) | ConvertFrom-Json)
-    return ($result | ? { $_.isPrerelease -eq $true } | Select-Object -First 1 -ExpandProperty installationPath)
+    return ($result | ? { $_.isPrerelease -eq $insiders } | Select-Object -First 1 -ExpandProperty installationPath)
 }
 
 Function ModifyVSWithConfig([string]$installed_path)

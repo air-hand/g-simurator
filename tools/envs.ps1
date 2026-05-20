@@ -8,6 +8,20 @@ if ($Env:ENVS_PS1_LOADED -eq "1") {
 
 cd $PSScriptRoot
 
+function Set-PathUnique([string[]]$paths) {
+     $seen = [System.Collections.Generic.HashSet[string]]::new([System.StringComparer]::OrdinalIgnoreCase)
+     $unique = foreach ($path in $paths) {
+         if ([string]::IsNullOrWhiteSpace($path)) {
+             continue
+         }
+         $normalized = $path.Trim().TrimEnd('\')
+         if ($seen.Add($normalized)) {
+             $path.Trim()
+         }
+     }
+     $Env:PATH = ($unique -join ';')
+ }
+
 # https://devblogs.microsoft.com/cppblog/microsoft-c-msvc-build-tools-v14-51-preview-released-how-to-opt-in/#command-line-builds-using-powershell
 function Import-VcVars64Preview([string]$visual_studio) {
     $vcvars64 = Join-Path $visual_studio 'VC\Auxiliary\Build\vcvars64.bat'
@@ -67,7 +81,8 @@ popd > $null
 cd $PSScriptRoot\..
 $Env:VCPKG_TARGET_TRIPLET = "x64-windows"
 if (-not($Env:VCPKG_BINARY_SOURCES)) {
-    $Env:VCPKG_BINARY_SOURCES = "clear;"
+#    $Env:VCPKG_BINARY_SOURCES = "clear;"
+    $Env:VCPKG_BINARY_SOURCES = "clear;files,D:\vcpkg-binary-cache,readwrite" # local cache
 }
 
 # https://learn.microsoft.com/en-us/vcpkg/consume/binary-caching-github-packages
@@ -93,8 +108,7 @@ if ($Env:CI -and $Env:NUGET_FEED_URL -and $Env:NUGET_TOKEN) {
 vcpkg install --triplet $Env:VCPKG_TARGET_TRIPLET
 
 $vcpkg_tools_path = (vcpkg env --tools "echo %PATH%")
-$Env:PATH = "${vcpkg_tools_path};${Env:PATH}"
-Use-VcToolsPath
+Set-PathUnique (($vcpkg_tools_path -split ";") + ($Env:PATH -split ';'))
 
 # CUDA
 $cuda_bin_path = "${Env:CUDA_PATH}\bin"
