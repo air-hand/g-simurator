@@ -5,6 +5,8 @@
 #include <opencv2/opencv.hpp>
 #include "std/windows.hpp"
 
+#include "std/windows.hpp"
+
 namespace sim::debug
 {
 LONG CALLBACK VectoredExceptionHandler(PEXCEPTION_POINTERS e) noexcept;

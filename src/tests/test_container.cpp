@@ -31,7 +31,7 @@ TEST(test_ring_buffer, push_condition)
     const uint8_t capacity = 3;
     container::RingBuffer<int> buffer(3);
     buffer.push(100);
-    buffer.push(41, [&capacity](const auto& container) { return container.size() == capacity; });
+    buffer.push(41, [&](const auto& container) { return container.size() == capacity; });
     buffer.push(42);
 
     EXPECT_EQ(buffer.size(), 2);

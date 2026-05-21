@@ -1,4 +1,5 @@
-﻿Function SourceSubDirectories([string]$dir) {
+﻿Function SourceSubDirectories([string]$dir)
+{
     Get-ChildItem ".\src\${dir}" -Include "CMakeLists.txt.ps1" -Recurse | Sort-Object | % {
         return ((Resolve-Path (Split-Path -Parent $_) -Relative) -replace '\\', '/')
     } | % {
@@ -9,9 +10,13 @@
 cd $PSScriptRoot
 
 $content = (@'
-cmake_minimum_required(VERSION 3.29)
+cmake_minimum_required(VERSION 4.0)
 cmake_policy(SET CMP0155 NEW)
 
+# This UUID may change between CMake builds; https://github.com/Kitware/CMake/blob/v4.2.3/Source/cmExperimental.cxx#L33
+#set(CMAKE_EXPERIMENTAL_CXX_IMPORT_STD "d0edc3af-4c50-42ea-a356-e2862fe7a444")
+#set(CMAKE_CXX_SCAN_FOR_MODULES ON)
+#set(CMAKE_CXX_MODULE_STD ON)
 
 project(simurator)
 
@@ -38,14 +43,20 @@ set(CXX_FLAGS_SHARED
     "/analyze" # https://learn.microsoft.com/en-us/cpp/code-quality/code-analysis-for-c-cpp-overview?view=msvc-170#command-line-support
     "/analyze:external-"
     # disable warnings
+    "/wd4251"
+    "/wd4266"
     "/wd4267"
     "/wd4365"
     "/wd4371"
     "/wd4514"
+    "/wd4625"
+    "/wd4626"
     "/wd4686"
     "/wd4710"
     "/wd4711"
     "/wd4820"
+    "/wd5026"
+    "/wd5027"
     "/wd5050"
     "/wd5244"
     "/wd5267"
@@ -70,7 +81,6 @@ target_compile_options(${{PROJECT_NAME}}-std
     /Wall
     /WX
 )
-
 target_link_libraries(${{PROJECT_NAME}}-std
     PRIVATE
 )
