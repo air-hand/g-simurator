@@ -4,6 +4,6 @@ SHELL ["pwsh", "-NoProfile", "-Command"]
 
 WORKDIR C:\work
 
-COPY . .\
+COPY . .
 
-RUN tools\setup_devenv.ps1
+RUN .\tools\setup_devenv.ps1
