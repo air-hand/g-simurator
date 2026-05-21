@@ -2,14 +2,8 @@ $ErrorActionPreference = "Stop"
 
 cd $PSScriptRoot
 
-#Copy-Item $Env:VCToolsInstallDir/modules/std.ixx -Destination .\std.ixx -Force
-#Copy-Item $Env:VCToolsInstallDir/modules/std.compat.ixx -Destination .\std.compat.ixx -Force
-Set-Content -Path .\std.ixx -Value @'
-export module std;
-'@
-Set-Content -Path .\std.compat.ixx -Value @'
-export module std.compat;
-'@
+Copy-Item $Env:VCToolsInstallDir/modules/std.ixx -Destination .\std.ixx -Force
+Copy-Item $Env:VCToolsInstallDir/modules/std.compat.ixx -Destination .\std.compat.ixx -Force
 
 Function SourceFiles([string]$extension) {
     return (Get-ChildItem .\* -Include @("*.${extension}") -Recurse | Sort-Object | % {

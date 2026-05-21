@@ -14,9 +14,9 @@ cmake_minimum_required(VERSION 4.0)
 cmake_policy(SET CMP0155 NEW)
 
 # This UUID may change between CMake builds; https://github.com/Kitware/CMake/blob/v4.2.3/Source/cmExperimental.cxx#L33
-set(CMAKE_EXPERIMENTAL_CXX_IMPORT_STD "d0edc3af-4c50-42ea-a356-e2862fe7a444")
-set(CMAKE_CXX_SCAN_FOR_MODULES ON)
-set(CMAKE_CXX_MODULE_STD ON)
+#set(CMAKE_EXPERIMENTAL_CXX_IMPORT_STD "d0edc3af-4c50-42ea-a356-e2862fe7a444")
+#set(CMAKE_CXX_SCAN_FOR_MODULES ON)
+#set(CMAKE_CXX_MODULE_STD ON)
 
 project(simurator)
 
@@ -40,8 +40,8 @@ set(CXX_FLAGS_SHARED
     "/utf-8"
     "/EHsc"
     "/permissive-"
-    #"/analyze" # https://learn.microsoft.com/en-us/cpp/code-quality/code-analysis-for-c-cpp-overview?view=msvc-170#command-line-support
-    #"/analyze:external-"
+    "/analyze" # https://learn.microsoft.com/en-us/cpp/code-quality/code-analysis-for-c-cpp-overview?view=msvc-170#command-line-support
+    "/analyze:external-"
     # disable warnings
     "/wd4251"
     "/wd4266"
@@ -63,7 +63,7 @@ set(CXX_FLAGS_SHARED
     "/wd6326"
     "/external:anglebrackets"
     "/external:W0"
-#    "$<$<CONFIG:Debug>:/fsanitize=address>"
+    "$<$<CONFIG:Debug>:/fsanitize=address>"
 )
 set(CMAKE_MSVC_RUNTIME_LIBRARY "MultiThreaded$<$<CONFIG:Debug>:Debug>DLL")
 if(CMAKE_BUILD_TYPE STREQUAL "RelWithDebInfo")
@@ -81,7 +81,6 @@ target_compile_options(${{PROJECT_NAME}}-std
     /Wall
     /WX
 )
-
 target_link_libraries(${{PROJECT_NAME}}-std
     PRIVATE
 )
@@ -153,7 +152,7 @@ target_link_libraries(${{PROJECT_NAME}}-utils
     Boost::container
     plog::plog
     Tesseract::libtesseract
-#    ${{PROJECT_NAME}}-std
+    ${{PROJECT_NAME}}-std
 )
 target_link_options(${{PROJECT_NAME}}-utils
     PRIVATE
@@ -189,7 +188,7 @@ target_link_libraries(${{PROJECT_NAME}}
     Microsoft::DirectXTK
     Boost::program_options
     ${{OpenCV_LIBS}}
-#    ${{PROJECT_NAME}}-std
+    ${{PROJECT_NAME}}-std
     ${{PROJECT_NAME}}-proto
     ${{PROJECT_NAME}}-utils
     $<$<CONFIG:Debug>:dbghelp>
@@ -230,7 +229,7 @@ target_include_directories(${{PROJECT_NAME}}-test
 target_link_libraries(${{PROJECT_NAME}}-test
     PRIVATE
     GTest::gtest GTest::gtest_main GTest::gmock GTest::gmock_main
-#    ${{PROJECT_NAME}}-std
+    ${{PROJECT_NAME}}-std
     ${{PROJECT_NAME}}-proto
     ${{PROJECT_NAME}}-utils
 )

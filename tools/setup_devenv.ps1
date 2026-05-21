@@ -2,7 +2,7 @@
     [switch]$clean
 )
 
-Import-Module $PSScriptRoot\vs_utils.psm1
+Import-Module $PSScriptRoot\vs_utils.psm1 -Force
 
 Function InstallVisualStudio([boolean]$clean)
 {
@@ -17,9 +17,7 @@ Function InstallVisualStudio([boolean]$clean)
         ModifyVSWithConfig $installed_path
     } else
     {
-        # The Community edition is compatible with The Enterprise edition. https://github.com/actions/runner-images/blob/main/images/windows/Windows2022-Readme.md#visual-studio-enterprise-2022
-        # VS 2026 -> VisualStudio.Community
-        $winget_visualstudio_id = "Microsoft.VisualStudio.Community"
+        $winget_visualstudio_id = (WingetVisualStudioID)
         $vsconfig = ".vsconfig"
         if ($clean)
         {

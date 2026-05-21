@@ -1,6 +1,8 @@
 export module utils:unicode;
 
 import std;
+import :repro; // 14.52.36328だと、stop_tokenの特殊化でC1116が発生する
+// 14.52.36405では問題なし
 
 namespace sim::utils::unicode
 {
