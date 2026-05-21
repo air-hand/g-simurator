@@ -40,7 +40,13 @@ jobs:
     runs-on: ${{ matrix.runner }}
 
     steps:
-    - uses: actions/checkout@v5
+    - uses: actions/checkout@v6
+      with:
+        persist-credentials: false
+    - name: docker
+      run: |
+        docker build -t win-image .
+        docker run --rm win-image -- Write-Host "foobar"
     - name: check winget installed
       id: winget
       run: |
