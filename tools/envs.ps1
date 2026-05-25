@@ -39,7 +39,7 @@ if ($Env:VCINSTALLDIR -eq $null) {
 Import-VcVars64Preview $visual_studio
 $Env:VCPKG_VISUAL_STUDIO_PATH = $visual_studio
 # need to ENV{VCPKG_ROOT} be used by vcpkg custom toolchain and so on
-$Env:VCPKG_KEEP_ENV_VARS = "VCPKG_ROOT"
+$Env:VCPKG_KEEP_ENV_VARS = "VCPKG_ROOT;llvmX64;CUDA_PATH;VCToolsInstallDir"
 
 $Env:VCPKG_ROOT = $PSScriptRoot + '\vendor\vcpkg'
 $Env:PATH = "${Env:VCPKG_ROOT};${Env:PATH}"
@@ -47,17 +47,18 @@ if (-not(Test-Path "${Env:VCPKG_ROOT}\.git")) {
     git clone https://github.com/microsoft/vcpkg.git $Env:VCPKG_ROOT
 }
 pushd $Env:VCPKG_ROOT > $null
-#git remote set-url origin https://github.com/air-hand/vcpkg.git
+git remote set-url origin https://github.com/air-hand/vcpkg.git
 #git remote set-url origin https://github.com/microsoft/vcpkg.git
 git fetch --all --tags
 #git checkout 2026.04.27
 # CUDA 13.2 fixed, not releases tag yet
-git checkout 940f58770cee8e2011bfb4847fb2bd70057301a8
+#git checkout 940f58770cee8e2011bfb4847fb2bd70057301a8
+git switch feat/win-llvm
 .\bootstrap-vcpkg.bat
 popd > $null
 
 cd $PSScriptRoot\..
-$Env:VCPKG_TARGET_TRIPLET = "x64-windows"
+$Env:VCPKG_TARGET_TRIPLET = "x64-windows-llvm"
 if (-not($Env:VCPKG_BINARY_SOURCES)) {
 #    $Env:VCPKG_BINARY_SOURCES = "clear;"
     $Env:VCPKG_BINARY_SOURCES = "clear;files,D:\vcpkg-binary-cache,readwrite" # local cache

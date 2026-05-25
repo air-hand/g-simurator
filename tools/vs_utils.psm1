@@ -1,10 +1,10 @@
 # settings
 # The Community edition is compatible with The Enterprise edition. https://github.com/actions/runner-images/blob/main/images/windows/Windows2022-Readme.md#visual-studio-enterprise-2022
 # VS 2026 Community -> Microsoft.VisualStudio.Community
-Set-Variable -Name VS_ID -Value "Microsoft.VisualStudio.Insiders" -Option Constant -Scope Script
+Set-Variable -Name VS_ID -Value "Microsoft.VisualStudio.Community" -Option Constant -Scope Script
 Set-Variable -Name VS_VERSION_RANGE -Value "18.0,19.0" -Option Constant -Scope Script
 Set-Variable -Name VS_INSIDERS -Value ($script:VS_ID -like "*Insiders*") -Option Constant -Scope Script
-Set-Variable -Name MSVC_PREVIEW -Value $true -Option Constant -Scope Script
+Set-Variable -Name MSVC_PREVIEW -Value $false -Option Constant -Scope Script
 
 Function WingetVisualStudioID() {
     return $script:VS_ID
