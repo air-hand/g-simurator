@@ -1,0 +1,59 @@
+on:
+  push:
+    branches: [ "main" ]
+  pull_request:
+    branches: [ "main" ]
+  schedule:
+    # Build to update nuget caches
+    - cron: '15 0 * * 0'
+
+permissions: {}
+
+concurrency:
+  group: ${{ github.workflow }}-${{ github.ref }}
+  cancel-in-progress: true
+
+jobs:
+  analyze:
+    runs-on: windows-2022
+    defaults:
+      run:
+        shell: pwsh
+    permissions:
+      actions: read
+      contents: read
+      packages: read
+      security-events: write
+    env:
+      NUGET_USERNAME: ${{ github.repository_owner }}
+      NUGET_FEED_URL: https://nuget.pkg.github.com/${{ github.repository_owner }}/index.json
+      NUGET_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+      VCPKG_BINARY_SOURCES: "clear;nuget,https://nuget.pkg.github.com/${{ github.repository_owner }}/index.json,read"
+    steps:
+      - uses: actions/checkout@de0fac2e4500dabe0009e67214ff5f5447ce83dd # v6.0.2
+        with:
+          persist-credentials: false
+      - name: check winget installed
+        id: winget
+        run: |
+          $winget = (Get-Command winget -ErrorAction SilentlyContinue)
+          "found=$([bool]($winget) -as [string])" | Out-File -FilePath $Env:GITHUB_OUTPUT -Append -Encoding utf8
+
+      - name: Install winget
+        if: ${{ steps.winget.outputs.found == 'false' }}
+        uses: Cyberboss/install-winget@v1
+        with:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+
+      - name: Setup development environment
+        run: |
+          .\tools\setup_devenv.ps1
+          echo "CUDA_PATH=${Env:CUDA_PATH}" >> $Env:GITHUB_ENV
+          echo "${Env:CUDA_PATH}\bin" >> $Env:GITHUB_PATH
+      - uses: github/codeql-action/init@7211b7c8077ea37d8641b6271f6a365a22a5fbfa # v4.36.0
+        with:
+          languages: c-cpp
+          build-mode: manual
+      - name: build
+        run: .\tools\build.ps1
+      - uses: github/codeql-action/analyze@7211b7c8077ea37d8641b6271f6a365a22a5fbfa # v4.36.0
