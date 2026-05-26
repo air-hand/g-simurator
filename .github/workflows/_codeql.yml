@@ -50,6 +50,8 @@ jobs:
           .\tools\setup_devenv.ps1
           echo "CUDA_PATH=${Env:CUDA_PATH}" >> $Env:GITHUB_ENV
           echo "${Env:CUDA_PATH}\bin" >> $Env:GITHUB_PATH
+      - name: envs
+        run: .\tools\envs.ps1
       - uses: github/codeql-action/init@7211b7c8077ea37d8641b6271f6a365a22a5fbfa # v4.36.0
         with:
           languages: c-cpp
