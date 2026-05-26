@@ -1,0 +1,14 @@
+# yaml-language-server: $schema=https://json.schemastore.org/clangd.json
+# https://zed.dev/docs/languages/cpp#more-server-configuration
+CompileFlags:
+  Compiler: clang-cl
+  Add:
+    - "/std:c++latest"
+    - "-xc++"
+    - "-Wno-c++98-compat"
+    - "-Wno-c++98-compat-pedantic"
+  Remove:
+    - "-std:c++*"
+    - "-std=c++*"
+    - "/WX"
+    - "/Wall"

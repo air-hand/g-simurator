@@ -12,7 +12,6 @@ $content = (@'
 cmake_minimum_required(VERSION 3.29)
 cmake_policy(SET CMP0155 NEW)
 
-
 project(simurator)
 
 find_package(directxtk CONFIG REQUIRED)
@@ -24,6 +23,7 @@ find_package(boost_stacktrace_windbg CONFIG REQUIRED)
 find_package(Tesseract CONFIG REQUIRED)
 find_package(CUDAToolkit REQUIRED)
 
+set(CMAKE_EXPORT_COMPILE_COMMANDS ON)
 set(CMAKE_CXX_STANDARD 23) # c++latest or c++23(preview)
 set(CMAKE_CXX_STANDARD_REQUIRED ON)
 set(CMAKE_CXX_EXTENSIONS OFF)
