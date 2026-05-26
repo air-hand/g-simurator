@@ -1,0 +1,14 @@
+[
+  {
+    "label": "Debug app",
+    "build": {
+      "command": "nmake",
+      "args": ["build"],
+      "cwd": "${ZED_WORKTREE_ROOT}"
+    },
+    "program": "${ZED_WORKTREE_ROOT}/build/Debug/simurator.exe",
+    "request": "launch",
+    "args": ["--route", "${ZED_WORKTREE_ROOT}/data/sample/route.json"],
+    "adapter": "CodeLLDB"
+  }
+]
