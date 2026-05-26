@@ -1,0 +1,18 @@
+function(replace_var var from to)
+    if (NOT DEFINED ${var})
+        return()
+    endif()
+    string(REPLACE "${from}" "${to}" _value "${${var}}")
+
+    if (DEFINED CACHE{${var}})
+        get_property(_type CACHE "${var}" PROPERTY TYPE)
+        get_property(_help CACHE "${var}" PROPERTY HELP)
+        if(NOT _type)
+            set(_type STRING)
+        endif()
+
+        set(${var} "${_value}" CACHE ${_type} "${_help}" FORCE)
+    else()
+        set(${var} "${_value}" PARENT_SCOPE)
+    endif()
+endfunction()

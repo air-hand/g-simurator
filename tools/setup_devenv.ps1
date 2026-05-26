@@ -2,30 +2,36 @@
     [switch]$clean
 )
 
-Import-Module $PSScriptRoot\vs_utils.psm1
+Import-Module $PSScriptRoot\vs_utils.psm1 -Force
 
-Function InstallVisualStudio([boolean]$clean) {
-    if (-not($clean) -and (PathToVisualStudio -with_vsconfig)) {
+Function InstallVisualStudio([boolean]$clean)
+{
+    if (-not($clean) -and (PathToVisualStudio -with_vsconfig))
+    {
         Write-Host "VisualStudio is already installed."
         return
     }
     $installed_path = (PathToVisualStudio)
-    if ($installed_path -and -not($clean)) {
+    if ($installed_path -and -not($clean))
+    {
         ModifyVSWithConfig $installed_path
-    } else {
-        # The Community edition is compatible with The Enterprise edition. https://github.com/actions/runner-images/blob/main/images/windows/Windows2022-Readme.md#visual-studio-enterprise-2022
-        $winget_visualstudio_id = "Microsoft.VisualStudio.2022.Community"
+    } else
+    {
+        $winget_visualstudio_id = (WingetVisualStudioID)
         $vsconfig = ".vsconfig"
-        if ($clean) {
+        if ($clean)
+        {
             winget uninstall --id $winget_visualstudio_id -e --silent --disable-interactivity
         }
         winget install --id $winget_visualstudio_id -e --override "--quiet --config ${vsconfig}" --silent --disable-interactivity --accept-source-agreements
     }
-    foreach ($_ in 1..300) {
+    foreach ($_ in 1..300)
+    {
         Write-Host "Waiting for VS Installer... ${_}";
         Start-Sleep 3;
         $exists = PathToVisualStudio -with_vsconfig
-        if ($exists) {
+        if ($exists)
+        {
             Write-Host "Installed VisualStudio at ${exists}"
             return
         }
@@ -65,18 +71,21 @@ Function InstallOthers([boolean]$clean) {
     winget install -e --id Nvidia.CUDA -v $cuda_version --source winget --silent --disable-interactivity --accept-source-agreements `
         --override ("-s {0} -n" -F ($sub_packages -join " "))
     $installed_path = "${Env:ProgramFiles}\NVIDIA GPU Computing Toolkit\CUDA\v${cuda_version}"
-    if (-not(Test-Path $installed_path)) {
+    if (-not(Test-Path $installed_path))
+    {
         throw "CUDA not found."
     }
     $Env:CUDA_PATH = $installed_path
     [System.Environment]::SetEnvironmentVariable("CUDA_PATH", $Env:CUDA_PATH, [System.EnvironmentVariableTarget]::User)
-    if (($Env:PATH -split ";") -notcontains "${Env:CUDA_PATH}\bin") {
+    if (($Env:PATH -split ";") -notcontains "${Env:CUDA_PATH}\bin")
+    {
         $Env:PATH = "${Env:CUDA_PATH}\bin;${Env:PATH}"
         [System.Environment]::SetEnvironmentVariable("PATH", $Env:PATH, [System.EnvironmentVariableTarget]::User)
     }
 }
 
-Function Main([boolean]$clean) {
+Function Main([boolean]$clean)
+{
     pushd $PSScriptRoot > $null
 
     SetupPathToVSInstaller

@@ -3,14 +3,15 @@ module;
 // https://blogs.windows.com/windowsdeveloper/2019/09/16/new-ways-to-do-screen-capture/
 // https://tips.hecomi.com/entry/2021/03/23/230947
 
+#include <d3d11_1.h>
 #include <wincodec.h>
-#include <directxtk/ScreenGrab.h>
 #include <winrt/Windows.Foundation.Collections.h>
 #include <winrt/Windows.Graphics.Capture.h>
 #include <Windows.Graphics.Capture.Interop.h>
 #include <winrt/Windows.Graphics.DirectX.h>
 #include <winrt/Windows.Graphics.DirectX.Direct3d11.h>
 #include <Windows.Graphics.DirectX.Direct3D11.Interop.h>
+
 
 #include <opencv2/opencv.hpp>
 
@@ -32,6 +33,15 @@ import :time;
 
 namespace sim::utils
 {
+
+template <typename T>
+auto GetDXGIInterfaceFromObject(const winrt::Windows::Foundation::IInspectable& object)
+{
+    auto access = object.as<::Windows::Graphics::DirectX::Direct3D11::IDirect3DDxgiInterfaceAccess>();
+    winrt::com_ptr<T> result;
+    winrt::check_hresult(access->GetInterface(winrt::guid_of<T>(), result.put_void()));
+    return result;
+}
 
 class CapturedImage::Impl final
 {
@@ -86,7 +96,7 @@ void CaptureContext::Init() noexcept
 {
     DEBUG_LOG_SPAN(_);
     winrt::init_apartment();
-    
+
     UINT flags = D3D11_CREATE_DEVICE_BGRA_SUPPORT;
 #ifdef DEBUG
     flags |= D3D11_CREATE_DEVICE_DEBUG;
@@ -124,92 +134,6 @@ CaptureWindow CaptureContext::CaptureForWindowHandle(HWND handle) const
 
 class CaptureWindow::Impl final
 {
-public:
-    Impl(HWND hwnd, const Device& device) noexcept
-        : hwnd_(hwnd), device_(device), buffer_(10000), out_dir_("./tmp"), callback_running_count_(0)
-    {
-    }
-    ~Impl()
-    {
-        if (frameArrived_)
-        {
-            frameArrived_.revoke();
-        }
-
-        // revoke()は新しいコールバックを停止するが、実行中のコールバックは止まらない
-        // 実行中のコールバックがImplのメンバ変数にアクセス中にImplが破棄されるとuse-after-freeになるため、
-        // 全てのコールバックが終了するまで待機する
-        while (callback_running_count_ > 0)
-        {
-            DEBUG_LOG_ARGS("Waiting for capture thread to finish... (remaining: {})", callback_running_count_.load());
-            time::sleep(10);
-        }
-
-        if (framePool_)
-        {
-            framePool_.Close();
-        }
-        if (session_)
-        {
-            session_.Close();
-        }
-        swapChain_ = nullptr;
-        framePool_ = nullptr;
-        session_ = nullptr;
-        item_ = nullptr;
-    }
-
-    DELETE_COPY_AND_ASSIGN(Impl);
-
-    void Start()
-    {
-        DEBUG_LOG_SPAN(_);
-
-        std::filesystem::remove_all(out_dir_);
-        std::filesystem::create_directory(out_dir_);
-
-        item_ = CreateCaptureItemForWindow();
-        DEBUG_LOG_ARGS("Display Name: {}", sim::utils::unicode::to_utf8(item_.DisplayName().c_str()));
-        const auto size = item_.Size();
-        DEBUG_LOG_ARGS("Capture window size: {}x{}", size.Width, size.Height);
-
-        const auto d3dDevice = GetDXGIInterfaceFromObject<::ID3D11Device>(device_);
-//        winrt::com_ptr<ID3D11DeviceContext> d3dContext{ nullptr };
-        d3dDevice->GetImmediateContext(d3dContext_.put());
-
-        swapChain_ = CreateDXGISwapChain(
-            d3dDevice,
-            static_cast<uint32_t>(size.Width),
-            static_cast<uint32_t>(size.Height),
-            static_cast<::DXGI_FORMAT>(winrt::Windows::Graphics::DirectX::DirectXPixelFormat::B8G8R8A8UIntNormalized),
-            2
-            );
-        framePool_ = winrt::Windows::Graphics::Capture::Direct3D11CaptureFramePool::CreateFreeThreaded(
-            device_,
-            winrt::Windows::Graphics::DirectX::DirectXPixelFormat::B8G8R8A8UIntNormalized,
-            2,
-            size
-        );
-        session_ = framePool_.CreateCaptureSession(item_);
-        frameArrived_ = framePool_.FrameArrived(winrt::auto_revoke, { this, &Impl::OnFrameArrived });
-
-        session_.StartCapture();
-    }
-
-    CapturedImage Pop()
-    {
-        return buffer_.pop();
-    }
-
-    std::optional<CapturedImage> TryPop(std::chrono::milliseconds timeout)
-    {
-        return buffer_.try_pop(timeout);
-    }
-
-    void ClearBuffer()
-    {
-        buffer_.clear();
-    }
 private:
     auto CreateCaptureItemForWindow() const
     {
@@ -336,6 +260,93 @@ private:
     container::RingBuffer<CapturedImage> buffer_;
     const std::filesystem::path out_dir_;
     std::atomic<int> callback_running_count_;
+
+public:
+    Impl(HWND hwnd, const Device& device) noexcept
+        : hwnd_(hwnd), device_(device), buffer_(10000), out_dir_("./tmp"), callback_running_count_(0)
+    {
+    }
+    ~Impl()
+    {
+        if (frameArrived_)
+        {
+            frameArrived_.revoke();
+        }
+
+        // revoke()は新しいコールバックを停止するが、実行中のコールバックは止まらない
+        // 実行中のコールバックがImplのメンバ変数にアクセス中にImplが破棄されるとuse-after-freeになるため、
+        // 全てのコールバックが終了するまで待機する
+        while (callback_running_count_ > 0)
+        {
+            DEBUG_LOG_ARGS("Waiting for capture thread to finish... (remaining: {})", callback_running_count_.load());
+            time::sleep(10);
+        }
+
+        if (framePool_)
+        {
+            framePool_.Close();
+        }
+        if (session_)
+        {
+            session_.Close();
+        }
+        swapChain_ = nullptr;
+        framePool_ = nullptr;
+        session_ = nullptr;
+        item_ = nullptr;
+    }
+
+    DELETE_COPY_AND_ASSIGN(Impl);
+
+    void Start()
+    {
+        DEBUG_LOG_SPAN(_);
+
+        std::filesystem::remove_all(out_dir_);
+        std::filesystem::create_directory(out_dir_);
+
+        item_ = CreateCaptureItemForWindow();
+        DEBUG_LOG_ARGS("Display Name: {}", sim::utils::unicode::to_utf8(item_.DisplayName().c_str()));
+        const auto size = item_.Size();
+        DEBUG_LOG_ARGS("Capture window size: {}x{}", size.Width, size.Height);
+
+        const auto d3dDevice = GetDXGIInterfaceFromObject<::ID3D11Device>(device_);
+//        winrt::com_ptr<ID3D11DeviceContext> d3dContext{ nullptr };
+        d3dDevice->GetImmediateContext(d3dContext_.put());
+
+        swapChain_ = CreateDXGISwapChain(
+            d3dDevice,
+            static_cast<uint32_t>(size.Width),
+            static_cast<uint32_t>(size.Height),
+            static_cast<::DXGI_FORMAT>(winrt::Windows::Graphics::DirectX::DirectXPixelFormat::B8G8R8A8UIntNormalized),
+            2
+            );
+        framePool_ = winrt::Windows::Graphics::Capture::Direct3D11CaptureFramePool::CreateFreeThreaded(
+            device_,
+            winrt::Windows::Graphics::DirectX::DirectXPixelFormat::B8G8R8A8UIntNormalized,
+            2,
+            size
+        );
+        session_ = framePool_.CreateCaptureSession(item_);
+        frameArrived_ = framePool_.FrameArrived(winrt::auto_revoke, { this, &Impl::OnFrameArrived });
+
+        session_.StartCapture();
+    }
+
+    CapturedImage Pop()
+    {
+        return buffer_.pop();
+    }
+
+    std::optional<CapturedImage> TryPop(std::chrono::milliseconds timeout)
+    {
+        return buffer_.try_pop(timeout);
+    }
+
+    void ClearBuffer()
+    {
+        buffer_.clear();
+    }
 };
 
 CaptureWindow::CaptureWindow(HWND hwnd, const Device& device) noexcept

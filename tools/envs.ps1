@@ -8,8 +8,22 @@ if ($Env:ENVS_PS1_LOADED -eq "1") {
 
 cd $PSScriptRoot
 
+function Set-PathUnique([string[]]$paths) {
+     $seen = [System.Collections.Generic.HashSet[string]]::new([System.StringComparer]::OrdinalIgnoreCase)
+     $unique = foreach ($path in $paths) {
+         if ([string]::IsNullOrWhiteSpace($path)) {
+             continue
+         }
+         $normalized = $path.Trim().TrimEnd('\')
+         if ($seen.Add($normalized)) {
+             $path.Trim()
+         }
+     }
+     $Env:PATH = ($unique -join ';')
+ }
 
-Import-Module $PSScriptRoot\vs_utils.psm1
+
+Import-Module $PSScriptRoot\vs_utils.psm1 -Force
 SetupPathToVSInstaller
 $visual_studio = PathToVisualStudio
 if (-not($visual_studio)) {
@@ -22,10 +36,10 @@ if ($Env:VCINSTALLDIR -eq $null) {
     }
     . $vsdevcmd_script -Arch amd64 -VsInstallationPath $visual_studio
 }
-
+Import-VcVars64Preview $visual_studio
 $Env:VCPKG_VISUAL_STUDIO_PATH = $visual_studio
 # need to ENV{VCPKG_ROOT} be used by vcpkg custom toolchain and so on
-$Env:VCPKG_KEEP_ENV_VARS = "VCPKG_ROOT"
+$Env:VCPKG_KEEP_ENV_VARS = "VCPKG_ROOT;llvmX64;CUDA_PATH;VCToolsInstallDir"
 
 $Env:VCPKG_ROOT = $PSScriptRoot + '\vendor\vcpkg'
 $Env:PATH = "${Env:VCPKG_ROOT};${Env:PATH}"
@@ -33,19 +47,21 @@ if (-not(Test-Path "${Env:VCPKG_ROOT}\.git")) {
     git clone https://github.com/microsoft/vcpkg.git $Env:VCPKG_ROOT
 }
 pushd $Env:VCPKG_ROOT > $null
-#git remote set-url origin https://github.com/air-hand/vcpkg.git
+git remote set-url origin https://github.com/air-hand/vcpkg.git
 #git remote set-url origin https://github.com/microsoft/vcpkg.git
 git fetch --all --tags
 #git checkout 2026.04.27
 # CUDA 13.2 fixed, not releases tag yet
-git checkout 940f58770cee8e2011bfb4847fb2bd70057301a8
+#git checkout 940f58770cee8e2011bfb4847fb2bd70057301a8
+git switch feat/win-llvm
 .\bootstrap-vcpkg.bat
 popd > $null
 
 cd $PSScriptRoot\..
-$Env:VCPKG_TARGET_TRIPLET = "x64-windows"
+$Env:VCPKG_TARGET_TRIPLET = "x64-windows-llvm"
 if (-not($Env:VCPKG_BINARY_SOURCES)) {
-    $Env:VCPKG_BINARY_SOURCES = "clear;"
+#    $Env:VCPKG_BINARY_SOURCES = "clear;"
+    $Env:VCPKG_BINARY_SOURCES = "clear;files,D:\vcpkg-binary-cache,readwrite" # local cache
 }
 
 # https://learn.microsoft.com/en-us/vcpkg/consume/binary-caching-github-packages
@@ -71,7 +87,7 @@ if ($Env:CI -and $Env:NUGET_FEED_URL -and $Env:NUGET_TOKEN) {
 vcpkg install --triplet $Env:VCPKG_TARGET_TRIPLET
 
 $vcpkg_tools_path = (vcpkg env --tools "echo %PATH%")
-$Env:PATH = "${vcpkg_tools_path};${Env:PATH}"
+Set-PathUnique (($vcpkg_tools_path -split ";") + ($Env:PATH -split ';'))
 
 # CUDA
 $cuda_bin_path = "${Env:CUDA_PATH}\bin"

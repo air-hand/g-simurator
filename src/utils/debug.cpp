@@ -2,6 +2,7 @@
 
 #ifdef DEBUG
 #include "std/windows.hpp"
+
 #include <dbghelp.h>
 
 #include "logger.hpp"
