@@ -45,7 +45,7 @@ popd > $null
 cd $PSScriptRoot\..
 $Env:VCPKG_TARGET_TRIPLET = "x64-windows"
 if (-not($Env:VCPKG_BINARY_SOURCES)) {
-    $Env:VCPKG_BINARY_SOURCES = "clear;"
+    $Env:VCPKG_BINARY_SOURCES = "clear;files,D:\vcpkg-binary-cache,readwrite"
 }
 
 # https://learn.microsoft.com/en-us/vcpkg/consume/binary-caching-github-packages
