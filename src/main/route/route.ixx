@@ -1,4 +1,4 @@
-#pragma once
+module;
 
 #include <opencv2/opencv.hpp>
 
@@ -6,12 +6,14 @@
 #include "proto/route.hpp"
 #include "utils/macro.hpp"
 
+export module sim:route;
+
 import std;
 
 namespace sim::route
 {
 
-class RouteReader final
+export class RouteReader final
 {
 public:
     RouteReader() noexcept;
@@ -28,7 +30,7 @@ private:
     std::unique_ptr<Impl> impl_;
 };
 
-cv::Mat applyROI(const cv::Mat& input, const ROI& roi);
-std::vector<WORD> keys(const route::Route& r);
+export cv::Mat applyROI(const cv::Mat& input, const ROI& roi);
+export std::vector<WORD> keys(const route::Route& r);
 
 }

@@ -7,11 +7,11 @@ module;
 #include <google/protobuf/util/json_util.h>
 
 #include "utils/logger.hpp"
-#include "route/route.hpp"
 
 module sim;
 
 import utils;
+import :route;
 import :main;
 
 namespace options = boost::program_options;
