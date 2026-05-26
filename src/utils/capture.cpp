@@ -4,7 +4,7 @@ module;
 // https://tips.hecomi.com/entry/2021/03/23/230947
 
 #include <wincodec.h>
-#include <directxtk/ScreenGrab.h>
+#include <d3d11_1.h>
 #include <winrt/Windows.Foundation.Collections.h>
 #include <winrt/Windows.Graphics.Capture.h>
 #include <Windows.Graphics.Capture.Interop.h>
@@ -32,6 +32,15 @@ import :time;
 
 namespace sim::utils
 {
+
+template <typename T>
+auto GetDXGIInterfaceFromObject(const winrt::Windows::Foundation::IInspectable& object)
+{
+    auto access = object.as<::Windows::Graphics::DirectX::Direct3D11::IDirect3DDxgiInterfaceAccess>();
+    winrt::com_ptr<T> result;
+    winrt::check_hresult(access->GetInterface(winrt::guid_of<T>(), result.put_void()));
+    return result;
+}
 
 class CapturedImage::Impl final
 {
@@ -86,7 +95,7 @@ void CaptureContext::Init() noexcept
 {
     DEBUG_LOG_SPAN(_);
     winrt::init_apartment();
-    
+
     UINT flags = D3D11_CREATE_DEVICE_BGRA_SUPPORT;
 #ifdef DEBUG
     flags |= D3D11_CREATE_DEVICE_DEBUG;

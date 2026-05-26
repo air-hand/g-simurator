@@ -16,3 +16,6 @@ indent_size = 2
 [{Makefile,*.mk}]
 indent_style = tab
 indent_size = 4
+
+[{*.yaml,*.yml,.clangd}]
+indent_size = 2

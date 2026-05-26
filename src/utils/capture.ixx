@@ -1,10 +1,7 @@
 module;
 
 #include <opencv2/opencv.hpp>
-#include <winrt/Windows.Graphics.DirectX.h>
 #include <winrt/Windows.Graphics.DirectX.Direct3d11.h>
-#include <Windows.Graphics.DirectX.Direct3D11.Interop.h>
-#include <directxtk/ScreenGrab.h>
 
 #include "std/windows.hpp"
 
@@ -16,15 +13,6 @@ import std;
 
 namespace sim::utils
 {
-
-template <typename T>
-auto GetDXGIInterfaceFromObject(const winrt::Windows::Foundation::IInspectable& object)
-{
-    auto access = object.as<::Windows::Graphics::DirectX::Direct3D11::IDirect3DDxgiInterfaceAccess>();
-    winrt::com_ptr<T> result;
-    winrt::check_hresult(access->GetInterface(winrt::guid_of<T>(), result.put_void()));
-    return result;
-}
 
 using Device = winrt::Windows::Graphics::DirectX::Direct3D11::IDirect3DDevice;
 

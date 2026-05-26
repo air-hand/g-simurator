@@ -69,3 +69,5 @@ Invoke-Expression -Command ($CMAKE_BUILD_COMMAND -join " ")
 if ($? -ne $true) {
     throw "Build failed."
 }
+# https://clangd.llvm.org/installation#compile_commandsjson
+Copy-Item $BUILD_DIR/compile_commands.json .\build

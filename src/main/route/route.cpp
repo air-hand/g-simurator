@@ -1,22 +1,26 @@
-#include "route.hpp"
+module;
 
 #include <google/protobuf/util/json_util.h>
+#include <opencv2/opencv.hpp>
 
 #include "std/windows.hpp"
 #include "utils/debug.hpp"
 #include "utils/logger.hpp"
 
+module sim;
+
 import std.compat;
 import utils;
+import :route;
 
 namespace algo = sim::utils::algorithm;
 
 namespace
 {
 
-// https://learn.microsoft.com/ja-jp/windows/win32/inputdev/virtual-key-codes
 std::optional<UINT> key_name_to_vk(const std::string& name)
 {
+    // https://learn.microsoft.com/ja-jp/windows/win32/inputdev/virtual-key-codes
     static const std::unordered_map<std::string, UINT> table{
         {"CTRL",   VK_CONTROL},
         {"SHIFT",  VK_SHIFT},
