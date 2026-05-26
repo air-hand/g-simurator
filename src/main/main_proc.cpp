@@ -255,7 +255,11 @@ MainProc& MainProc::operator=(MainProc&& rhs)
 uint32_t MainProc::Run()
 {
     const auto result = impl_->Run();
-    (result == 0) ? notification::beep_success() : notification::beep_error();
+    if (result == 0) {
+        notification::beep_success();
+    } else {
+        notification::beep_error();
+    }
     return result;
 }
 
