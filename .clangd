@@ -12,3 +12,6 @@ CompileFlags:
     - "-std=c++*"
     - "/WX"
     - "/Wall"
+Completion:
+  # disable auto insertion std header
+  HeaderInsertion: Never
