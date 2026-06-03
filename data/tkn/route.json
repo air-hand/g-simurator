@@ -3,6 +3,19 @@
     "windowName": "TEKKEN™8  ",
     "routes": [
       {
+        "expected": "PRESSANYBUTTON",
+        "roi": {
+          "top_percent": 70,
+          "left_percent": 60,
+          "width_percent": 30,
+          "height_percent": 30
+        },
+        "keys": [
+            "ENTER"
+        ],
+        "keypress_duration_ms": 50
+      },
+      {
         "expected": "MAINMENU",
         "roi": {
           "top_percent": 0,
