@@ -299,8 +299,10 @@ private:
                 const auto gpuMat = gpu::d3D11Texture2DToGpuMat(backBuffer.get());
 
                 // OCR高速化のための処理パイプライン
-                const std::vector<std::pair<std::string, std::function<cv::cuda::GpuMat(const cv::cuda::GpuMat&)>>> transforms = {
-                    {"grayscale", &image::grayScale},
+                using GpuTransformSignature = cv::cuda::GpuMat(const cv::cuda::GpuMat&);
+                using GpuTransform = std::function<GpuTransformSignature>;
+                const std::vector<std::pair<std::string, GpuTransform>> transforms = {
+                    {"grayscale", static_cast<GpuTransformSignature*>(&image::grayScale)},
                     {"resize", [](const cv::cuda::GpuMat& img) {
                         DEBUG_LOG_ARGS("Image size: {}x{}", img.cols, img.rows);
                         if (img.cols >= 1280) {
