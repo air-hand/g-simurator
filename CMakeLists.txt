@@ -127,7 +127,7 @@ target_link_libraries(${PROJECT_NAME}-utils
     uuid
     Microsoft::DirectXTK
     ${OpenCV_LIBS}
-    ${CUDA_LIBRARIES}
+    CUDA::cudart
     Boost::container
     plog::plog
     Tesseract::libtesseract
