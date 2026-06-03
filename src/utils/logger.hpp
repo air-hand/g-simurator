@@ -1,5 +1,8 @@
 #pragma once
 
+// This macro header is intended for module implementation units that already
+// import std and sim::utils::logger through their module interface.
+
 #ifdef DEBUG
 
 #define DEBUG_LOG(fmt, ...) \
