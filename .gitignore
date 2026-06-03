@@ -2,3 +2,5 @@ vcpkg_installed/
 tmp*
 *.log
 .cache/
+TODO.md
+test-*.xml

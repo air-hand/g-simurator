@@ -14,33 +14,40 @@ on:
     # Build to update nuget caches
     - cron: '15 0 * * 0'
 
-permissions:
-  contents: read
-  packages: write
-
 concurrency:
   group: ${{ github.workflow }}-${{ github.ref }}
   cancel-in-progress: true
 
+permissions: {}
+
 jobs:
   build:
-    defaults:
-      run:
-        shell: pwsh
-    env:
-      NUGET_USERNAME: ${{ github.repository_owner }}
-      NUGET_FEED_URL: https://nuget.pkg.github.com/${{ github.repository_owner }}/index.json
-      NUGET_TOKEN: ${{ secrets.GITHUB_TOKEN }}
-      VCPKG_BINARY_SOURCES: "clear;nuget,https://nuget.pkg.github.com/${{ github.repository_owner }}/index.json,readwrite"
     strategy:
       fail-fast: false
       matrix:
         runner:
           - 'windows-2022'
+        build-type:
+          - Debug
+          - Release
+          - RelWithDebInfo
+    permissions:
+      contents: read
+      packages: write
+    defaults:
+      run:
+        shell: pwsh
+    env:
+      BUILD_TYPE: ${{ matrix.build-type }}
+      NUGET_USERNAME: ${{ github.repository_owner }}
+      NUGET_FEED_URL: https://nuget.pkg.github.com/${{ github.repository_owner }}/index.json
+      NUGET_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+      VCPKG_BINARY_SOURCES: "clear;nuget,https://nuget.pkg.github.com/${{ github.repository_owner }}/index.json,readwrite"
     runs-on: ${{ matrix.runner }}
-
     steps:
     - uses: actions/checkout@v6
+      with:
+        persist-credentials: false
     - name: check winget installed
       id: winget
       run: |
@@ -58,30 +65,17 @@ jobs:
         .\tools\setup_devenv.ps1
         echo "CUDA_PATH=${Env:CUDA_PATH}" >> $Env:GITHUB_ENV
         echo "${Env:CUDA_PATH}\bin" >> $Env:GITHUB_PATH
+        echo "${Env:CUDA_PATH}\bin\x64" >> $Env:GITHUB_PATH
 
-    - name: Build
+    - name: Build (${{ env.BUILD_TYPE }})
       run: |
-        .\tools\build.ps1
+        .\tools\build.ps1 -build_type $Env:BUILD_TYPE
 
-    - name: Run tests
+    - name: Run tests (${{ env.BUILD_TYPE }})
       run: |
-        .\tools\test.ps1
-
-    - name: Build (Release)
-      run: |
-        .\tools\build.ps1 -build_type Release
-
-    - name: Run tests (Release)
-      run: |
-        .\tools\test.ps1 -build_type Release
-
-    - name: Build (RelWithDebInfo)
-      run: |
-        .\tools\build.ps1 -build_type RelWithDebInfo
-
-    - name: Run tests (RelWithDebInfo)
-      run: |
-        .\tools\test.ps1 -build_type RelWithDebInfo
+        .\tools\test.ps1 -build_type $Env:BUILD_TYPE
+      env:
+        TEST_DEBUG: ${{ runner.debug }}
 
   check-result:
     runs-on: ubuntu-slim
