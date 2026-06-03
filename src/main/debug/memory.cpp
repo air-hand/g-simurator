@@ -48,7 +48,7 @@ public:
     private:
         std::atomic<bool>& flag_;
     public:
-        explicit FlagGuard(std::atomic<bool>& flag) noexcept : flag_(flag) 
+        explicit FlagGuard(std::atomic<bool>& flag) noexcept : flag_(flag)
         {
             flag_.store(false, std::memory_order_relaxed);
         }
@@ -116,8 +116,8 @@ void MemoryTracker::ReportLeaks() noexcept
     DEBUG_LOG("Memory leaks detected:");
     for (const auto& [ptr, info] : allocations_)
     {
-        DEBUG_LOG_ARGS("Memory leak: {} addr {} bytes", ptr, info.size);
-        DEBUG_LOG_ARGS("Stack trace:\n{}", boost::stacktrace::to_string(info.trace));
+        DEBUG_LOG("Memory leak: {} addr {} bytes", ptr, info.size);
+        DEBUG_LOG("Stack trace:\n{}", boost::stacktrace::to_string(info.trace));
     }
 }
 

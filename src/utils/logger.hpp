@@ -1,17 +1,12 @@
 #pragma once
 
 #ifdef DEBUG
-#define DEBUG_LOG(x) \
-    do \
-    { \
-        sim::utils::logging::log("DEBUG {}({}): {}", __FILE__, __LINE__, x); \
-    } while (false)
 
-#define DEBUG_LOG_ARGS(fmt, ...) \
+#define DEBUG_LOG(fmt, ...) \
     do \
     { \
         sim::utils::logging::log( \
-            "DEBUG {}({}): " fmt, __FILE__, __LINE__, __VA_ARGS__ \
+            "DEBUG {}({}): " fmt, __FILE__, __LINE__ __VA_OPT__(, __VA_ARGS__) \
         ); \
     } while (false)
 
@@ -19,8 +14,7 @@
 
 #else
 
-#define DEBUG_LOG(_) do {} while (false)
-#define DEBUG_LOG_ARGS(_, ...) do {} while (false)
+#define DEBUG_LOG(_, ...) do {} while (false)
 #define DEBUG_LOG_SPAN(_) do {} while (false)
 
 #endif

@@ -33,7 +33,7 @@ public:
         DEBUG_LOG_SPAN(_);
 
         if (GetForegroundWindow() == handle_) {
-            DEBUG_LOG_ARGS("Already active {:p}, skip", (void*)handle_);
+            DEBUG_LOG("Already active {:p}, skip", (void*)handle_);
             return;
         }
 
@@ -43,7 +43,7 @@ public:
         const auto foreground = GetForegroundWindow();
         [[maybe_unused]] const bool activated = (foreground == handle_);
 
-        DEBUG_LOG_ARGS("Activation result - Target: {:p}, Foreground: {:p}, Success: {}",
+        DEBUG_LOG("Activation result - Target: {:p}, Foreground: {:p}, Success: {}",
             (void*)handle_, (void*)foreground, activated);
 
         DEBUG_ASSERT(activated);
@@ -57,7 +57,7 @@ public:
         const int length = GetWindowTextLengthW(handle_);
         if (length == 0)
         {
-            DEBUG_LOG_ARGS("Window has no title text OR GetWindowTextLengthW failed with error: {}", GetLastError());
+            DEBUG_LOG("Window has no title text OR GetWindowTextLengthW failed with error: {}", GetLastError());
             return "";
         }
 
@@ -66,7 +66,7 @@ public:
         const int copied = GetWindowTextW(handle_, buffer.data(), static_cast<int>(buffer.size()));
         if (copied == 0)
         {
-            DEBUG_LOG_ARGS("GetWindowTextW failed with error: {}", GetLastError());
+            DEBUG_LOG("GetWindowTextW failed with error: {}", GetLastError());
             return "";
         }
 

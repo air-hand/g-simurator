@@ -21,6 +21,7 @@ set(CMAKE_CXX_FLAGS_RELEASE "-O2 -DNDEBUG")
 set(CMAKE_CXX_FLAGS_RELWITHDEBINFO "-O2 -DNDEBUG /Zi")
 set(CXX_FLAGS_SHARED
     "/Zc:__cplusplus"
+    "/Zc:preprocessor"
     "/utf-8"
     "/EHsc"
     "/permissive-"

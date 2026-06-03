@@ -63,7 +63,7 @@ public:
             logging::log("Window not found: [{}]", windowName);
             return 1;
         }
-        DEBUG_LOG_ARGS("Window name: [{}]", window->Name());
+        DEBUG_LOG("Window name: [{}]", window->Name());
         window->Activate();
 
         auto capture = window->CreateCapture();
@@ -112,7 +112,7 @@ public:
                     const auto remove_whitespaces = sim::utils::strings::remove_all_whitespaces(text);
                     if (remove_whitespaces.contains(expected))
                     {
-                        DEBUG_LOG_ARGS("Expected found: [{}]", expected);
+                        DEBUG_LOG("Expected found: [{}]", expected);
                         break;
                     }
                 }

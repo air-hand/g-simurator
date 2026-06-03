@@ -21,7 +21,7 @@ namespace sim::utils::image
 cv::cuda::GpuMat grayScale(const cv::cuda::GpuMat& input)
 {
     const auto channels = input.channels();
-    DEBUG_LOG_ARGS("input channels: {}", channels);
+    DEBUG_LOG("input channels: {}", channels);
     cv::cuda::GpuMat output;
     switch (channels)
     {
@@ -65,7 +65,7 @@ cv::Mat fromGPU(const cv::cuda::GpuMat& image)
 cv::Mat grayScale(const cv::Mat& input)
 {
     const auto channels = input.channels();
-    DEBUG_LOG_ARGS("input channels: {}", channels);
+    DEBUG_LOG("input channels: {}", channels);
     cv::Mat output;
     switch (channels)
     {

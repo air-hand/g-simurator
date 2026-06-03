@@ -43,7 +43,7 @@ public:
             const auto error = cudaGraphicsD3D11RegisterResource(&cudaResource_, d3dTexture, cudaGraphicsRegisterFlags::cudaGraphicsRegisterFlagsNone);
             if (error != cudaError::cudaSuccess)
             {
-                DEBUG_LOG_ARGS("cudaGraphicsD3D11RegisterResource failed: {}", cudaGetErrorString(error));
+                DEBUG_LOG("cudaGraphicsD3D11RegisterResource failed: {}", cudaGetErrorString(error));
                 cudaResource_ = nullptr;
                 return;
             }
@@ -52,7 +52,7 @@ public:
             const auto error = cudaGraphicsMapResources(1, &cudaResource_, 0);
             if (error != cudaError::cudaSuccess)
             {
-                DEBUG_LOG_ARGS("cudaGraphicsMapResources failed: {}", cudaGetErrorString(error));
+                DEBUG_LOG("cudaGraphicsMapResources failed: {}", cudaGetErrorString(error));
                 // デストラクタに解放させたいので nullptr にはしない
                 return;
             }

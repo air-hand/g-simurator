@@ -20,13 +20,13 @@ void FileDeleter::operator()(FILE* fp) const
 
 FStreamPtr open_file(const std::filesystem::path& path, std::ios_base::openmode mode)
 {
-    DEBUG_LOG_ARGS("open file: {}", path.string());
+    DEBUG_LOG("open file: {}", path.string());
     return FStreamPtr(new std::fstream(path, mode));
 }
 
 FilePtr open_file(const std::filesystem::path& path, const char* mode)
 {
-    DEBUG_LOG_ARGS("open file: {}", path.string());
+    DEBUG_LOG("open file: {}", path.string());
 #pragma warning(suppress: 4996)
     return FilePtr(std::fopen(path.string().c_str(), mode));
 }

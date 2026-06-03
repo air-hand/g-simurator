@@ -150,7 +150,7 @@ public:
         // 全てのコールバックが終了するまで待機する
         while (callback_running_count_ > 0)
         {
-            DEBUG_LOG_ARGS("Waiting for capture thread to finish... (remaining: {})", callback_running_count_.load());
+            DEBUG_LOG("Waiting for capture thread to finish... (remaining: {})", callback_running_count_.load());
             time::sleep(10);
         }
 
@@ -178,9 +178,9 @@ public:
         std::filesystem::create_directory(out_dir_);
 
         item_ = CreateCaptureItemForWindow();
-        DEBUG_LOG_ARGS("Display Name: {}", sim::utils::unicode::to_utf8(item_.DisplayName().c_str()));
+        DEBUG_LOG("Display Name: {}", sim::utils::unicode::to_utf8(item_.DisplayName().c_str()));
         const auto size = item_.Size();
-        DEBUG_LOG_ARGS("Capture window size: {}x{}", size.Width, size.Height);
+        DEBUG_LOG("Capture window size: {}x{}", size.Width, size.Height);
 
         const auto d3dDevice = GetDXGIInterfaceFromObject<::ID3D11Device>(device_);
 //        winrt::com_ptr<ID3D11DeviceContext> d3dContext{ nullptr };
@@ -304,9 +304,9 @@ private:
                 const std::vector<std::pair<std::string, GpuTransform>> transforms = {
                     {"grayscale", static_cast<GpuTransformSignature*>(&image::grayScale)},
                     {"resize", [](const cv::cuda::GpuMat& img) {
-                        DEBUG_LOG_ARGS("Image size: {}x{}", img.cols, img.rows);
+                        DEBUG_LOG("Image size: {}x{}", img.cols, img.rows);
                         if (img.cols >= 1280) {
-                            DEBUG_LOG_ARGS("Resizing to 0.5x for faster OCR");
+                            DEBUG_LOG("Resizing to 0.5x for faster OCR");
                             return image::resize(img, 0.5, 0.5);
                         }
                         return img;
@@ -324,7 +324,7 @@ private:
                     processed = transform(processed);
                 }
                 out = image::fromGPU(processed);
-                DEBUG_LOG_ARGS("Final processed image size: {}x{}", out.cols, out.rows);
+                DEBUG_LOG("Final processed image size: {}x{}", out.cols, out.rows);
             }
 
             const auto filename = (output_to / "capture_target.png").string();

@@ -45,7 +45,7 @@ public:
 
         const auto root = GetAncestor(handle, GA_ROOTOWNER);
 
-        DEBUG_LOG_ARGS(
+        DEBUG_LOG(
             R"(
                 WindowHandle: 0x{:08x}
                 Window: {}
@@ -139,14 +139,14 @@ public:
         const auto handle = FindWindowW(NULL, windowNameWide.c_str());
         if (handle == NULL)
         {
-            DEBUG_LOG_ARGS("FindWindowW returned NULL for window: {}", windowName);
+            DEBUG_LOG("FindWindowW returned NULL for window: {}", windowName);
             return nullptr;
         }
 
         // Validate the window handle
         if (!IsWindow(handle))
         {
-            DEBUG_LOG_ARGS("Invalid window handle for: {}", windowName);
+            DEBUG_LOG("Invalid window handle for: {}", windowName);
             return nullptr;
         }
 
@@ -175,7 +175,7 @@ public:
 
         if (capturable == NULL)
         {
-            DEBUG_LOG_ARGS("There is no capturable window: {}", windowName);
+            DEBUG_LOG("There is no capturable window: {}", windowName);
             return nullptr;
         }
 
