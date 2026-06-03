@@ -189,19 +189,8 @@ WindowInspector::WindowInspector() noexcept
 }
 
 WindowInspector::~WindowInspector() = default;
-
-WindowInspector::WindowInspector(WindowInspector&& rhs) noexcept : impl_(std::move(rhs.impl_))
-{
-}
-
-WindowInspector& WindowInspector::operator=(WindowInspector&& rhs) noexcept
-{
-    if (this != &rhs)
-    {
-        impl_ = std::move(rhs.impl_);
-    }
-    return *this;
-}
+WindowInspector::WindowInspector(WindowInspector&&) noexcept = default;
+WindowInspector& WindowInspector::operator=(WindowInspector&&) noexcept = default;
 
 std::unique_ptr<Window> WindowInspector::Find(const std::string& windowName) const
 {

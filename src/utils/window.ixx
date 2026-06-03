@@ -17,8 +17,7 @@ export class Window final
 public:
     explicit Window(HWND handle) noexcept;
     ~Window();
-    Window(Window&&) noexcept;
-    Window& operator=(Window&&) noexcept;
+    DECLARE_MOVE_CONSTRUCTOR(Window);
 
     DELETE_COPY_AND_ASSIGN(Window);
 

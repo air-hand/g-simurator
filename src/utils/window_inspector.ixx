@@ -15,8 +15,7 @@ export class WindowInspector final
 public:
     WindowInspector() noexcept;
     ~WindowInspector();
-    WindowInspector(WindowInspector&&) noexcept;
-    WindowInspector& operator=(WindowInspector&&) noexcept;
+    DECLARE_MOVE_CONSTRUCTOR(WindowInspector);
 
     DELETE_COPY_AND_ASSIGN(WindowInspector);
 
