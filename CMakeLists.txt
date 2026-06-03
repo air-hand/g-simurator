@@ -236,6 +236,37 @@ target_link_options(${PROJECT_NAME}
 copy_cuda_runtime_dlls(${PROJECT_NAME})
 copy_asan_runtime_dll(${PROJECT_NAME})
 
+add_executable(${PROJECT_NAME}-check)
+add_subdirectory(./src/check)
+
+target_compile_options(${PROJECT_NAME}-check
+    PRIVATE
+    /Wall
+    /WX
+    /Qspectre
+    /wd5045
+    ${CXX_FLAGS_SHARED}
+)
+target_include_directories(${PROJECT_NAME}-check
+    PRIVATE
+    ${OpenCV_INCLUDE_DIRS}
+    ${CMAKE_CURRENT_SOURCE_DIR}/src
+)
+target_link_libraries(${PROJECT_NAME}-check
+    PRIVATE
+    ${OpenCV_LIBS}
+    ${PROJECT_NAME}-std
+    ${PROJECT_NAME}-proto
+    ${PROJECT_NAME}-utils
+)
+target_link_options(${PROJECT_NAME}-check
+    PRIVATE
+    /INCREMENTAL:NO
+    /WX
+    /VERBOSE
+    /NODEFAULTLIB:LIBCMT
+)
+
 # tests
 enable_testing()
 
