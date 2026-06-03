@@ -7,15 +7,15 @@
         sim::utils::logging::log("DEBUG {}({}): {}", __FILE__, __LINE__, x); \
     } while (false)
 
-#define DEBUG_LOG_ARGS(x, ...) \
+#define DEBUG_LOG_ARGS(fmt, ...) \
     do \
     { \
         sim::utils::logging::log( \
-            "DEBUG {}({}): {}", __FILE__, __LINE__, sim::utils::strings::fmt(x, __VA_ARGS__) \
+            "DEBUG {}({}): " fmt, __FILE__, __LINE__, __VA_ARGS__ \
         ); \
     } while (false)
 
-#define DEBUG_LOG_SPAN(label) const sim::utils::logging::LogSpan label##_span(sim::utils::strings::fmt("DEBUG {}({}): {} [{}]", __FILE__, __LINE__, __FUNCSIG__, #label))
+#define DEBUG_LOG_SPAN(label) const sim::utils::logging::LogSpan label##_span(std::format("DEBUG {}({}): {} [{}]", __FILE__, __LINE__, __FUNCSIG__, #label))
 
 #else
 

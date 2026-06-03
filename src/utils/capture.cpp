@@ -291,7 +291,7 @@ private:
 
             cv::Mat out;
             const auto now = std::chrono::system_clock::now();
-            const auto output_to = out_dir_ / sim::utils::strings::fmt("{:%Y%m%d%H%M%S}", std::chrono::time_point_cast<std::chrono::milliseconds>(now));
+            const auto output_to = out_dir_ / std::format("{:%Y%m%d%H%M%S}", std::chrono::time_point_cast<std::chrono::milliseconds>(now));
             std::filesystem::create_directory(output_to);
 
             {
@@ -316,7 +316,7 @@ private:
                 for (size_t i = 0; i < transforms.size(); ++i) {
                     const auto& [name, transform] = transforms[i];
 #ifdef DEBUG
-                    const auto filename = (output_to / sim::utils::strings::fmt("{}_{}_before.png", i, name)).string();
+                    const auto filename = (output_to / std::format("{}_{}_before.png", i, name)).string();
                     image::saveImage(image::fromGPU(processed), filename);
 #endif
                     processed = transform(processed);

@@ -17,7 +17,7 @@ namespace
 bool WriteMiniDump(EXCEPTION_POINTERS* e)
 {
     const auto now = std::chrono::system_clock::now();
-    const auto filename = sim::utils::strings::fmt(L"./tmp/crash_{:%Y%m%d%H%M%S}.dmp", std::chrono::time_point_cast<std::chrono::milliseconds>(now));
+    const auto filename = std::format(L"./tmp/crash_{:%Y%m%d%H%M%S}.dmp", std::chrono::time_point_cast<std::chrono::milliseconds>(now));
     const auto file = CreateFileW(filename.c_str(), GENERIC_WRITE, 0, nullptr, CREATE_ALWAYS, FILE_ATTRIBUTE_NORMAL, nullptr);
     if (file == INVALID_HANDLE_VALUE)
     {
