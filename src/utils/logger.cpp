@@ -24,12 +24,12 @@ void init()
     plog::init(plog::debug, &consoleAppender).addAppender(&fileAppender);
 }
 
-void log(const std::string& message)
+void log(std::string_view message)
 {
     PLOG_DEBUG << message;
 }
 
-void log(const std::wstring& message)
+void log(std::wstring_view message)
 {
     PLOG_DEBUG << message;
 }

@@ -19,8 +19,7 @@ build: phony ## Build the project
 
 test: phony ## Run tests (builds if needed / or requires prior build)
 	@echo "Testing..."
-	@$(SHELL) -Command "& { .\tools\test.ps1 -build_type $(CONFIGURATION); exit $$LASTEXITCODE }"
+	@$(SHELL) -Command "& { .\tools\test.ps1 -build_type $(CONFIGURATION) 2>&1 | Tee-Object -FilePath 'test.log'; exit $$LASTEXITCODE }"
 
 # pesudotarget
 phony:
-

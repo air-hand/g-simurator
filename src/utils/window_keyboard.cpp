@@ -64,15 +64,7 @@ WindowKeyboard::WindowKeyboard(ActivateCallback callback) noexcept
 WindowKeyboard::~WindowKeyboard() = default;
 
 WindowKeyboard::WindowKeyboard(WindowKeyboard&&) noexcept = default;
-
-WindowKeyboard& WindowKeyboard::operator=(WindowKeyboard&& rhs) noexcept
-{
-    if (this != &rhs)
-    {
-        impl_ = std::move(rhs.impl_);
-    }
-    return *this;
-}
+WindowKeyboard& WindowKeyboard::operator=(WindowKeyboard&&) noexcept = default;
 
 void WindowKeyboard::KeyDown(WORD key) const
 {

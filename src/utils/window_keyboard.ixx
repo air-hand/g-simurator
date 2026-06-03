@@ -17,8 +17,7 @@ export class WindowKeyboard final
 public:
     explicit WindowKeyboard(ActivateCallback callback) noexcept;
     ~WindowKeyboard();
-    WindowKeyboard(WindowKeyboard&&) noexcept;
-    WindowKeyboard& operator=(WindowKeyboard&&) noexcept;
+    DECLARE_MOVE_CONSTRUCTOR(WindowKeyboard);
 
     DELETE_COPY_AND_ASSIGN(WindowKeyboard);
 

@@ -60,7 +60,7 @@ std::optional<UINT> key_name_to_vk(const std::string& name)
 
     const SHORT r = VkKeyScanA(ch);
     if (r == -1) {
-        DEBUG_LOG_ARGS("VkKeyScanA failed for char: {}", name);
+        DEBUG_LOG("VkKeyScanA failed for char: {}", name);
         DEBUG_ASSERT(false);
         return std::nullopt;
     }
@@ -83,7 +83,7 @@ public:
     {
         DEBUG_LOG_SPAN(_);
         const auto json = utils::read_all(utils::open_file(path, std::ios::in | std::ios::binary));
-        DEBUG_LOG_ARGS("Read JSON file: [{}]", json);
+        DEBUG_LOG("Read JSON file: [{}]", json);
         RouteList route;
         if (const auto result = google::protobuf::util::JsonStringToMessage(json, &route); !result.ok())
         {
@@ -134,7 +134,7 @@ cv::Mat applyROI(const cv::Mat& input, const ROI& roi)
     const auto roi_height = algo::safe_clamp(static_cast<int32_t>(std::floor(height * roi.height_percent() / 100)), 1, height - roi_top);
 
     const auto rect = cv::Rect(roi_left, roi_top, roi_width, roi_height);
-    DEBUG_LOG_ARGS("ROI: {} {} {} {}", rect.x, rect.y, rect.width, rect.height);
+    DEBUG_LOG("ROI: {} {} {} {}", rect.x, rect.y, rect.width, rect.height);
     return input(rect);
 }
 

@@ -44,7 +44,7 @@ std::string RecognizeResults::ToString() const
     std::string out;
     for (const auto& r : results_)
     {
-        DEBUG_LOG_ARGS("Text: {}, Confidence: {}", r.text, r.confidence);
+        DEBUG_LOG("Text: {}, Confidence: {}", r.text, r.confidence);
         if (r.is_line_start && !out.empty())
         {
             out += "\n";

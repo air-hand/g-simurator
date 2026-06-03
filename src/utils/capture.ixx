@@ -24,8 +24,7 @@ public:
 
     DELETE_COPY_AND_ASSIGN(CapturedImage);
 
-    CapturedImage(CapturedImage&&) noexcept;
-    CapturedImage& operator=(CapturedImage&&) noexcept;
+    DECLARE_MOVE_CONSTRUCTOR(CapturedImage);
 
     cv::Mat Read() const;
     std::filesystem::path Path() const;
@@ -39,8 +38,7 @@ export class CaptureWindow final
 public:
     CaptureWindow(HWND hwnd, const Device& device) noexcept;
     ~CaptureWindow();
-    CaptureWindow(CaptureWindow&&) noexcept;
-    CaptureWindow& operator=(CaptureWindow&&) noexcept;
+    DECLARE_MOVE_CONSTRUCTOR(CaptureWindow);
 
     DELETE_COPY_AND_ASSIGN(CaptureWindow);
 

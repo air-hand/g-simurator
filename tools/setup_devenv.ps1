@@ -74,6 +74,13 @@ Function InstallOthers([boolean]$clean) {
         $Env:PATH = "${Env:CUDA_PATH}\bin;${Env:PATH}"
         [System.Environment]::SetEnvironmentVariable("PATH", $Env:PATH, [System.EnvironmentVariableTarget]::User)
     }
+    if (($Env:PATH -split ";") -notcontains "${Env:CUDA_PATH}\bin\x64") {
+        $Env:PATH = "${Env:CUDA_PATH}\bin\x64;${Env:PATH}"
+        [System.Environment]::SetEnvironmentVariable("PATH", $Env:PATH, [System.EnvironmentVariableTarget]::User)
+    }
+
+    # WinDbg
+    winget install -e --id Microsoft.WinDbg --source winget --silent --disable-interactivity --accept-source-agreements
 }
 
 Function Main([boolean]$clean) {

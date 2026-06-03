@@ -16,7 +16,7 @@ void beep_impl(UINT type, [[maybe_unused]] const char* name)
     DEBUG_LOG_SPAN(_);
     if (!MessageBeep(type))
     {
-        DEBUG_LOG_ARGS("MessageBeep({}) failed: {}", name, GetLastError());
+        DEBUG_LOG("MessageBeep({}) failed: {}", name, GetLastError());
     }
 }
 }

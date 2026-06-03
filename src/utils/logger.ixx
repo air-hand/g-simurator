@@ -11,32 +11,27 @@ namespace sim::utils::logging
 {
 
 export void init();
-export void log(const std::string& message);
-export void log(const std::wstring& message);
+export void log(std::string_view message);
+export void log(std::wstring_view message);
 
-template <typename ...Args> concept not_empty_args = requires {
-    sizeof...(Args) > 0;
-};
+template <typename ...Args> concept not_empty_args = (sizeof...(Args) > 0);
 
 export template<
-    strings::char_type CharT,
     typename... Args
 >
 requires not_empty_args<Args...>
-void log(const CharT* format, Args&&... args)
+void log(std::format_string<Args...> format, Args&&... args)
 {
-    constexpr std::size_t size = sizeof...(Args);
-    static_assert(size > 0, "At least one argument is required");
-
-    log(strings::fmt(format, std::forward<Args>(args)...));
+    log(std::format(format, std::forward<Args>(args)...));
 }
 
 export template<
-    strings::char_type CharT
+    typename... Args
 >
-void log(const CharT* format)
+requires not_empty_args<Args...>
+void log(std::wformat_string<Args...> format, Args&&... args)
 {
-    log(std::basic_string<CharT>(format));
+    log(std::format(format, std::forward<Args>(args)...));
 }
 
 export class LogSpan final

@@ -1,0 +1,12 @@
+cmake_policy(SET CMP0076 NEW)
+
+file(GLOB_RECURSE CPP_SOURCES
+    RELATIVE "${CMAKE_CURRENT_SOURCE_DIR}"
+    CONFIGURE_DEPENDS
+    "*.cpp"
+)
+list(SORT CPP_SOURCES)
+target_sources(${PROJECT_NAME}-test
+    PRIVATE
+        ${CPP_SOURCES}
+)
