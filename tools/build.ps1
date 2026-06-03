@@ -11,30 +11,6 @@ $clean = $clean -eq 1
 
 cd $PSScriptRoot\..
 
-Remove-Item ./src/**/proto/gen/*.pb.*
-Get-ChildItem ./src -Include "*.proto" -Recurse | % { Split-Path $_ -Parent } | Sort-Object -Unique | % {
-    (Resolve-Path $_ -Relative) -replace '\\', '/'
-} | % {
-    Write-Host "Running protoc $_"
-    if (-not(Test-Path "./${_}/gen")) {
-        mkdir "./${_}/gen"
-    }
-    protoc -I"./${_}" --cpp_out="./${_}/gen" "./${_}/*.proto"
-}
-
-Get-ChildItem ./ -Exclude @(".git", "build", "tools", "vcpkg_installed") | ForEach-Object -Parallel {
-    Get-ChildItem $_.FullName -Include "CMakeLists.txt" -Recurse | % {
-        Write-Host "Remove ${_}"
-        Remove-Item $_
-    }
-}
-Get-ChildItem ./ -Exclude @(".git", "build", "tools", "vcpkg_installed") | ForEach-Object -Parallel {
-    Get-ChildItem $_.FullName -Include "CMake*.ps1" -Recurse | Sort-Object | % {
-        Write-Host "Running ${_}"
-        pwsh $_
-    }
-}
-
 $Env:CMAKE_BUILD_PARALLEL_LEVEL = ([int]$Env:NUMBER_OF_PROCESSORS * 2)
 $CMAKE_BUILD_TYPE = $build_type
 $BUILD_DIR = ".\build\${CMAKE_BUILD_TYPE}"
@@ -48,7 +24,6 @@ $CMAKE_PRESET_COMMAND = @(
     , "--preset=vcpkg"
     , "-DCMAKE_BUILD_TYPE=${CMAKE_BUILD_TYPE}"
     , "-DVCPKG_INSTALLED_DIR=${PSScriptRoot}/../vcpkg_installed"
-    , "-DCMAKE_EXPORT_COMPILE_COMMANDS=ON"
     , "-B ${BUILD_DIR}"
 )
 if ($clean) {

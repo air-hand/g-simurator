@@ -1,0 +1,24 @@
+cmake_policy(SET CMP0076 NEW)
+
+file(GLOB_RECURSE MODULE_SOURCES
+    RELATIVE "${CMAKE_CURRENT_SOURCE_DIR}"
+    CONFIGURE_DEPENDS
+    "*.ixx"
+)
+list(SORT MODULE_SOURCES)
+file(GLOB_RECURSE CPP_SOURCES
+    RELATIVE "${CMAKE_CURRENT_SOURCE_DIR}"
+    CONFIGURE_DEPENDS
+    "*.cpp"
+)
+list(SORT CPP_SOURCES)
+
+target_sources(${PROJECT_NAME}-utils
+    PUBLIC
+    FILE_SET modules TYPE CXX_MODULES FILES
+        ${MODULE_SOURCES}
+)
+target_sources(${PROJECT_NAME}-utils
+    PRIVATE
+        ${CPP_SOURCES}
+)
