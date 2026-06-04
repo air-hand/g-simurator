@@ -84,6 +84,7 @@ jobs:
 
     - name: Run app (${{ env.BUILD_TYPE }})
       run: |
+        .\tools\envs.ps1
         & "${Env:SIMURATOR_EXE}" --help
         & "${Env:SIMURATOR_EXE}" --build-info
       env:
