@@ -27,10 +27,13 @@ jobs:
       matrix:
         runner:
           - 'windows-2022'
-        build-type:
-          - Debug
-          - Release
-          - RelWithDebInfo
+        build:
+          - type: Debug
+            vcpkg_cache: readwrite
+          - type: Release
+            vcpkg_cache: read
+          - type: RelWithDebInfo
+            vcpkg_cache: read
     permissions:
       contents: read
       packages: write
@@ -38,11 +41,11 @@ jobs:
       run:
         shell: pwsh
     env:
-      BUILD_TYPE: ${{ matrix.build-type }}
+      BUILD_TYPE: ${{ matrix.build.type }}
       NUGET_USERNAME: ${{ github.repository_owner }}
       NUGET_FEED_URL: https://nuget.pkg.github.com/${{ github.repository_owner }}/index.json
       NUGET_TOKEN: ${{ secrets.GITHUB_TOKEN }}
-      VCPKG_BINARY_SOURCES: "clear;nuget,https://nuget.pkg.github.com/${{ github.repository_owner }}/index.json,readwrite"
+      VCPKG_BINARY_SOURCES: "clear;nuget,https://nuget.pkg.github.com/${{ github.repository_owner }}/index.json,${{ matrix.build.vcpkg_cache }}"
     runs-on: ${{ matrix.runner }}
     steps:
     - uses: actions/checkout@v6
@@ -81,8 +84,10 @@ jobs:
 
     - name: Run app (${{ env.BUILD_TYPE }})
       run: |
-        .\build\$Env:BUILD_TYPE\simurator.exe --help
-        .\build\$Env:BUILD_TYPE\simurator.exe --build-info
+        & "${Env:SIMURATOR_EXE}" --help
+        & "${Env:SIMURATOR_EXE}" --build-info
+      env:
+        SIMURATOR_EXE: .\build\${{ env.BUILD_TYPE }}\simurator.exe
 
   check-result:
     runs-on: ubuntu-slim
