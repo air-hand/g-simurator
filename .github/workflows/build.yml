@@ -70,12 +70,19 @@ jobs:
     - name: Build (${{ env.BUILD_TYPE }})
       run: |
         .\tools\build.ps1 -build_type $Env:BUILD_TYPE
+      env:
+        BUILD_COMMIT: ${{ github.sha }}
 
     - name: Run tests (${{ env.BUILD_TYPE }})
       run: |
         .\tools\test.ps1 -build_type $Env:BUILD_TYPE
       env:
         TEST_DEBUG: ${{ runner.debug }}
+
+    - name: Run app (${{ env.BUILD_TYPE }})
+      run: |
+        .\build\$Env:BUILD_TYPE\simurator.exe --help
+        .\build\$Env:BUILD_TYPE\simurator.exe --build-info
 
   check-result:
     runs-on: ubuntu-slim

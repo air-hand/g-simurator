@@ -14,8 +14,7 @@ export class MainProc final
 public:
     MainProc(uint32_t argc, char** argv) noexcept;
     ~MainProc();
-    MainProc(MainProc&&) noexcept;
-    MainProc& operator=(MainProc&&);
+    DECLARE_MOVE_CONSTRUCTOR(MainProc);
 
     DELETE_COPY_AND_ASSIGN(MainProc);
 

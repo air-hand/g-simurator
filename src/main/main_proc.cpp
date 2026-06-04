@@ -12,12 +12,54 @@ module sim;
 
 import utils;
 import :route;
+import :build_info;
 import :main;
 
 namespace options = boost::program_options;
 namespace logging = sim::utils::logging;
 namespace notification = sim::utils::notification;
 namespace window = sim::utils::window;
+
+namespace
+{
+
+struct AppOptions
+{
+    bool help = false;
+    bool build_info = false;
+    std::optional<std::filesystem::path> route_path;
+};
+
+options::options_description CreateOptionsDescription()
+{
+    options::options_description desc("Options");
+        desc.add_options()
+            ("help", "show help")
+            ("build-info", "show build info")
+            ("route", options::value<std::filesystem::path>(), "Route file")
+        ;
+    return desc;
+}
+
+AppOptions ParseArgs(uint32_t argc, char** argv)
+{
+    const auto desc = CreateOptionsDescription();
+    options::variables_map vm;
+    options::store(options::parse_command_line(argc, argv, desc), vm);
+    options::notify(vm);
+
+    auto result = AppOptions{
+        .help = vm.contains("help"),
+        .build_info = vm.contains("build-info"),
+    };
+    if (vm.contains("route"))
+    {
+        result.route_path = vm["route"].as<std::filesystem::path>();
+    }
+    return result;
+}
+
+}
 
 namespace sim
 {
@@ -42,14 +84,34 @@ public:
             return 1;
         }
 
-        if (!std::filesystem::exists(route_path_))
+        if (options_.help)
         {
-            logging::log("Route file not found. {}", route_path_.string());
+            std::ostringstream os;
+            os << CreateOptionsDescription();
+            logging::log(os.str());
+            return 0;
+        }
+
+        if (options_.build_info)
+        {
+            logging::log("commit: {}", BuildCommit());
+            return 0;
+        }
+
+        const auto& route_path = options_.route_path;
+        if (!route_path)
+        {
+            logging::log("Route option not specified.");
+            return 1;
+        }
+        if (!std::filesystem::exists(*route_path))
+        {
+            logging::log("Route file not found. {}", (*route_path).string());
             return 1;
         }
 
         const auto reader = route::RouteReader();
-        const auto route = reader.ReadJSONFile(route_path_);
+        const auto route = reader.ReadJSONFile(*route_path);
         if (route.routes().empty())
         {
             return 0;
@@ -181,17 +243,12 @@ public:
 
 private:
     std::vector<std::function<void()>> finalizers_;
-    std::filesystem::path route_path_;
+    AppOptions options_;
     bool cancel_requested_ = false;
     bool initialized_ = false;
 
     bool Init(uint32_t argc, char** argv)
     {
-        {
-            AddFinalizer([] {
-                logging::log("Good bye, World...");
-            });
-        }
         {
             AddFinalizer([] {
                 DEBUG_LOG("Shutting down protobuf library...");
@@ -213,13 +270,7 @@ private:
                 utils::recognize::RecognizeText::Get().Finalize();
             });
         }
-        options::options_description desc("Options");
-        desc.add_options()
-            ("route", options::value<std::filesystem::path>(&route_path_), "Route file")
-        ;
-        options::variables_map vm;
-        options::store(options::parse_command_line(argc, argv, desc), vm);
-        notify(vm);
+        options_ = ParseArgs(argc, argv);
         return true;
     }
 
@@ -236,21 +287,10 @@ MainProc::MainProc(uint32_t argc, char** argv) noexcept
 {
 }
 
-MainProc::~MainProc()
-{
-    DEBUG_LOG_SPAN(_);
-    impl_.reset();
-}
+MainProc::~MainProc() = default;
 
 MainProc::MainProc(MainProc&&) noexcept = default;
-MainProc& MainProc::operator=(MainProc&& rhs)
-{
-    if (this != &rhs)
-    {
-        impl_ = std::move(rhs.impl_);
-    }
-    return *this;
-}
+MainProc& MainProc::operator=(MainProc&& rhs) noexcept = default;
 
 uint32_t MainProc::Run()
 {

@@ -155,6 +155,11 @@ target_compile_options(${PROJECT_NAME}
     ${ASSEMBLY_FLAG}
     $<$<BOOL:${ASSEMBLY_ENABLED}>:/Fa${CMAKE_CURRENT_BINARY_DIR}/assembly/${PROJECT_NAME}/>
 )
+set(SIMURATOR_BUILD_COMMIT "local build" CACHE STRING "Build commit hash")
+target_compile_definitions(${PROJECT_NAME}
+    PRIVATE
+        SIMURATOR_BUILD_COMMIT="${SIMURATOR_BUILD_COMMIT}"
+)
 target_include_directories(${PROJECT_NAME}
     PRIVATE
     ${OpenCV_INCLUDE_DIRS}
