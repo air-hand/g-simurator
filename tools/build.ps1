@@ -26,6 +26,9 @@ $CMAKE_PRESET_COMMAND = @(
     , "-DVCPKG_INSTALLED_DIR=${PSScriptRoot}/../vcpkg_installed"
     , "-B ${BUILD_DIR}"
 )
+if ($Env:BUILD_COMMIT) {
+    $CMAKE_PRESET_COMMAND += "-DSIMURATOR_BUILD_COMMIT=${Env:BUILD_COMMIT}"
+}
 if ($clean) {
     $CMAKE_PRESET_COMMAND += "--fresh"
 }
