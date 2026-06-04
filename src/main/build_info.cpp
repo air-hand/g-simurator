@@ -16,7 +16,7 @@ import :build_info;
 
 static_assert(__cplusplus == 202400L, "C++23 required (/std:c++23preview + /Zc:__cplusplus) Current: " STR(__cplusplus));
 static_assert(_MSC_VER == 1944, "MSVC 19.44 required. Current: " STR(_MSC_VER));
-static_assert(_WIN32_WINNT == 0x0A00, "Windows 10 or 11 required. Current: " STR(_MSC_VER));
+static_assert(_WIN32_WINNT == 0x0A00, "Windows 10 or 11 required. Current: " STR(_WIN32_WINNT));
 
 namespace sim
 {
