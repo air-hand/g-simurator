@@ -1,10 +1,9 @@
 module;
 
-#include <cassert>
-
 #include <boost/circular_buffer.hpp>
 
 #include "macro.hpp"
+#include "debug.hpp"
 #include "logger.hpp"
 
 export module utils:container;
@@ -25,7 +24,7 @@ private:
 public:
     explicit RingBuffer(std::size_t capacity) noexcept : container_(capacity), mutex_()
     {
-        assert(capacity > 0);
+        DEBUG_ASSERT(capacity > 0);
     }
     ~RingBuffer() = default;
 
