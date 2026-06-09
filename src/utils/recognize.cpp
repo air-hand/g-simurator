@@ -11,9 +11,14 @@ module;
 module utils;
 
 import std;
+import :env;
 import :logger;
 import :recognize;
 import :file;
+
+#ifndef SIMURATOR_TESSDATA_PREFIX
+#define SIMURATOR_TESSDATA_PREFIX ""
+#endif
 
 namespace
 {
@@ -28,6 +33,22 @@ auto LoadFontData()
         freetype->loadFontData("C:/Windows/Fonts/meiryo.ttc", 0);
     }
     return freetype;
+}
+
+std::string TessDataPrefix()
+{
+    if (const auto env = sim::utils::get_env("TESSDATA_PREFIX"))
+    {
+        return *env;
+    }
+
+    constexpr const char* prefix = SIMURATOR_TESSDATA_PREFIX;
+    if (prefix[0] != '\0')
+    {
+        return prefix;
+    }
+
+    return {};
 }
 
 }
@@ -123,7 +144,8 @@ public:
         DEBUG_LOG_SPAN(_);
         // returns 0:success
 //        const auto result = tess_.Init(nullptr, "jpn", tesseract::OEM_LSTM_ONLY);
-        const auto result = tess_.Init(nullptr, "jpn");
+        const auto tessdata_prefix = TessDataPrefix();
+        const auto result = tess_.Init(tessdata_prefix.empty() ? nullptr : tessdata_prefix.c_str(), "jpn");
         if (result != 0) {
             logging::log("Failed to init tesseract.");
             DEBUG_ASSERT(false);
