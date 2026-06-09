@@ -12,6 +12,53 @@ find_package(boost_stacktrace_windbg CONFIG REQUIRED)
 find_package(Tesseract CONFIG REQUIRED)
 find_package(CUDAToolkit REQUIRED)
 
+function(copy_cuda_runtime_dlls target)
+    if(NOT WIN32)
+        return()
+    endif()
+
+    message(STATUS "${CUDAToolkit_BIN_DIR}")
+    file(GLOB_RECURSE CUDA_RUNTIME_DLLS
+        CONFIGURE_DEPENDS
+        "${CUDAToolkit_BIN_DIR}/*.dll"
+    )
+
+    if(CUDA_RUNTIME_DLLS)
+        add_custom_command(TARGET ${target} POST_BUILD
+            COMMAND ${CMAKE_COMMAND} -E copy_if_different
+                ${CUDA_RUNTIME_DLLS}
+                $<TARGET_FILE_DIR:${target}>
+            COMMAND_EXPAND_LISTS
+            COMMENT "Copying CUDA runtime DLLs for ${target}"
+        )
+    endif()
+endfunction()
+
+function(copy_asan_runtime_dll target)
+    if(NOT MSVC)
+        return()
+    endif()
+
+    get_filename_component(CXX_COMPILER_DIR "${CMAKE_CXX_COMPILER}" DIRECTORY)
+    find_file(ASAN_RUNTIME_DLL
+        NAMES clang_rt.asan_dynamic-x86_64.dll
+        PATHS
+            "${CXX_COMPILER_DIR}"
+            "$ENV{VCToolsInstallDir}/bin/Hostx64/x64"
+            "$ENV{VCToolsInstallDir}/bin/Hostx86/x64"
+        NO_DEFAULT_PATH
+    )
+
+    if(ASAN_RUNTIME_DLL)
+        add_custom_command(TARGET ${target} POST_BUILD
+            COMMAND ${CMAKE_COMMAND} -E copy_if_different
+                "${ASAN_RUNTIME_DLL}"
+                $<TARGET_FILE_DIR:${target}>
+            COMMENT "Copying AddressSanitizer runtime for ${target}"
+        )
+    endif()
+endfunction()
+
 set(CMAKE_EXPORT_COMPILE_COMMANDS ON)
 set(CMAKE_CXX_STANDARD 23) # c++latest or c++23(preview)
 set(CMAKE_CXX_STANDARD_REQUIRED ON)
@@ -110,6 +157,7 @@ target_compile_options(${PROJECT_NAME}-utils
 )
 target_compile_definitions(${PROJECT_NAME}-utils
     PRIVATE
+    SIMURATOR_TESSDATA_PREFIX="${CMAKE_CURRENT_SOURCE_DIR}/tessdata"
 )
 target_include_directories(${PROJECT_NAME}-utils
     PRIVATE
@@ -185,6 +233,8 @@ target_link_options(${PROJECT_NAME}
     /NODEFAULTLIB:LIBCMT
     $<$<CONFIG:RelWithDebInfo>:/DEBUG>
 )
+copy_cuda_runtime_dlls(${PROJECT_NAME})
+copy_asan_runtime_dll(${PROJECT_NAME})
 
 # tests
 enable_testing()
@@ -223,6 +273,8 @@ target_link_options(${PROJECT_NAME}-test
     /VERBOSE
     /NODEFAULTLIB:LIBCMT
 )
+copy_cuda_runtime_dlls(${PROJECT_NAME}-test)
+copy_asan_runtime_dll(${PROJECT_NAME}-test)
 
 add_test(NAME test COMMAND ${PROJECT_NAME}-test)
 

@@ -2,8 +2,14 @@
   {
     "label": "Debug app",
     "build": {
-      "command": "nmake",
-      "args": ["build"],
+      "command": "pwsh.exe",
+      "args": [
+        "-NoProfile",
+        "-ExecutionPolicy",
+        "Bypass",
+        "-File",
+        "${ZED_WORKTREE_ROOT}/tools/build.ps1"
+      ],
       "cwd": "${ZED_WORKTREE_ROOT}"
     },
     "program": "${ZED_WORKTREE_ROOT}/build/Debug/simurator.exe",

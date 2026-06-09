@@ -3,6 +3,7 @@ export module utils;
 export import :algorithm;
 export import :capture;
 export import :container;
+export import :env;
 export import :error;
 export import :file;
 export import :gpu;
