@@ -18,3 +18,5 @@ export import :time;
 export import :unicode;
 export import :window;
 export import :window_inspector;
+
+export import :game.training;
