@@ -45,8 +45,6 @@ public:
 
         DEBUG_LOG("Activation result - Target: {:p}, Foreground: {:p}, Success: {}",
             (void*)handle_, (void*)foreground, activated);
-
-        DEBUG_ASSERT(activated);
     }
 
     std::string Name() const

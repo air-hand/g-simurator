@@ -2,6 +2,7 @@ export module utils;
 
 export import :algorithm;
 export import :capture;
+export import :console_stop;
 export import :container;
 export import :env;
 export import :error;

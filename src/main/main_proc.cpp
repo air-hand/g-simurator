@@ -66,7 +66,8 @@ namespace sim
 class MainProc::Impl
 {
 public:
-    Impl(uint32_t argc, char** argv)
+    Impl(uint32_t argc, char** argv, std::stop_token stop_token)
+        : stop_token_(std::move(stop_token))
     {
         initialized_ = Init(argc, argv);
     }
@@ -140,10 +141,10 @@ public:
                 // Main Loop
                 do
                 {
-                    if (cancel_requested_)
+                    if (stop_token_.stop_requested())
                     {
                         logging::log("Canceled.");
-                        break;
+                        return 2;
                     }
                     const auto captured = capture.TryPop(std::chrono::milliseconds(1000));
                     if (!captured)
@@ -230,12 +231,6 @@ public:
         return 0;
     }
 
-    void Cancel()
-    {
-        logging::log("Cancel requested.");
-        cancel_requested_ = true;
-    }
-
     void AddFinalizer(std::function<void()> finalizer)
     {
         finalizers_.emplace_back(std::move(finalizer));
@@ -244,7 +239,7 @@ public:
 private:
     std::vector<std::function<void()>> finalizers_;
     AppOptions options_;
-    bool cancel_requested_ = false;
+    std::stop_token stop_token_;
     bool initialized_ = false;
 
     bool Init(uint32_t argc, char** argv)
@@ -282,8 +277,8 @@ private:
     }
 };
 
-MainProc::MainProc(uint32_t argc, char** argv) noexcept
-    : impl_(std::make_unique<Impl>(argc, argv))
+MainProc::MainProc(uint32_t argc, char** argv, std::stop_token stop_token) noexcept
+    : impl_(std::make_unique<Impl>(argc, argv, std::move(stop_token)))
 {
 }
 
@@ -301,11 +296,6 @@ uint32_t MainProc::Run()
         notification::beep_error();
     }
     return result;
-}
-
-void MainProc::Cancel()
-{
-    impl_->Cancel();
 }
 
 void MainProc::AddFinalizer(std::function<void()> finalizer)
