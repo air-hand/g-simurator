@@ -91,8 +91,8 @@ cv::Mat RecognizeResults::DrawRects() const
             out,
             text_with_confidence,
             cv::Point(r.rect.x, r.rect.y - 10),
-            15,
-            cv::Scalar(255, 0, 0),
+            12,
+            cv::Scalar(0, 255, 255),
             1,
             cv::LINE_AA,
             false
